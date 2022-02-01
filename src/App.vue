@@ -4,6 +4,12 @@
 </template>
 
 <script>
+import Solver from './solver';
+window.Solver = Solver;
+
+import words from './words';
+window.words = words;
+
 import HelloWorld from './components/HelloWorld.vue'
 
 export default {
