@@ -21,8 +21,6 @@ export default {
             benchmark: true,
             benchmarkResults: {},
 
-            showResults: false,
-
             green1: "", green2: "", green3: "", green4: "", green5: "",
             yellow1: "", yellow2: "", yellow3: "", yellow4: "", yellow5: "",
             gray: "",
@@ -49,6 +47,11 @@ export default {
         },
         grays() {
             return this.parseGray(this.gray);
+        },
+        hasInput() {
+            return this.green1 || this.green2 || this.green3 || this.green4 || this.green5
+                || this.yellow1 || this.yellow2 || this.yellow3 || this.yellow4 || this.yellow5
+                || this.gray;
         },
         randomResult() {
             return this.results[Math.floor(Math.random() * this.results.length)];
@@ -86,6 +89,16 @@ export default {
             val = cleanLetters(val);
             return val.split("");
         },
+        selectAll(event) {
+            console.log("selectAll", event);
+            event.target.select();
+        },
+        cursorEnd(event) {
+            console.log("cursorEnd", event);
+            const length = event.target.value.length;
+            event.target.setSelectionRange(length, length);
+
+        },
         benchmarkStart(name) {
             benchmarks[name] = window.performance.now();
         },
@@ -117,6 +130,17 @@ export default {
 </script>
 
 <template>
+    <div v-if="hasInput" class="result-count">
+        <p>
+            <b>{{ results.length }}</b> possible answers.
+        </p>
+    </div>
+    <div v-else class="result-count">
+        <p>
+            Enter the letters from your puzzle
+        </p>
+    </div>
+
     <form @submit.prevent="solve">
         <div class="section green">
             <div class="section__header">
@@ -128,11 +152,11 @@ export default {
 
             <div class="section__body">
                 <div class="inputs chars green">
-                    <input v-model="green1" class="input char green" maxlength="1" type="text" spellcheck="false" />
-                    <input v-model="green2" class="input char green" maxlength="1" type="text" spellcheck="false" />
-                    <input v-model="green3" class="input char green" maxlength="1" type="text" spellcheck="false" />
-                    <input v-model="green4" class="input char green" maxlength="1" type="text" spellcheck="false" />
-                    <input v-model="green5" class="input char green" maxlength="1" type="text" spellcheck="false" />
+                    <input v-model="green1" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
+                    <input v-model="green2" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
+                    <input v-model="green3" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
+                    <input v-model="green4" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
+                    <input v-model="green5" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
                 </div>
             </div>
         </div>
@@ -147,11 +171,11 @@ export default {
 
             <div class="section__body">
                 <div class="inputs chars yellow">
-                    <input class="input chars yellow" maxlength="4" type="text" name="yellow1" spellcheck="false" v-model="yellow1" />
-                    <input class="input chars yellow" maxlength="4" type="text" name="yellow2" spellcheck="false" v-model="yellow2" />
-                    <input class="input chars yellow" maxlength="4" type="text" name="yellow3" spellcheck="false" v-model="yellow3" />
-                    <input class="input chars yellow" maxlength="4" type="text" name="yellow4" spellcheck="false" v-model="yellow4" />
-                    <input class="input chars yellow" maxlength="4" type="text" name="yellow5" spellcheck="false" v-model="yellow5" />
+                    <input v-model="yellow1" class="input chars yellow" maxlength="4" type="text" name="yellow1" spellcheck="false" @click="cursorEnd" />
+                    <input v-model="yellow2" class="input chars yellow" maxlength="4" type="text" name="yellow2" spellcheck="false" @click="cursorEnd" />
+                    <input v-model="yellow3" class="input chars yellow" maxlength="4" type="text" name="yellow3" spellcheck="false" @click="cursorEnd" />
+                    <input v-model="yellow4" class="input chars yellow" maxlength="4" type="text" name="yellow4" spellcheck="false" @click="cursorEnd" />
+                    <input v-model="yellow5" class="input chars yellow" maxlength="4" type="text" name="yellow5" spellcheck="false" @click="cursorEnd" />
                 </div>
             </div>
         </div>
@@ -166,13 +190,13 @@ export default {
 
             <div class="section__body">
                 <div class="inputs line gray">
-                    <input class="input line gray" maxlength="26" type="text" name="grays" spellcheck="false" v-model="gray" />
+                    <input v-model="gray" class="input line gray" maxlength="26" type="text" name="grays" spellcheck="false" @click="cursorEnd" />
                 </div>
             </div>
         </div>
     </form>
 
-    <div v-if="results != null" class="section results">
+    <div v-if="hasInput" class="section results">
         <div class="section__body">
             <div v-if="results.length > 1000">
                 <p>There are <strong>over 1000</strong> possible answers! Here is a random possible word to try next. </p>
@@ -370,6 +394,20 @@ export default {
     flex-flow: row nowrap;
     justify-content: center;
     margin-bottom: 1em;
+}
+
+.result-count {
+    font-size: 1.2;
+    height: 2em;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: .5em;
+}
+
+.result-count p {
+    margin: 0;
 }
 
 .results {
