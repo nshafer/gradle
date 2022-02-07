@@ -23,9 +23,9 @@ export default {
 
             showResults: false,
 
-            green1: null, green2: null, green3: null, green4: null, green5: null,
-            yellow1: [], yellow2: [], yellow3: [], yellow4: [], yellow5: [],
-            gray: [],
+            green1: "", green2: "", green3: "", green4: "", green5: "",
+            yellow1: "", yellow2: "", yellow3: "", yellow4: "", yellow5: "",
+            gray: "",
         }
     },
     computed: {
@@ -94,6 +94,23 @@ export default {
             const res = end - benchmarks[name];
             // console.log(`benchmark results for ${name}: ${res} ms`);
             this.benchmarkResults[name] = res;
+        },
+        resetGreen() {
+            this.green1 = "";
+            this.green2 = "";
+            this.green3 = "";
+            this.green4 = "";
+            this.green5 = "";
+        },
+        resetYellow() {
+            this.yellow1 = "";
+            this.yellow2 = "";
+            this.yellow3 = "";
+            this.yellow4 = "";
+            this.yellow5 = "";
+        },
+        resetGray() {
+            this.gray = "";
         }
     },
 }
@@ -102,68 +119,93 @@ export default {
 <template>
     <form @submit.prevent="solve">
         <div class="section green">
-            <p>Enter any green characters in their position</p>
+            <div class="section__header">
+                <h1>Correct Letters</h1>
+                <button class="button reset" @click.prevent="resetGreen">
+                    <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M440 64H336l-33.6-44.8A48 48 0 0 0 264 0h-80a48 48 0 0 0-38.4 19.2L112 64H8a8 8 0 0 0-8 8v16a8 8 0 0 0 8 8h18.9l33.2 372.3a48 48 0 0 0 47.8 43.7h232.2a48 48 0 0 0 47.8-43.7L421.1 96H440a8 8 0 0 0 8-8V72a8 8 0 0 0-8-8zM171.2 38.4A16.1 16.1 0 0 1 184 32h80a16.1 16.1 0 0 1 12.8 6.4L296 64H152zm184.8 427a15.91 15.91 0 0 1-15.9 14.6H107.9A15.91 15.91 0 0 1 92 465.4L59 96h330z"></path></svg>
+                </button>
+            </div>
 
-            <div class="inputs green">
-                <input v-model="green1" class="input char green" maxlength="1" type="text" spellcheck="false" />
-                <input v-model="green2" class="input char green" maxlength="1" type="text" spellcheck="false" />
-                <input v-model="green3" class="input char green" maxlength="1" type="text" spellcheck="false" />
-                <input v-model="green4" class="input char green" maxlength="1" type="text" spellcheck="false" />
-                <input v-model="green5" class="input char green" maxlength="1" type="text" spellcheck="false" />
+            <div class="section__body">
+                <div class="inputs chars green">
+                    <input v-model="green1" class="input char green" maxlength="1" type="text" spellcheck="false" />
+                    <input v-model="green2" class="input char green" maxlength="1" type="text" spellcheck="false" />
+                    <input v-model="green3" class="input char green" maxlength="1" type="text" spellcheck="false" />
+                    <input v-model="green4" class="input char green" maxlength="1" type="text" spellcheck="false" />
+                    <input v-model="green5" class="input char green" maxlength="1" type="text" spellcheck="false" />
+                </div>
             </div>
         </div>
 
         <div class="section yellow">
-            <p>Enter any yellow letters in their position</p>
+            <div class="section__header">
+                <h1>Misplaced Letters</h1>
+                <button class="button reset" @click.prevent="resetYellow">
+                    <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M440 64H336l-33.6-44.8A48 48 0 0 0 264 0h-80a48 48 0 0 0-38.4 19.2L112 64H8a8 8 0 0 0-8 8v16a8 8 0 0 0 8 8h18.9l33.2 372.3a48 48 0 0 0 47.8 43.7h232.2a48 48 0 0 0 47.8-43.7L421.1 96H440a8 8 0 0 0 8-8V72a8 8 0 0 0-8-8zM171.2 38.4A16.1 16.1 0 0 1 184 32h80a16.1 16.1 0 0 1 12.8 6.4L296 64H152zm184.8 427a15.91 15.91 0 0 1-15.9 14.6H107.9A15.91 15.91 0 0 1 92 465.4L59 96h330z"></path></svg>
+                </button>
+            </div>
 
-            <div class="inputs yellow">
-                <input class="input chars yellow" maxlength="4" type="text" name="yellow1" spellcheck="false" v-model="yellow1" />
-                <input class="input chars yellow" maxlength="4" type="text" name="yellow2" spellcheck="false" v-model="yellow2" />
-                <input class="input chars yellow" maxlength="4" type="text" name="yellow3" spellcheck="false" v-model="yellow3" />
-                <input class="input chars yellow" maxlength="4" type="text" name="yellow4" spellcheck="false" v-model="yellow4" />
-                <input class="input chars yellow" maxlength="4" type="text" name="yellow5" spellcheck="false" v-model="yellow5" />
+            <div class="section__body">
+                <div class="inputs chars yellow">
+                    <input class="input chars yellow" maxlength="4" type="text" name="yellow1" spellcheck="false" v-model="yellow1" />
+                    <input class="input chars yellow" maxlength="4" type="text" name="yellow2" spellcheck="false" v-model="yellow2" />
+                    <input class="input chars yellow" maxlength="4" type="text" name="yellow3" spellcheck="false" v-model="yellow3" />
+                    <input class="input chars yellow" maxlength="4" type="text" name="yellow4" spellcheck="false" v-model="yellow4" />
+                    <input class="input chars yellow" maxlength="4" type="text" name="yellow5" spellcheck="false" v-model="yellow5" />
+                </div>
             </div>
         </div>
 
         <div class="section gray">
-            <p>Enter any dark gray letters anywhere</p>
+            <div class="section__header">
+                <h1>Invalid Letters</h1>
+                <button class="button reset" @click.prevent="resetGray">
+                    <svg aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M440 64H336l-33.6-44.8A48 48 0 0 0 264 0h-80a48 48 0 0 0-38.4 19.2L112 64H8a8 8 0 0 0-8 8v16a8 8 0 0 0 8 8h18.9l33.2 372.3a48 48 0 0 0 47.8 43.7h232.2a48 48 0 0 0 47.8-43.7L421.1 96H440a8 8 0 0 0 8-8V72a8 8 0 0 0-8-8zM171.2 38.4A16.1 16.1 0 0 1 184 32h80a16.1 16.1 0 0 1 12.8 6.4L296 64H152zm184.8 427a15.91 15.91 0 0 1-15.9 14.6H107.9A15.91 15.91 0 0 1 92 465.4L59 96h330z"></path></svg>
+                </button>
+            </div>
 
-            <input class="input line gray" maxlength="26" type="text" name="grays" spellcheck="false" v-model="gray" />
+            <div class="section__body">
+                <div class="inputs line gray">
+                    <input class="input line gray" maxlength="26" type="text" name="grays" spellcheck="false" v-model="gray" />
+                </div>
+            </div>
         </div>
     </form>
 
     <div v-if="results != null" class="section results">
-        <div v-if="results.length > 1000">
-            <p>There are <strong>over 1000</strong> possible answers! Here is a random possible word to try next. </p>
+        <div class="section__body">
+            <div v-if="results.length > 1000">
+                <p>There are <strong>over 1000</strong> possible answers! Here is a random possible word to try next. </p>
 
-            <ul class="wordlist">
-                <li class="word">{{ randomResult }}</li>
-            </ul>
-        </div>
-        <div v-else-if="results.length > 9">
-            <p>There are <strong>{{ results.length }}</strong> possible answers! Here is a random possible word to try next. </p>
+                <ul class="wordlist">
+                    <li class="word">{{ randomResult }}</li>
+                </ul>
+            </div>
+            <div v-else-if="results.length > 9">
+                <p>There are <strong>{{ results.length }}</strong> possible answers! Here is a random possible word to try next. </p>
 
-            <ul class="wordlist">
-                <li class="word">{{ randomResult }}</li>
-            </ul>
-        </div>
-        <div v-else-if="results.length > 1">
-            <p>There are only {{ results.length }} possible answers. It has to be one of these:</p>
-            <ul class="wordlist">
-                <li v-for="word in results" :key="word" class="word">
-                    {{ word }}
-                </li>
-            </ul>
-        </div>
-        <div v-else-if="results.length == 1">
-            <p>There is only one possible answer:</p>
+                <ul class="wordlist">
+                    <li class="word">{{ randomResult }}</li>
+                </ul>
+            </div>
+            <div v-else-if="results.length > 1">
+                <p>There are only {{ results.length }} possible answers. It has to be one of these:</p>
+                <ul class="wordlist">
+                    <li v-for="word in results" :key="word" class="word">
+                        {{ word }}
+                    </li>
+                </ul>
+            </div>
+            <div v-else-if="results.length == 1">
+                <p>There is only one possible answer:</p>
 
-            <ul class="wordlist">
-                <li class="word correct">{{ results[0] }}</li>
-            </ul>
-        </div>
-        <div v-else>
-            <p>No results found. Please check your input and try again!</p>
+                <ul class="wordlist">
+                    <li class="word correct">{{ results[0] }}</li>
+                </ul>
+            </div>
+            <div v-else>
+                <p>No results found. Please check your input and try again!</p>
+            </div>
         </div>
     </div>
 
@@ -179,8 +221,32 @@ export default {
 </template>
 
 <style scoped>
+.button {
+    background: var(--gray-3);
+    padding: .5em 1em;
+    width: auto;
+    height: auto;
+    border-radius: 5px;
+}
+
+.reset {
+    color: var(--gray-3);
+    background: none;
+    border: none;
+    height: 2rem;
+    margin: 0;
+    padding: .5em;
+    cursor: pointer;
+
+}
+
+.reset svg {
+    /* height: 20px; */
+}
+
+
 .section {
-    padding: .75em .5em;
+    /* padding: .75em .5em; */
     margin-bottom: 1em;
     background: var(--gray-5);
     border: 1px solid transparent;
@@ -200,14 +266,30 @@ export default {
 
 .section h1 {
     text-align: center;
-    font-size: 1.1em;
-    margin: 0 1em .25em;
+    font-size: 1.2em;
+    line-height: 1;
+    margin: 0;
+    /* margin: 0 1em .25em; */
 }
 
 .section p {
     text-align: center;
     margin: 0 1em 1em;
 }
+
+.section__header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: .75em .5em;
+    border-bottom: 1px solid var(--gray-3);
+}
+
+.section__body {
+    padding: .75em .5em;
+}
+
 
 .inputs {
     display: flex;
@@ -219,7 +301,7 @@ export default {
     background: var(--tile-bg);
     width: 100%;
     height: 1.5em;
-    font-size: 1em;
+    font-size: 1.1em;
     color: var(--tile-text-color);
     text-transform: uppercase;
     font-weight: bold;
@@ -228,15 +310,24 @@ export default {
     transition: all 100ms;
 }
 
+.input:focus {
+    /* font-size: 1.4em; */
+    transform: scale(1.2);
+}
+
+.input.line:focus {
+    width: 80%;
+}
+
 @media screen and (min-width: 25em) {
     .input {
-        font-size: 1.2em;
+        font-size: 1.4em;
     }
 }
 
 @media screen and (min-width: 30em) {
     .input {
-        font-size: 1.5em;
+        font-size: 1.7em;
     }
 }
 
@@ -245,14 +336,14 @@ export default {
 }
 
 .input.char {
-    width: 1.5em;
+    /* width: 1.5em; */
 }
 
 .input.chars {
     resize: none;
     /* height: 3em; */
     vertical-align: middle;
-    width: 3em;
+    /* width: 3em; */
 }
 
 .input.line {
@@ -274,29 +365,11 @@ export default {
     color: var(--tile-evaluated-text-color);
 }
 
-.input:focus {
-    font-size: 2em;
-    /* transform: scale(2); */
-}
-
-.input.line:focus {
-    transform: scale(1);
-    font-size: 2em;
-}
-
 .buttons {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
     margin-bottom: 1em;
-}
-
-.button {
-    background: var(--gray-3);
-    padding: .5em 1em;
-    width: auto;
-    height: auto;
-    border-radius: 5px;
 }
 
 .results {
