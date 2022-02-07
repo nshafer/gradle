@@ -16,18 +16,18 @@
             <p>Enter any yellow letters in their position</p>
 
             <div class="inputs yellow">
-                <input class="input chars yellow" maxlength="6" type="text" name="yellow1" spellcheck="false" v-model="yellow1" />
-                <input class="input chars yellow" maxlength="6" type="text" name="yellow2" spellcheck="false" v-model="yellow2" />
-                <input class="input chars yellow" maxlength="6" type="text" name="yellow3" spellcheck="false" v-model="yellow3" />
-                <input class="input chars yellow" maxlength="6" type="text" name="yellow4" spellcheck="false" v-model="yellow4" />
-                <input class="input chars yellow" maxlength="6" type="text" name="yellow5" spellcheck="false" v-model="yellow5" />
+                <input class="input chars yellow" maxlength="4" type="text" name="yellow1" spellcheck="false" v-model="yellow1" />
+                <input class="input chars yellow" maxlength="4" type="text" name="yellow2" spellcheck="false" v-model="yellow2" />
+                <input class="input chars yellow" maxlength="4" type="text" name="yellow3" spellcheck="false" v-model="yellow3" />
+                <input class="input chars yellow" maxlength="4" type="text" name="yellow4" spellcheck="false" v-model="yellow4" />
+                <input class="input chars yellow" maxlength="4" type="text" name="yellow5" spellcheck="false" v-model="yellow5" />
             </div>
         </div>
 
         <div class="section gray">
             <p>Enter any dark gray letters anywhere</p>
 
-            <input class="input chars gray" maxlength="26" type="text" name="grays" spellcheck="false" v-model="gray" />
+            <input class="input line gray" maxlength="26" type="text" name="grays" spellcheck="false" v-model="gray" />
         </div>
 
         <div v-if="results == null" class="buttons">
@@ -221,11 +221,18 @@ export default {
     font-weight: bold;
     text-align: center;
     border: none;
+    transition: all 100ms;
+}
+
+@media screen and (min-width: 25em) {
+    .input {
+        font-size: 1.2em;
+    }
 }
 
 @media screen and (min-width: 30em) {
     .input {
-        font-size: 1.2em;
+        font-size: 1.5em;
     }
 }
 
@@ -241,6 +248,11 @@ export default {
     resize: none;
     /* height: 3em; */
     vertical-align: middle;
+    width: 3em;
+}
+
+.input.line {
+    letter-spacing: .25em;
 }
 
 .input.green {
@@ -256,6 +268,16 @@ export default {
 .input.gray {
     background: var(--color-absent);
     color: var(--tile-evaluated-text-color);
+}
+
+.input:focus {
+    font-size: 2em;
+    /* transform: scale(2); */
+}
+
+.input.line:focus {
+    transform: scale(1);
+    font-size: 2em;
 }
 
 .buttons {
