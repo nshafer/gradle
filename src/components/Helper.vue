@@ -1,3 +1,104 @@
+<script>
+import Solver from '../solver.js';
+
+const validLettersRegex = /[^abcdefghijklmnopqrstuvwxyz]/ig;
+
+const benchmarks = {};
+
+function cleanLetters(val) {
+    if (val && typeof val === "string") {
+        return val.toLowerCase().replaceAll(validLettersRegex, "");
+    } else {
+        return "";
+    }
+}
+
+export default {
+    name: "Helper",
+    data() {
+        return {
+            debug: false,
+            benchmark: true,
+            benchmarkResults: {},
+
+            showResults: false,
+
+            green1: null, green2: null, green3: null, green4: null, green5: null,
+            yellow1: [], yellow2: [], yellow3: [], yellow4: [], yellow5: [],
+            gray: [],
+        }
+    },
+    computed: {
+        greens() {
+            return [
+                this.parseGreen(this.green1),
+                this.parseGreen(this.green2),
+                this.parseGreen(this.green3),
+                this.parseGreen(this.green4),
+                this.parseGreen(this.green5),
+            ]
+        },
+        yellows() {
+            return [
+                this.parseYellow(this.yellow1),
+                this.parseYellow(this.yellow2),
+                this.parseYellow(this.yellow3),
+                this.parseYellow(this.yellow4),
+                this.parseYellow(this.yellow5),
+            ]
+        },
+        grays() {
+            return this.parseGray(this.gray);
+        },
+        randomResult() {
+            return this.results[Math.floor(Math.random() * this.results.length)];
+        },
+        results() {
+            // console.log("solve", this.greens, this.yellows, this.grays);
+            this.benchmarkStart("solve");
+            // console.time("solve");
+            const solver = new Solver(this.greens, this.yellows, this.grays);
+            const words = solver.solve();
+            this.benchmarkEnd("solve");
+            // console.timeEnd("solve");
+            return words;
+        },
+    },
+    methods: {
+        parseGreen(val) {
+            val = cleanLetters(val);
+            if (val) {
+                return val;
+            } else {
+                return null;
+            }
+        },
+
+        parseYellow(val) {
+            val = cleanLetters(val);
+            if (val) {
+                return val.split("");
+            } else {
+                return [];
+            }
+        },
+        parseGray(val) {
+            val = cleanLetters(val);
+            return val.split("");
+        },
+        benchmarkStart(name) {
+            benchmarks[name] = window.performance.now();
+        },
+        benchmarkEnd(name) {
+            const end = window.performance.now();
+            const res = end - benchmarks[name];
+            // console.log(`benchmark results for ${name}: ${res} ms`);
+            this.benchmarkResults[name] = res;
+        }
+    },
+}
+</script>
+
 <template>
     <form @submit.prevent="solve">
         <div class="section green">
@@ -28,12 +129,6 @@
             <p>Enter any dark gray letters anywhere</p>
 
             <input class="input line gray" maxlength="26" type="text" name="grays" spellcheck="false" v-model="gray" />
-        </div>
-
-        <div v-if="results == null" class="buttons">
-            <button class="input button" @click="solve">
-                Show Hints
-            </button>
         </div>
     </form>
 
@@ -77,102 +172,11 @@
         Yellows: {{ yellows }}<br/>
         Grays: {{ grays }}<br/>
     </div>
+
+    <div v-if="benchmark">
+        Solve: {{ parseFloat(benchmarkResults["solve"]).toFixed(1) }} ms
+    </div>
 </template>
-
-<script>
-import Solver from '../solver.js';
-
-const validLettersRegex = /[^abcdefghijklmnopqrstuvwxyz]/ig;
-
-function cleanLetters(val) {
-    if (val && typeof val === "string") {
-        return val.toLowerCase().replaceAll(validLettersRegex, "");
-    } else {
-        return "";
-    }
-}
-
-export default {
-    name: "Helper",
-    data() {
-        return {
-            debug: false,
-            results: null,
-
-            green1: null, green2: null, green3: null, green4: null, green5: null,
-            yellow1: [], yellow2: [], yellow3: [], yellow4: [], yellow5: [],
-            gray: [],
-        }
-    },
-    computed: {
-        greens() {
-            return [
-                this.parseGreen(this.green1),
-                this.parseGreen(this.green2),
-                this.parseGreen(this.green3),
-                this.parseGreen(this.green4),
-                this.parseGreen(this.green5),
-            ]
-        },
-        yellows() {
-            return [
-                this.parseYellow(this.yellow1),
-                this.parseYellow(this.yellow2),
-                this.parseYellow(this.yellow3),
-                this.parseYellow(this.yellow4),
-                this.parseYellow(this.yellow5),
-            ]
-        },
-        grays() {
-            return this.parseGray(this.gray);
-        },
-        randomResult() {
-            return this.results[Math.floor(Math.random() * this.results.length)];
-        }
-    },
-    methods: {
-        parseGreen(val) {
-            val = cleanLetters(val);
-            if (val) {
-                return val;
-            } else {
-                return null;
-            }
-        },
-
-        parseYellow(val) {
-            val = cleanLetters(val);
-            if (val) {
-                return val.split("");
-            } else {
-                return [];
-            }
-        },
-        parseGray(val) {
-            val = cleanLetters(val);
-            return val.split("");
-        },
-        solve() {
-            console.log("solve", this.greens, this.yellows, this.grays);
-            const solver = new Solver(this.greens, this.yellows, this.grays);
-            this.results = solver.solve();
-        }
-    },
-    watch: {
-        green1() { this.results = null; },
-        green2() { this.results = null; },
-        green3() { this.results = null; },
-        green4() { this.results = null; },
-        green5() { this.results = null; },
-        yellow1() { this.results = null; },
-        yellow2() { this.results = null; },
-        yellow3() { this.results = null; },
-        yellow4() { this.results = null; },
-        yellow5() { this.results = null; },
-        gray() { this.results = null; },
-    }
-}
-</script>
 
 <style scoped>
 .section {
