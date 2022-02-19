@@ -49,53 +49,49 @@
           --gray-7: #121213;
         }
 
-        :root,
-        .darktheme {
+        :root, .darktheme {
           --color-background: var(--gray-7);
+
         }
         :root {
           --color-present: var(--yellow);
           --color-correct: var(--green);
           --color-absent: var(--gray-2);
-          --tile-text-color: var(--gray-1);
-          --tile-evaluated-text-color: var(--gray-7);
-          --tile-bg: var(--gray-4);
 
-          --key-text-color: var(--gray-1);
-          --key-evaluated-text-color: var(--gray-7);
-          
-          --key-bg: var(--gray-4);
-          --key-bg-present: var(--color-present);
-          --key-bg-correct: var(--color-correct);
-          --key-bg-absent: var(--color-absent);
+          --button-background: var(--gray-3);
+          --button-text: var(--gray-7);
+
+          --input-text-color: var(--gray-7);
+          --input-bg: var(--gray-4);
+
           --modal-content-bg: var(--gray-7);
         }
         .darktheme {
           --color-present: var(--darkYellow);
           --color-correct: var(--darkGreen);
           --color-absent: var(--gray-4);
-          --tile-text-color: var(--gray-1);
-          --tile-evaluated-text-color: var(--gray-1);
-          --tile-bg: var(--gray-2);
+          
+          --button-background: var(--gray-3);
+          --button-text: var(--gray-1);
+          
+          --input-text-color: var(--gray-1);
+          --input-bg: var(--gray-2);
 
-          --key-text-color: var(--gray-1);
-          --key-evaluated-text-color: var(--gray-1);
-          --key-bg: var(--gray-2);
-          --key-bg-present: var(--color-present);
-          --key-bg-correct: var(--color-correct);
-          --key-bg-absent: var(--color-absent);
           --modal-content-bg: var(--gray-7);
         }
         .colorblind {
           --color-correct: var(--orange);
           --color-present: var(--blue);
-          --tile-text-color: var(--white);
-          --key-bg-present: var(--color-present);
-          --key-bg-correct: var(--color-correct);
-          --key-bg-absent: var(--color-absent);
+          
+          --input-text-color: var(--white);
+        }
+        *, *::before, *::after {
+          box-sizing: border-box;
         }
         html {
           height: 100%;
+          /* overflow: hidden; */
+          /* overflow-x: hidden; */
         }
         body {
           height: 100%;
