@@ -169,4 +169,53 @@ svg {
     padding: 0;
     list-style: none;
 }
+
+.section {
+    /* padding: .75em .5em; */
+    margin-bottom: 1em;
+    background: var(--gray-5);
+    border: 1px solid transparent;
+}
+
+.section h1 {
+    text-align: center;
+    font-size: 1.2em;
+    line-height: 1;
+    margin: 0;
+    /* margin: 0 1em .25em; */
+}
+
+.section h2 {
+    font-size: 1.1em;
+    margin: 0 0 .25em;
+}
+
+.section p {
+    margin: 0 0 1em;
+}
+
+.section__header {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: .75em .5em;
+    border-bottom: 1px solid var(--gray-3);
+}
+
+.section__body {
+    padding: .75em .5em;
+}
+
+@media screen and (min-width: 60em) {
+    .section__body {
+        padding: 1em;
+    }
+
+}
+
+strong {
+    font-size: 1.2em;
+}
+
 </style>
