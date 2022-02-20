@@ -112,9 +112,6 @@ export default class Solver {
     }
 
     buildMatchRegex() {
-        // Build an array for each character position of characters to include
-        const includes = [ [], [], [], [], [] ]
-
         // Build the regex pattern for each position
         const patterns = [];
         for (let i = 0; i < 5; i++) {
@@ -122,7 +119,7 @@ export default class Solver {
             if (this.greens[i] != null) {
                 patterns[i] = this.greens[i];
             } else {
-                // Otherwise, build include and exclude character classes
+                // Otherwise, match anything
                 patterns[i] = ".";
             }
         }
@@ -139,6 +136,7 @@ export default class Solver {
 
         const patterns = [];
         for (let c of allGreensAndYellows) {
+            // Build a positive lookahead for each character to check if it exists anywhere in the string
             patterns.push("(?=.*" + c + ")")
         }
 
@@ -160,14 +158,14 @@ export default class Solver {
             // Exclude all grays
             excludes[i] = excludes[i].concat(allGrays);
             
-            // Exclude all yellows in this position
+            // Exclude all yellows in this position since they are supposed to be in another position
             excludes[i] = excludes[i].concat(this.yellows[i]);
         }
 
         // Build the regex pattern for each position
         const patterns = [];
         for (let i = 0; i < 5; i++) {
-            // Otherwise, build include and exclude character classes
+            // Exclude all determined characters in this position
             patterns[i] = "[^" + excludes[i].join("") + "]";
         }
 
