@@ -1,3 +1,23 @@
+<script>
+import Solver from './solver';
+window.Solver = Solver;
+import { old_answers, answers, words } from './words';
+window.old_answers = old_answers;
+window.answers = answers;
+window.words = words;
+
+import WordleHelper from './components/WordleHelper.vue';
+
+export default {
+    components: {
+        WordleHelper,
+    },
+    mounted() {
+        document.body.classList.add("darktheme");
+    }
+}
+</script>
+
 <template>
     <div class="app-header">
         <div class="app-header__buttons">
@@ -24,29 +44,8 @@
         </div>
     </div>
 
-    <Helper />
+    <WordleHelper />
 </template>
-
-<script>
-import Solver from './solver';
-window.Solver = Solver;
-import { old_answers, answers, words } from './words';
-window.old_answers = old_answers;
-window.answers = answers;
-window.words = words;
-
-import Helper from './components/Helper.vue';
-
-export default {
-    name: 'Wordle Helper',
-    components: {
-        Helper,
-    },
-    mounted() {
-        document.body.classList.add("darktheme");
-    }
-}
-</script>
 
 <style>
 #app {

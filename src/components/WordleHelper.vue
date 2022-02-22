@@ -1,41 +1,48 @@
-<script>
-import Solver from '../solver.js';
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+import type { GreensArray, YellowsArray, GraysArray } from '@/solver';
+import Solver from '../solver';
 import PuzzleInput from './PuzzleInput.vue';
-import Results from './Results.vue';
+import ResultsView from './ResultsView.vue';
 
-const benchmarks = {};
+interface Benchmark {
+    [name: string]: number
+}
 
-export default {
-    name: "Helper",
+const benchmarks: Benchmark = {};
+
+export default defineComponent({
+    name: "WordleHelper",
     components: {
         PuzzleInput,
-        Results,
+        ResultsView,
     },
     data() {
         return {
-            page: "input",
+            currentPage: "input",
             hasInput: false,
-            answers: null,
+            answers: [] as string[],
             benchmark: true,
-            benchmarkResults: {},
+            benchmarkResults: {} as Benchmark,
         }
     },
     computed: {
-        isInputPage() {
-            return this.page == "input";
+        isInputPage(): boolean {
+            return this.currentPage === "input";
         },
-        isResultPage() {
-            return this.page == "result";
+        isResultPage(): boolean {
+            return this.currentPage === "result";
         },
     },
     methods: {
         showInputPage() {
-            this.page = "input";
+            this.currentPage = "input";
         },
         showResultPage() {
-            this.page = "result";
+            this.currentPage = "result";
         },
-        updateAnswers(hasInput, greens, yellows, grays) {
+        updateAnswers(hasInput: boolean, greens: GreensArray, yellows: YellowsArray, grays: GraysArray) {
             console.log("updateAnswers", greens, yellows, grays);
             this.hasInput = hasInput;
             if (hasInput) {
@@ -46,20 +53,29 @@ export default {
                 this.benchmarkEnd("solve");
                 // console.timeEnd("solve");
             } else {
-                this.answers = null;
+                this.answers = [];
             }
         },
-        benchmarkStart(name) {
+        benchmarkStart(name: string) {
             benchmarks[name] = window.performance.now();
         },
-        benchmarkEnd(name) {
+        benchmarkEnd(name: string) {
             const end = window.performance.now();
-            const res = end - benchmarks[name];
-            // console.log(`benchmark results for ${name}: ${res} ms`);
-            this.benchmarkResults[name] = res;
+            if (benchmarks[name]) {
+                const res = end - benchmarks[name];
+                // console.log(`benchmark results for ${name}: ${res} ms`);
+                this.benchmarkResults[name] = res;
+            }
         },
+        benchmarkResult(name: string): string {
+            if (this.benchmarkResults[name]) {
+                return this.benchmarkResults[name].toFixed(1);
+            } else {
+                return "-"
+            }
+        }
     },
-}
+});
 </script>
 
 <template>
@@ -83,7 +99,7 @@ export default {
             <PuzzleInput @inputChanged="updateAnswers" @inputDone="showResultPage"/>
 
             <div v-if="benchmark">
-                Solve: {{ parseFloat(benchmarkResults["solve"]).toFixed(1) }} ms
+                Solve: {{ benchmarkResult("solve") }} ms
             </div>
         </div>
 
@@ -104,7 +120,7 @@ export default {
                 </p>
             </div>
 
-            <Results :hasInput="hasInput" :answers="answers" />
+            <ResultsView :hasInput="hasInput" :answers="answers" />
 
         </div>
     </main>

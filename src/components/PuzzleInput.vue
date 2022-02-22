@@ -1,7 +1,11 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+import type { GreensArray, YellowsArray, GraysArray } from '@/solver';
+
 const validLettersRegex = /[^abcdefghijklmnopqrstuvwxyz]/ig;
 
-function cleanLetters(val) {
+function cleanLetters(val: string): string {
     if (val && typeof val === "string") {
         return val.toLowerCase().replaceAll(validLettersRegex, "");
     } else {
@@ -9,7 +13,7 @@ function cleanLetters(val) {
     }
 }
 
-export default {
+export default defineComponent({
     name: "PuzzleInput",
     emits: ['inputChanged', 'inputDone'],
     data() {
@@ -23,7 +27,7 @@ export default {
         }
     },
     computed: {
-        greens() {
+        greens(): GreensArray {
             return [
                 this.parseGreen(this.green1),
                 this.parseGreen(this.green2),
@@ -32,7 +36,7 @@ export default {
                 this.parseGreen(this.green5),
             ]
         },
-        yellows() {
+        yellows(): YellowsArray {
             return [
                 this.parseYellow(this.yellow1),
                 this.parseYellow(this.yellow2),
@@ -41,17 +45,17 @@ export default {
                 this.parseYellow(this.yellow5),
             ]
         },
-        grays() {
+        grays(): GraysArray {
             return this.parseGray(this.gray);
         },
-        hasInput() {
-            return this.green1 || this.green2 || this.green3 || this.green4 || this.green5
-                || this.yellow1 || this.yellow2 || this.yellow3 || this.yellow4 || this.yellow5
-                || this.gray;
+        hasInput(): boolean {
+            return this.green1 != "" || this.green2 != "" || this.green3 != "" || this.green4 != "" || this.green5 != ""
+                || this.yellow1 != "" || this.yellow2 != "" || this.yellow3 != "" || this.yellow4 != "" || this.yellow5 != ""
+                || this.gray != "";
         },
     },
     methods: {
-        parseGreen(val) {
+        parseGreen(val: string) {
             val = cleanLetters(val);
             if (val) {
                 return val;
@@ -59,7 +63,7 @@ export default {
                 return null;
             }
         },
-        parseYellow(val) {
+        parseYellow(val: string) {
             val = cleanLetters(val);
             if (val) {
                 return val.split("");
@@ -67,18 +71,22 @@ export default {
                 return [];
             }
         },
-        parseGray(val) {
+        parseGray(val: string) {
             val = cleanLetters(val);
             return val.split("");
         },
-        selectAll(event) {
+        selectAll(event: Event) {
             console.log("selectAll", event);
-            event.target.select();
+            if (event.target && event.target instanceof HTMLInputElement) {
+                event.target.select();
+            }
         },
-        cursorEnd(event) {
+        cursorEnd(event: Event) {
             console.log("cursorEnd", event);
-            const length = event.target.value.length;
-            event.target.setSelectionRange(length, length);
+            if (event.target && event.target instanceof HTMLInputElement) {
+                const length = event.target.value.length;
+                event.target.setSelectionRange(length, length);
+            }
 
         },
         resetGreen() {
@@ -113,7 +121,7 @@ export default {
             this.$emit("inputChanged", this.hasInput, this.greens, this.yellows, this.grays);
         },
     },
-}
+});
 </script>
 
 <template>

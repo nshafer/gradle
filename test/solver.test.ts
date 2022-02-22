@@ -1,4 +1,5 @@
-import Solver from '@/solver.js';
+import { test, describe, expect } from 'vitest';
+import Solver from '../src/solver';
 
 describe('Solver instantiation', () => {
     test("expected input", () => {
@@ -29,15 +30,13 @@ describe('Solve.solve', () => {
     })
 
     test("robot 2", () => {
-        let words;
-        words = new Solver("_____", "o,,ort,r,", "eyuipasdlcvn").solve();
+        const words = new Solver("_____", "o,,ort,r,", "eyuipasdlcvn").solve();
         expect(words.length).toBe(1);
         expect(words).toEqual(["robot"])
     })
 
     test("robot 3", () => {
-        let words;
-        words = new Solver("_____", "b,,t,,", "acdefghijklmnpqsuvwxyz").solve();
+        const words = new Solver("_____", "b,,t,,", "acdefghijklmnpqsuvwxyz").solve();
         expect(words.length).toBe(1);
         expect(words).toEqual(["robot"])
     })
@@ -46,7 +45,7 @@ describe('Solve.solve', () => {
         let words;
         // candy
         words = new Solver("__n__", "c,,,,", "ady").solve();
-        expect(words.length).toBe(21);
+        expect(words.length).toBe(20);
         // pinch
         words = new Solver("_inc_", "c,,,,", "adyph").solve();
         expect(words.length).toBe(3);

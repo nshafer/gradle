@@ -2,7 +2,15 @@ import { answers, words} from './words';
 
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
+export type GreensArray = Array<string | null>;
+export type YellowsArray = Array<Array<string> | null>;
+export type GraysArray = Array<string | null>;
+
 export default class Solver {
+    greens: GreensArray;
+    yellows: YellowsArray;
+    grays: GraysArray;
+
     // Expected input:
     //   greens: array length 5 of null or the green character in that position
     //   yellows: array length 5 of null or an array of yellows in that position
@@ -12,14 +20,14 @@ export default class Solver {
     //   greens: string, length 5, character or '_' if not green. Example: "_b__t"
     //   yellows: string, 0 or more characters in each position separated by ','. Example: "bt,a,,t,"
     //   grays: characters that are gray, separted by nothing or ','. Example: "rets"
-    constructor(greens, yellows, grays) {
+    constructor(greens: GreensArray | string, yellows: YellowsArray | string, grays: GraysArray | string) {
         this.greens = this.parseGreens(greens);
         this.yellows = this.parseYellows(yellows);
         this.grays = this.parseGrays(grays);
     }
 
-    parseGreens(input) {
-        if (input instanceof Array) {
+    parseGreens(input: GreensArray | string): GreensArray {
+        if (Array.isArray(input)) {
             return input.slice(0, 5);
         } else if (typeof input === "string" && input.length === 5) {
             if (input.includes(",")) {
@@ -32,8 +40,8 @@ export default class Solver {
         }
     }
 
-    parseYellows(input) {
-        if (input instanceof Array) {
+    parseYellows(input: YellowsArray | string): YellowsArray {
+        if (Array.isArray(input)) {
             return input.slice(0, 5);
         } else if (typeof input === "string") {
             if (input.includes(",")) {
@@ -46,8 +54,8 @@ export default class Solver {
         }
     }
 
-    parseGrays(input) {
-        if (input instanceof Array) {
+    parseGrays(input: GraysArray | string): GraysArray {
+        if (Array.isArray(input)) {
             return input;
         } else if (typeof input === "string") {
             if (input.includes(",")) {
@@ -65,13 +73,14 @@ export default class Solver {
         return true;
     }
 
-    uniques(arr) {
-        return [...new Set(arr)];
+    uniques(arr: Array<string | null>): string[] {
+        arr = arr.filter(c => c != null);
+        return [...new Set(arr)] as string[];
     }
     
     // All greens given
     allGreens() {
-        return this.uniques(this.greens.filter(c => c != null));
+        return this.uniques(this.greens);
     }
 
     // All yellows given
@@ -83,7 +92,7 @@ export default class Solver {
     allGrays() {
         const allGreens = this.allGreens();
         const allYellows = this.allYellows();
-        const grays = this.grays.filter(c => !allYellows.includes(c) && !allGreens.includes(c));
+        const grays = this.grays.filter(c => c != null && !allYellows.includes(c) && !allGreens.includes(c));
         return this.uniques(grays);
     }
 
@@ -98,7 +107,7 @@ export default class Solver {
         return this.solve(words);
     }
 
-    solve(wordlist=answers) {
+    solve(wordlist=answers) : string[] {
         const matchRegex = this.buildMatchRegex();
         // console.log("matchRegex", matchRegex);
 
@@ -135,7 +144,7 @@ export default class Solver {
         const allGreensAndYellows = this.uniques(allGreens.concat(allYellows));
 
         const patterns = [];
-        for (let c of allGreensAndYellows) {
+        for (const c of allGreensAndYellows) {
             // Build a positive lookahead for each character to check if it exists anywhere in the string
             patterns.push("(?=.*" + c + ")")
         }
@@ -147,7 +156,7 @@ export default class Solver {
     
     buildExcludeRegex() {
         // Build an array for each character position of characters to not include
-        const excludes = [ [], [], [], [], [] ]
+        const excludes: string[][] = [ [], [], [], [], [] ];
 
         // If a character appears once as a green or yellow character, then it could appear again as gray,
         // so we can't exclude them outright
@@ -158,8 +167,10 @@ export default class Solver {
             // Exclude all grays
             excludes[i] = excludes[i].concat(allGrays);
             
-            // Exclude all yellows in this position since they are supposed to be in another position
-            excludes[i] = excludes[i].concat(this.yellows[i]);
+            if (Array.isArray(this.yellows[i])) {
+                // Exclude all yellows in this position since they are supposed to be in another position
+                excludes[i] = excludes[i].concat(this.yellows[i] as string[]);
+            }
         }
 
         // Build the regex pattern for each position

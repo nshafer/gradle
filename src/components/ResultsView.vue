@@ -1,8 +1,10 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
+
 // import Solver from '../solver.js';
 
-export default {
-    name: "Results",
+export default defineComponent({
+    name: "ResultsView",
     props: ["hasInput", "answers"],
     components: {
     },
@@ -17,7 +19,7 @@ export default {
     },
     methods: {
     },
-}
+});
 </script>
 
 <template>
