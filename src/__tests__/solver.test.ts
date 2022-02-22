@@ -1,5 +1,5 @@
 import { test, describe, expect } from 'vitest';
-import Solver from '../src/solver';
+import Solver from '@/solver';
 
 describe('Solver instantiation', () => {
     test("expected input", () => {
