@@ -134,8 +134,9 @@ svg {
     grid-template-columns: 1fr 1fr 1fr;
     align-items: center;
     border-bottom: 2px solid var(--gray-4);
-    padding: .5em;
+    padding: .25em;
     margin-bottom: .5em;
+    height: var(--header-height);
 }
 
 .app-header__buttons.right {
@@ -198,7 +199,8 @@ svg {
     flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;
-    padding: .75em .5em;
+    padding: .25em .5em;
+    height: 3em;
     border-bottom: 1px solid var(--gray-3);
 }
 
@@ -215,6 +217,26 @@ svg {
 
 strong {
     font-size: 1.2em;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.mb-1 {
+    margin-bottom: .25em !important;
+}
+
+.mb-2 {
+    margin-bottom: .5em !important;
+}
+
+.mb-3 {
+    margin-bottom: 1em !important;
 }
 
 </style>
