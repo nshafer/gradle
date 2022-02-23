@@ -142,6 +142,7 @@ export default defineComponent({
     margin: .5em;
     /* padding: .25em 1em; */
     background: var(--color-absent);
+    color: var(--input-text-color);
     text-transform: uppercase;
 }
 

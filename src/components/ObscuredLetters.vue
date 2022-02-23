@@ -54,6 +54,7 @@ function reveal(i: number) {
     margin: .25em;
     padding: 0.25em 0.5em;
     background: var(--color-correct);
+    color: var(--input-text-color);
     text-transform: uppercase;
     font-weight: bold;
     text-align: center;
