@@ -1,42 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import Modal from './components/Modal.vue';
+import { reactive, onMounted, watch } from 'vue';
+
+import HelpModal from './components/HelpModal.vue';
+import SettingsModal from './components/SettingsModal.vue';
 import WordleHelper from './components/WordleHelper.vue';
 
-// About / Help
-const isHelpVisible = ref(false);
-function openHelp() {
-    isHelpVisible.value = true;
-}
-function closeHelp() {
-    isHelpVisible.value = false;
-}
+import { settings, loadSettings } from './settings';
 
-// Settings modal
-const isSettingsVisible = ref(false);
-function openSettings() {
-    isSettingsVisible.value = true;
-}
-function closeSettings() {
-    isSettingsVisible.value = false;
-}
-
-// Settings
-const darkMode = ref(false);
-function loadDarkModeFromLocalStorage() {
-    return window.localStorage.getItem("darkMode") === "t";
-}
-
-function saveDarkModeToLocalStorage(val: boolean) {
-    window.localStorage.setItem("darkMode", val ? "t" : "f");
-}
-
+// Load settings once when the main app is mounted
 onMounted(() => {
-    darkMode.value = loadDarkModeFromLocalStorage();
+    loadSettings();
 });
 
-watch(darkMode, async (newValue, oldValue) => {
-    saveDarkModeToLocalStorage(newValue);
+// Update the class on <body> whenever the darkMode setting changes
+watch(() => settings.darkMode, (newValue) => {
     if (newValue) {
         document.body.classList.add("darktheme");
     } else {
@@ -44,12 +21,35 @@ watch(darkMode, async (newValue, oldValue) => {
     }
 });
 
+// Modals
+const modals: {[name: string]: boolean} = reactive({
+    help: false,
+    history: false,
+    settings: false,
+})
+
+function closeAllModals() {
+    for (const name of Object.keys(modals)) {
+        console.log("Closing", name);
+        modals[name] = false;
+    }
+}
+
+function openModal(name: string) {
+    closeAllModals()
+    modals[name] = true;
+}
+
+function closeModal(name: string) {
+    modals[name] = false;
+}
+
 </script>
 
 <template>
     <div class="app-header">
         <div class="app-header__buttons">
-            <button class="app-header__button" @click="openHelp">
+            <button class="app-header__button" @click="openModal('help')">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <path fill="currentColor" d="M256 340c-15.464 0-28 12.536-28 28s12.536 28 28 28 28-12.536 28-28-12.536-28-28-28zm7.67-24h-16c-6.627 0-12-5.373-12-12v-.381c0-70.343 77.44-63.619 77.44-107.408 0-20.016-17.761-40.211-57.44-40.211-29.144 0-44.265 9.649-59.211 28.692-3.908 4.98-11.054 5.995-16.248 2.376l-13.134-9.15c-5.625-3.919-6.86-11.771-2.645-17.177C185.658 133.514 210.842 116 255.67 116c52.32 0 97.44 29.751 97.44 80.211 0 67.414-77.44 63.849-77.44 107.408V304c0 6.627-5.373 12-12 12zM256 40c118.621 0 216 96.075 216 216 0 119.291-96.61 216-216 216-119.244 0-216-96.562-216-216 0-119.203 96.602-216 216-216m0-32C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8z"></path>
                 </svg>
@@ -64,7 +64,7 @@ watch(darkMode, async (newValue, oldValue) => {
                     <path fill="currentColor" d="M20 24h10c6.627 0 12 5.373 12 12v94.625C85.196 57.047 165.239 7.715 256.793 8.001 393.18 8.428 504.213 120.009 504 256.396 503.786 393.181 392.834 504 256 504c-63.926 0-122.202-24.187-166.178-63.908-5.113-4.618-5.354-12.561-.482-17.433l7.069-7.069c4.503-4.503 11.749-4.714 16.482-.454C150.782 449.238 200.935 470 256 470c117.744 0 214-95.331 214-214 0-117.744-95.331-214-214-214-82.862 0-154.737 47.077-190.289 116H164c6.627 0 12 5.373 12 12v10c0 6.627-5.373 12-12 12H20c-6.627 0-12-5.373-12-12V36c0-6.627 5.373-12 12-12zm321.647 315.235l4.706-6.47c3.898-5.36 2.713-12.865-2.647-16.763L272 263.853V116c0-6.627-5.373-12-12-12h-8c-6.627 0-12 5.373-12 12v164.147l84.884 61.734c5.36 3.899 12.865 2.714 16.763-2.646z"></path>
                 </svg>
             </button>
-            <button class="app-header__button" @click="openSettings">
+            <button class="app-header__button" @click="openModal('settings')">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <path fill="currentColor" d="M482.696 299.276l-32.61-18.827a195.168 195.168 0 0 0 0-48.899l32.61-18.827c9.576-5.528 14.195-16.902 11.046-27.501-11.214-37.749-31.175-71.728-57.535-99.595-7.634-8.07-19.817-9.836-29.437-4.282l-32.562 18.798a194.125 194.125 0 0 0-42.339-24.48V38.049c0-11.13-7.652-20.804-18.484-23.367-37.644-8.909-77.118-8.91-114.77 0-10.831 2.563-18.484 12.236-18.484 23.367v37.614a194.101 194.101 0 0 0-42.339 24.48L105.23 81.345c-9.621-5.554-21.804-3.788-29.437 4.282-26.36 27.867-46.321 61.847-57.535 99.595-3.149 10.599 1.47 21.972 11.046 27.501l32.61 18.827a195.168 195.168 0 0 0 0 48.899l-32.61 18.827c-9.576 5.528-14.195 16.902-11.046 27.501 11.214 37.748 31.175 71.728 57.535 99.595 7.634 8.07 19.817 9.836 29.437 4.283l32.562-18.798a194.08 194.08 0 0 0 42.339 24.479v37.614c0 11.13 7.652 20.804 18.484 23.367 37.645 8.909 77.118 8.91 114.77 0 10.831-2.563 18.484-12.236 18.484-23.367v-37.614a194.138 194.138 0 0 0 42.339-24.479l32.562 18.798c9.62 5.554 21.803 3.788 29.437-4.283 26.36-27.867 46.321-61.847 57.535-99.595 3.149-10.599-1.47-21.972-11.046-27.501zm-65.479 100.461l-46.309-26.74c-26.988 23.071-36.559 28.876-71.039 41.059v53.479a217.145 217.145 0 0 1-87.738 0v-53.479c-33.621-11.879-43.355-17.395-71.039-41.059l-46.309 26.74c-19.71-22.09-34.689-47.989-43.929-75.958l46.329-26.74c-6.535-35.417-6.538-46.644 0-82.079l-46.329-26.74c9.24-27.969 24.22-53.869 43.929-75.969l46.309 26.76c27.377-23.434 37.063-29.065 71.039-41.069V44.464a216.79 216.79 0 0 1 87.738 0v53.479c33.978 12.005 43.665 17.637 71.039 41.069l46.309-26.76c19.709 22.099 34.689 47.999 43.929 75.969l-46.329 26.74c6.536 35.426 6.538 46.644 0 82.079l46.329 26.74c-9.24 27.968-24.219 53.868-43.929 75.957zM256 160c-52.935 0-96 43.065-96 96s43.065 96 96 96 96-43.065 96-96-43.065-96-96-96zm0 160c-35.29 0-64-28.71-64-64s28.71-64 64-64 64 28.71 64 64-28.71 64-64 64z"></path>
                 </svg>
@@ -74,47 +74,9 @@ watch(darkMode, async (newValue, oldValue) => {
 
     <WordleHelper />
 
-    <Modal v-show="isHelpVisible" @close="closeHelp" title="Help / About">
-        <template #body>
-            <p>
-                Wordle is an excellent game, but sometimes you just get stuck and can't think of any words to try next.
-                It's easy to paint yourself into a corner, especially if you're playing on hard mode.
-                When that happens, Worldle Helper can give you hints on what to try next, without just giving you the answer.
-            </p>
+    <HelpModal :visible="modals.help" @close="closeModal('help')" />
 
-            <h3>Instructions</h3>
-
-            <p>
-                First, enter each green letter currently visible in your Wordle game, in the position that they are in.
-                If you don't have a green for a given position, then leave it blank.
-            </p>
-
-            <p>
-                Next, for each column of the game, enter all yellow letters visible in that position.
-                You can enter multiple letters for each position if you have gotten multiple yellows there.
-            </p>
-
-            <p>
-                Finally, enter all gray letters in the puzzle or on the keyboard at the bottom.
-            </p>
-
-            <p>
-                Once you have entered the current "state" of the game, simply click the Results button.
-                There you will be told how many possible answers it could be, and be given the option to see what words to try next.
-                You can see possible answers, or just other english words that are not in the possible answer list, so you can type
-                those in and just get more information on what letters might or might not be in the answer.
-            </p>
-        </template>
-    </Modal>
-
-    <Modal v-show="isSettingsVisible" @close="closeSettings" title="Settings">
-        <template #body>
-            <label>
-                <input type="checkbox" v-model="darkMode">
-                Dark Mode
-            </label>
-        </template>
-    </Modal>
+    <SettingsModal :visible="modals.settings" @close="closeModal('settings')" />
 </template>
 
 <style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-const props = defineProps(['title']);
+defineProps(['title']);
 const emit = defineEmits(['close']);
 
 function close() {
