@@ -21,6 +21,15 @@ watch(() => settings.darkMode, (newValue) => {
     }
 });
 
+// Same for color blind mode to match the game
+watch(() => settings.colorBlind, (newValue) => {
+    if (newValue) {
+        document.body.classList.add("colorblind");
+    } else {
+        document.body.classList.remove("colorblind");
+    }
+});
+
 // Modals
 const modals: {[name: string]: boolean} = reactive({
     help: false,

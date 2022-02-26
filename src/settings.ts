@@ -5,6 +5,7 @@ import { reactive,  watch } from 'vue';
 // Exported settings and default value
 export const settings: {[name: string]: any} = reactive({
     darkMode: false,
+    colorBlind: false,
 });
 
 // Watch for changes and save them to local storage
@@ -40,7 +41,7 @@ function decode(val: string | null, def: any): any {
         } else if (type == "number") {
             return Number(v);
         } else if (type == "boolean") {
-            return Boolean(v);
+            return v == "true" ? true : false;
         } else {
             return def;
         }

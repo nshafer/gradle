@@ -42,8 +42,8 @@ function close() {
     bottom: 0;
     left: 0;
     /* padding: 2em; */
-    /* background-color: rgba(255, 255, 255, 0.15); */
-    backdrop-filter: blur(8px);
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,7 +51,6 @@ function close() {
 
 .modal {
     background: var(--gray-5);
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
     width: 90%;
@@ -84,14 +83,23 @@ function close() {
     position: relative;
     padding: .5em 1em;
     flex: 1;
+    overflow-y: auto;
 }
 
 .modal-fade-enter-from, .modal-fade-leave-to {
     opacity: 0;
-    transform: translateY(2em);
 }
 
 .modal-fade-enter-active, .modal-fade-leave-active {
+    transition: all .25s ease;
+}
+
+.modal-fade-enter-from .modal, .modal-fade-leave-to .modal {
+    opacity: 0;
+    transform: translateY(2em);
+}
+
+.modal-fade-enter-active .modal, .modal-fade-leave-active .modal {
     transition: all .25s ease;
 }
 </style>
