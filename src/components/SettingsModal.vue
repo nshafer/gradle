@@ -9,41 +9,47 @@ defineEmits(['close']);
 <template>
     <Modal v-show="visible" @close="$emit('close')" title="Help / About">
         <template #body>
-            <div class="setting">
-                <div class="setting__label">
-                    <div class="setting__title">
-                        Dark Mode
+            <div class="settings">
+                <div class="setting">
+                    <div class="setting__label">
+                        <div class="setting__title">
+                            Dark Mode
+                        </div>
+                        <div class="setting__subtitle">
+                            Switch to a darker color palette.
+                        </div>
                     </div>
-                    <div class="setting__subtitle">
-                        Switch to a darker color palette.
+
+                    <div class="setting__control">
+                        <label class="toggle">
+                            <input type="checkbox" v-model="settings.darkMode">
+                            <div class="slider"/>
+                        </label>
                     </div>
                 </div>
+                
+                <div class="setting">
+                    <div class="setting__label">
+                        <div class="setting__title">
+                            Color Blind
+                        </div>
+                        <div class="setting__subtitle">
+                            Switch to colors that are easier to distinguish.
+                        </div>
+                    </div>
 
-                <div class="setting__control">
-                    <label class="toggle">
-                        <input type="checkbox" v-model="settings.darkMode">
-                        <div class="slider"/>
-                    </label>
+                    <div class="setting__control">
+                        <label class="toggle">
+                            <input type="checkbox" v-model="settings.colorBlind">
+                            <div class="slider"/>
+                        </label>
+                    </div>
                 </div>
             </div>
-            
-            <div class="setting">
-                <div class="setting__label">
-                    <div class="setting__title">
-                        Color Blind
-                    </div>
-                    <div class="setting__subtitle">
-                        Switch to colors that are easier to distinguish.
-                    </div>
-                </div>
+        </template>
 
-                <div class="setting__control">
-                    <label class="toggle">
-                        <input type="checkbox" v-model="settings.colorBlind">
-                        <div class="slider"/>
-                    </label>
-                </div>
-            </div>
+        <template #footer>
+            <small>© 2022 Wordle-Helper.app</small>
         </template>
     </Modal>
 </template>

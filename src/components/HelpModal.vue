@@ -36,6 +36,13 @@ defineEmits(['close']);
                 You can see possible answers, or just other english words that are not in the possible answer list, so you can type
                 those in and just get more information on what letters might or might not be in the answer.
             </p>
+
+            <p class="pt-3 bt-1">
+                Wordle is © 2022 The New York Times Company.
+                
+                This App / Website is the product of wordle-helper.app which has no
+                affiliation with Wordle or The New York Times Company.
+            </p>
         </template>
     </Modal>
 </template>

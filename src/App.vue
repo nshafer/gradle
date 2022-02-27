@@ -284,4 +284,12 @@ strong {
     margin-bottom: 1em !important;
 }
 
+.pt-3 {
+    padding-top: 1em;
+}
+
+.bt-1 {
+    border-top: 1px solid var(--gray-4);
+}
+
 </style>

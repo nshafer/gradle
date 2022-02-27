@@ -26,8 +26,8 @@ function close() {
 
                 <footer class="footer">
                     <slot name="footer">
-                        <button class="footer-close button" @click="close">Close</button>
                     </slot>
+                    <!-- <button class="footer-close button" @click="close">Close</button> -->
                 </footer>
             </div>
         </div>
@@ -72,7 +72,7 @@ function close() {
 }
 
 .footer {
-    border-top: 1px solid var(--gray-4);
+    /* border-top: 1px solid var(--gray-4); */
 }
 
 .footer-close {
