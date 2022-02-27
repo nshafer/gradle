@@ -233,7 +233,7 @@ svg {
 
 .section h2 {
     font-size: 1.1em;
-    margin: 0 0 .25em;
+    margin: 0 0 1em;
 }
 
 .section p {
@@ -258,7 +258,6 @@ svg {
     .section__body {
         padding: 1em;
     }
-
 }
 
 strong {

@@ -144,6 +144,8 @@ export default defineComponent({
             </div>
 
             <div class="section__body">
+                <p class="text-center">Input each green letter, in the position it is in.</p>
+
                 <div class="inputs chars green">
                     <input :value="green1" @input="updateLetter('green1', $event)" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
                     <input :value="green2" @input="updateLetter('green2', $event)" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
@@ -163,6 +165,8 @@ export default defineComponent({
             </div>
 
             <div class="section__body">
+                <p class="text-center">Input any yellow letters, in the position they are in.</p>
+
                 <div class="inputs chars yellow">
                     <input :value="yellow1" @input="updateLetter('yellow1', $event)" class="input chars yellow" maxlength="4" type="text" name="yellow1" spellcheck="false" @click="cursorEnd" />
                     <input :value="yellow2" @input="updateLetter('yellow2', $event)"  class="input chars yellow" maxlength="4" type="text" name="yellow2" spellcheck="false" @click="cursorEnd" />
@@ -173,7 +177,7 @@ export default defineComponent({
             </div>
         </div>
 
-        <div class="section gray">
+        <div class="section gray mb-0">
             <div class="section__header">
                 <h1>Invalid Letters</h1>
                 <button class="button icon" @click.prevent="resetGray">
@@ -182,6 +186,8 @@ export default defineComponent({
             </div>
 
             <div class="section__body">
+                <p class="text-center">Input all gray letters currently visible.</p>
+                
                 <div class="inputs line gray">
                     <input :value="gray" @input="updateLetter('gray', $event)"  class="input line gray" maxlength="26" type="text" name="grays" spellcheck="false" @click="cursorEnd" />
                 </div>

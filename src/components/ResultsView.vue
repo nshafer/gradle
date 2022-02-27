@@ -61,12 +61,12 @@ export default defineComponent({
 </script>
 
 <template>
-    <div v-if="hasInput" class="section results">
+    <div class="section results mb-0">
         <div class="section__header">
             <h1>Results</h1>
         </div>
         
-        <div class="section__body">
+        <div v-if="hasInput && answers.length > 0" class="section__body">
             <div class="text-center" v-if="answers.length > 10">
                 <h2>There are <strong><b>{{ answers.length }}</b></strong> possible answers!</h2>
                 
@@ -112,16 +112,22 @@ export default defineComponent({
                 <p>Click on each letter to reveal it.</p>
                 <ObscuredLetters :key="answers[0]" :word="answers[0]" :solver="solver" />
             </div>
-            <div v-else>
-                <p>No answers found. Please check your input and try again!</p>
+            <div v-else class="empty">
             </div>
         </div>
-    </div>
-    <div v-else class="section results">
-        <div class="section__body">
-            <h2>
+
+        <div v-else-if="hasInput && answers.length == 0" class="section__body empty">
+            <h2>No answers found!</h2>
+            <p>
+                Please check your input and try again!<br/>
+                Remember that the position of letters is important!
+            </p>
+        </div>
+
+        <div v-else class="section__body empty">
+            <p>
                 Input the letters from your puzzle to narrow down which word it might be.
-            </h2>
+            </p>
         </div>
     </div>
 </template>
@@ -135,7 +141,7 @@ export default defineComponent({
     flex-flow: row wrap;
     justify-content: center;
     align-items: center;
-    font-size: 1.3em
+    font-size: 1.25em
 }
 
 .word {
@@ -144,10 +150,24 @@ export default defineComponent({
     background: var(--color-absent);
     color: var(--input-text-color);
     text-transform: uppercase;
+    min-width: 6em;
 }
 
 .word.correct {
     background: var(--color-correct);
+}
+
+.section.results .section__body {
+    min-height: 458px;
+}
+
+.empty {
+    padding: 20%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center
 }
 
 </style>
