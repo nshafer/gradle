@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="73.440185"
-     inkscape:cy="220.8303"
+     inkscape:zoom="1.4"
+     inkscape:cx="185.7016"
+     inkscape:cy="337.56177"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,28 +58,26 @@
      id="layer1"
      transform="translate(0,-161.53332)">
     <g
-       aria-label="H"
-       transform="matrix(0.96090582,0,0,1.0406847,-6.3311012,0)"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:82.45476532px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto Medium';letter-spacing:0px;word-spacing:0px;fill:#6aaa64;fill-opacity:1;stroke:none;stroke-width:2.06136918"
-       id="text3723">
+       id="g872"
+       transform="translate(0.77096357,6.4143949)">
       <path
-         d="M 121.4418,249.87057 H 111.296 V 223.82163 H 85.086015 c -2.24121,-2.72337 0,-8.173 0,-8.173 H 111.296 v -24.39824 h 10.1458 z"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:'Roboto Medium';fill:#6aaa64;fill-opacity:1;stroke-width:2.06136918"
-         id="path4567"
+         transform="matrix(0.26458333,0,0,0.26458333,0,161.53332)"
          inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccccccccc" />
+         id="text843"
+         d="M 318.20312,90.935547 C 307.92983,143.37628 297.65062,195.81567 287.375,248.25586 v 124.32226 h 62.69141 V 254.96875 h 92.33984 v 117.60937 h 62.33398 V 90.935547 H 442.40625 V 202.74023 H 350.06641 V 90.935547 Z"
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:100.71868134px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';letter-spacing:0px;word-spacing:0px;fill:#6aaa64;fill-opacity:1;stroke:none;stroke-width:9.51672554" />
+      <text
+         transform="scale(0.96090581,1.0406847)"
+         id="text3719"
+         y="249.94231"
+         x="-0.63845617"
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:100.71867371px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';letter-spacing:0px;word-spacing:0px;fill:#6aaa64;fill-opacity:1;stroke:none;stroke-width:2.51796699"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';fill:#6aaa64;fill-opacity:1;stroke-width:2.51796699"
+           y="249.94231"
+           x="-0.63845617"
+           id="tspan3717"
+           sodipodi:role="line">W</tspan></text>
     </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:82.45476532px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';letter-spacing:0px;word-spacing:0px;fill:#6aaa64;fill-opacity:1;stroke:none;stroke-width:2.06136918"
-       x="16.095938"
-       y="249.87057"
-       id="text3719"
-       transform="scale(0.96090582,1.0406847)"><tspan
-         sodipodi:role="line"
-         id="tspan3717"
-         x="16.095938"
-         y="249.87057"
-         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';fill:#6aaa64;fill-opacity:1;stroke-width:2.06136918">W</tspan></text>
   </g>
 </svg>

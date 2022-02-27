@@ -13,6 +13,7 @@ export default defineConfig({
                 'favicon.ico', 'robots.txt', 'apple-touch-icon.png',
                 '*.svg', '*.png'],
             manifest: {
+                "id": "/",
                 "name": "Wordle Helper",
                 "short_name": "Wordle Helper",
                 "description": "Help you solve Wordle",
@@ -29,7 +30,10 @@ export default defineConfig({
                         "type": "image/png"
                     }
                 ],
-
+            },
+            registerType: 'autoUpdate',
+            devOptions: {
+                enabled: false
             }
         }),
     ],
