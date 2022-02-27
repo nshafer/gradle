@@ -23,7 +23,7 @@ defineEmits(['close']);
 
             <p>
                 Next, for each column of the game, enter all yellow letters visible in that position.
-                You can enter multiple letters for each position if you have gotten multiple yellows there.
+                You can enter multiple letters for each position if you have gotten multiple yellows in that column.
             </p>
 
             <p>

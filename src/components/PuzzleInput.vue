@@ -200,7 +200,7 @@ export default defineComponent({
     background: var(--input-bg);
     width: 100%;
     height: 1.5em;
-    font-size: 1.1em;
+    font-size: 1.3em;
     color: var(--input-text-color);
     text-transform: uppercase;
     font-weight: bold;
