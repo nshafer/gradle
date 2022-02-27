@@ -89,6 +89,14 @@ export default defineComponent({
             }
 
         },
+        updateLetter(letter: string, event: Event) {
+            // We use this instead of v-model so we can fire on ever input, which doesn't happen with
+            // a IME that does composition, such as on mobile.
+            console.log("updateLetter", letter, event);
+            if (event.target && event.target instanceof HTMLInputElement) {
+                (this as {[key: string]:any})[letter] = event.target.value;
+            }
+        },
         resetGreen() {
             this.green1 = "";
             this.green2 = "";
@@ -137,11 +145,11 @@ export default defineComponent({
 
             <div class="section__body">
                 <div class="inputs chars green">
-                    <input v-model="green1" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
-                    <input v-model="green2" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
-                    <input v-model="green3" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
-                    <input v-model="green4" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
-                    <input v-model="green5" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
+                    <input :value="green1" @input="updateLetter('green1', $event)" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
+                    <input :value="green2" @input="updateLetter('green2', $event)" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
+                    <input :value="green3" @input="updateLetter('green3', $event)" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
+                    <input :value="green4" @input="updateLetter('green4', $event)" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
+                    <input :value="green5" @input="updateLetter('green5', $event)" class="input char green" maxlength="1" type="text" spellcheck="false" @click="selectAll" />
                 </div>
             </div>
         </div>
@@ -156,11 +164,11 @@ export default defineComponent({
 
             <div class="section__body">
                 <div class="inputs chars yellow">
-                    <input v-model="yellow1" class="input chars yellow" maxlength="4" type="text" name="yellow1" spellcheck="false" @click="cursorEnd" />
-                    <input v-model="yellow2" class="input chars yellow" maxlength="4" type="text" name="yellow2" spellcheck="false" @click="cursorEnd" />
-                    <input v-model="yellow3" class="input chars yellow" maxlength="4" type="text" name="yellow3" spellcheck="false" @click="cursorEnd" />
-                    <input v-model="yellow4" class="input chars yellow" maxlength="4" type="text" name="yellow4" spellcheck="false" @click="cursorEnd" />
-                    <input v-model="yellow5" class="input chars yellow" maxlength="4" type="text" name="yellow5" spellcheck="false" @click="cursorEnd" />
+                    <input :value="yellow1" @input="updateLetter('yellow1', $event)" class="input chars yellow" maxlength="4" type="text" name="yellow1" spellcheck="false" @click="cursorEnd" />
+                    <input :value="yellow2" @input="updateLetter('yellow2', $event)"  class="input chars yellow" maxlength="4" type="text" name="yellow2" spellcheck="false" @click="cursorEnd" />
+                    <input :value="yellow3" @input="updateLetter('yellow3', $event)"  class="input chars yellow" maxlength="4" type="text" name="yellow3" spellcheck="false" @click="cursorEnd" />
+                    <input :value="yellow4" @input="updateLetter('yellow4', $event)"  class="input chars yellow" maxlength="4" type="text" name="yellow4" spellcheck="false" @click="cursorEnd" />
+                    <input :value="yellow5" @input="updateLetter('yellow5', $event)"  class="input chars yellow" maxlength="4" type="text" name="yellow5" spellcheck="false" @click="cursorEnd" />
                 </div>
             </div>
         </div>
@@ -175,7 +183,7 @@ export default defineComponent({
 
             <div class="section__body">
                 <div class="inputs line gray">
-                    <input v-model="gray" class="input line gray" maxlength="26" type="text" name="grays" spellcheck="false" @click="cursorEnd" />
+                    <input :value="gray" @input="updateLetter('gray', $event)"  class="input line gray" maxlength="26" type="text" name="grays" spellcheck="false" @click="cursorEnd" />
                 </div>
             </div>
         </div>
@@ -243,10 +251,6 @@ export default defineComponent({
     /* height: 3em; */
     vertical-align: middle;
     /* width: 3em; */
-}
-
-.input.line {
-    letter-spacing: .25em;
 }
 
 .input.green {
