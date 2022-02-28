@@ -18,9 +18,14 @@ const close = async () => {
         <div class="message">
             New content available, click on reload button to update.
         </div>
-        <button class="button" @click="updateServiceWorker()">
-            Reload
-        </button>
+        <div class="buttons">
+            <button class="button" @click="updateServiceWorker()">
+                Reload
+            </button>
+            <button class="button" @click="close">
+            Close
+            </button>
+        </div>
     </div>
 </template>
 

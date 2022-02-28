@@ -116,17 +116,21 @@ svg {
 .buttons {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: center;
     margin-bottom: 1em;
+    margin: -.25em;
 }
 
 .button {
     background: var(--button-background);
     color: var(--button-text);
-    padding: .6em 1em .5em;
+    padding: .5em 1em;
     border: none;
     font-size: 1em;
     line-height: 1;
+}
+
+.buttons .button {
+    margin: .25em;
 }
 
 .button.full {
