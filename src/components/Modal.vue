@@ -71,9 +71,9 @@ function close() {
     color: var(--gray-1);
 }
 
-.footer {
-    /* border-top: 1px solid var(--gray-4); */
-}
+/* .footer {
+    border-top: 1px solid var(--gray-4);
+} */
 
 .footer-close {
     margin-left: auto;

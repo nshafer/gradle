@@ -7,8 +7,9 @@ createApp(App).mount('#app');
 registerSW({
     // Auto update every hour
     onRegistered(r) {
-        r && setInterval(() => {
-        r.update()
-    }, 60 * 60 * 1000);
-  }
+        r && setInterval(() => { r.update() }, 60 * 60 * 1000);
+    },
+    onOfflineReady() {
+        console.log("Offline ready");
+    }
 });

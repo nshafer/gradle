@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { reactive, onMounted, watch } from 'vue';
 
+import ReloadPrompt from './components/ReloadPrompt.vue';
 import WordleHelper from './components/WordleHelper.vue';
 import HelpModal from './components/HelpModal.vue';
 import HistoryModal from './components/HistoryModal.vue';
@@ -88,6 +89,8 @@ function closeModal(name: string) {
     <HistoryModal :visible="modals.history" @close="closeModal('history')" />
 
     <SettingsModal :visible="modals.settings" @close="closeModal('settings')" />
+
+    <ReloadPrompt />
 </template>
 
 <style>
