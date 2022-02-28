@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import Modal from './Modal.vue';
 import { settings } from '../settings';
 
 defineProps(['visible']);
 defineEmits(['close']);
+
+const version = computed(() => {
+    return GITVERSION;
+});
 </script>
 
 <template>
@@ -50,6 +56,7 @@ defineEmits(['close']);
 
         <template #footer>
             <small>© 2022 Wordle-Helper.app</small>
+            <small>{{ version }}</small>
         </template>
     </Modal>
 </template>
