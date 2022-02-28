@@ -30,8 +30,9 @@ function reveal(i: number) {
 <template>
     <ul class="letters">
         <li v-for="(letter, i) in letters" :key="letter" class="letter"
-                :class="{ visible: revealed[i], obscured: !revealed[i] }">
-            <div class="obscurer" @click="reveal(i)"></div>
+                :class="{ visible: revealed[i], obscured: !revealed[i] }"
+                @click="reveal(i)">
+            <div class="obscurer"></div>
             {{ letter }}
         </li>
     </ul>
@@ -59,26 +60,12 @@ function reveal(i: number) {
     font-weight: bold;
     text-align: center;
     border: none;
+    cursor: pointer;
 }
 
-.letter .obscurer {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-
-    background-color: rgba(255, 255, 255, .15);  
-    backdrop-filter: blur(5px);
-    border: 1px solid var(--gray-2);
-}
-
-.letter.visible .obscurer{
-    display: none;
-}
-
-.letter.obscured .obscurer {
-    display: block;
+.letter.obscured {
+    text-shadow: 0 0 15px var(--input-text-color);
+    color: rgba(0, 0, 0, 0);
 }
 
 @media screen and (min-width: 25em) {

@@ -22,8 +22,7 @@ function reveal() {
 </script>
 
 <template>
-    <div class="wrapper" :class="wrapperClass">
-        <div class="obscurer" @click="reveal"></div>
+    <div class="wrapper" :class="wrapperClass" @click="reveal">
         <template v-if="visible">
             {{ word }}
         </template>
@@ -37,25 +36,11 @@ function reveal() {
 .wrapper {
     padding: .5em 1em;
     position:relative;
+    cursor: pointer;
 }
 
-.wrapper .obscurer {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-
-    background-color: rgba(255, 255, 255, .15);  
-    backdrop-filter: blur(5px);
-    border: 1px solid var(--gray-2);
-}
-
-.wrapper.visible .obscurer{
-    display: none;
-}
-
-.wrapper.obscured .obscurer {
-    display: block;
+.wrapper.obscured {
+    text-shadow: 0 0 15px var(--input-text-color);
+    color: rgba(0, 0, 0, 0);
 }
 </style>
