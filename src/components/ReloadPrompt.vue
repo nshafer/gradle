@@ -7,6 +7,8 @@ const {
     updateServiceWorker,
 } = useRegisterSW()
 
+needRefresh.value = true;
+
 const close = async () => {
     offlineReady.value = false
     needRefresh.value = false
@@ -16,18 +18,10 @@ const close = async () => {
 <template>
     <div v-if="needRefresh" class="pwa-toast" role="alert">
         <div class="message">
-            <span v-if="offlineReady">
-                App ready to work offline
-            </span>
-            <span v-else>
-                New content available, click on reload button to update.
-            </span>
+            New content available, click on reload button to update.
         </div>
-        <button v-if="needRefresh" @click="updateServiceWorker()">
+        <button class="button" @click="updateServiceWorker()">
             Reload
-        </button>
-        <button @click="close">
-            Close
         </button>
     </div>
 </template>
@@ -37,23 +31,13 @@ const close = async () => {
   position: fixed;
   right: 0;
   bottom: 0;
-  margin: 16px;
-  padding: 12px;
-  border: 1px solid #8885;
-  border-radius: 4px;
+  margin: 1em;
+  padding: 1em;
+  background-color: var(--color-background);
+  border: 1px solid var(--gray-4);
   z-index: 1;
-  text-align: left;
-  box-shadow: 3px 4px 5px 0 #8885;
-  background-color: white;
 }
 .pwa-toast .message {
-  margin-bottom: 8px;
-}
-.pwa-toast button {
-  border: 1px solid #8885;
-  outline: none;
-  margin-right: 5px;
-  border-radius: 2px;
-  padding: 3px 10px;
+  margin-bottom: .5em;
 }
 </style>
