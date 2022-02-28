@@ -224,7 +224,6 @@ export default defineComponent({
 }
 
 .input:focus {
-    /* font-size: 1.4em; */
     transform: scale(1.2);
 }
 
@@ -248,15 +247,13 @@ export default defineComponent({
     margin-left: .5em;
 }
 
-.input.char {
+/* .input.char {
     width: 1.5em;
-}
+} */
 
 .input.chars {
     resize: none;
-    /* height: 3em; */
     vertical-align: middle;
-    /* width: 3em; */
 }
 
 .input.green {
