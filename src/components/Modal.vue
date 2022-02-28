@@ -42,11 +42,18 @@ function close() {
     bottom: 0;
     left: 0;
     /* padding: 2em; */
-    background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(20px);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {
+    .container {
+        background-color: rgba(0, 0, 0, 0.01);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
 }
 
 .modal {
