@@ -17,11 +17,11 @@ export function loadSettings() {
     for (const [key, val] of Object.entries(settings)) {
         settings[key] = decode(window.localStorage.getItem(key), val);
     }
-    console.log("Loaded settings", settings);
+    console.debug("Loaded settings", settings);
 }
 
 export function saveSettings() {
-    console.log("Saving settings", settings);
+    console.debug("Saving settings", settings);
     for (const [key, val] of Object.entries(settings)) {
         window.localStorage.setItem(key, encode(val));
     }

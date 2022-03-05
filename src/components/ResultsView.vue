@@ -36,7 +36,6 @@ export default defineComponent({
             return this.shuffledAnswers.slice(0, numAnswersShown);
         },
         shuffledSuggestions(): string[] {
-            console.log("shuffledSuggestions");
             if (this.solver != null) {
                 return shuffleArray(this.solver.suggest());
             } else {
@@ -44,7 +43,6 @@ export default defineComponent({
             }
         },
         randomSuggestion(): string {
-            console.log("randomSuggestion");
             if (this.shuffledSuggestions.length > 0) {
                 return this.shuffledSuggestions[0];
             } else {

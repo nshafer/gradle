@@ -10,13 +10,11 @@ defineEmits(['close']);
 // Get the word for the days
 const startDate = new Date(2021, 5, 19, 0, 0, 0, 0);
 let today = new Date();
-console.log("today", today);
 
 watch(() => props.visible, (newValue) => {
     // Update today whenever this modal becomes visible
     if (newValue) {
         today = new Date();
-        console.log("today", today);
     }
 })
 

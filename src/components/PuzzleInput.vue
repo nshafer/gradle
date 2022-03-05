@@ -76,13 +76,11 @@ export default defineComponent({
             return val.split("");
         },
         selectAll(event: Event) {
-            console.log("selectAll", event);
             if (event.target && event.target instanceof HTMLInputElement) {
                 event.target.select();
             }
         },
         cursorEnd(event: Event) {
-            console.log("cursorEnd", event);
             if (event.target && event.target instanceof HTMLInputElement) {
                 const length = event.target.value.length;
                 event.target.setSelectionRange(length, length);
@@ -92,7 +90,6 @@ export default defineComponent({
         updateLetter(letter: string, event: Event) {
             // We use this instead of v-model so we can fire on ever input, which doesn't happen with
             // a IME that does composition, such as on mobile.
-            console.log("updateLetter", letter, event);
             if (event.target && event.target instanceof HTMLInputElement) {
                 (this as {[key: string]:any})[letter] = event.target.value;
             }

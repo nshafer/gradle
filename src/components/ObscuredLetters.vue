@@ -12,8 +12,6 @@ const revealed: {[name: number]: boolean} = reactive({
 });
 
 onMounted(() => {
-    console.log("solver", props.solver);
-    console.log("greens", props.solver.greens);
     for (let i = 0; i < 5; i++) {
         if (props.solver.greens[i] != null) {
             revealed[i] = true;

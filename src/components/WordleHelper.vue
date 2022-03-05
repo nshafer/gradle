@@ -44,7 +44,6 @@ export default defineComponent({
             this.currentPage = "result";
         },
         updateAnswers(hasInput: boolean, greens: GreensArray, yellows: YellowsArray, grays: GraysArray) {
-            console.log("updateAnswers", greens, yellows, grays);
             this.hasInput = hasInput;
             if (hasInput) {
                 this.benchmarkStart("solve");
@@ -64,7 +63,6 @@ export default defineComponent({
             const end = window.performance.now();
             if (benchmarks[name]) {
                 const res = end - benchmarks[name];
-                // console.log(`benchmark results for ${name}: ${res} ms`);
                 this.benchmarkResults[name] = res;
             }
         },
