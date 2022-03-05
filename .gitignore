@@ -27,3 +27,6 @@ dev-dist/
 *.njsproj
 *.sln
 *.sw?
+
+# production
+push.sh

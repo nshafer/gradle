@@ -1,25 +1,8 @@
-# vuets-project
+# Wordle Helper
 
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Wordle is an excellent game, but sometimes you just get stuck and can't think of any words to try next.
+It's easy to paint yourself into a corner, especially if you're playing on hard mode.
+When that happens, Worldle Helper can give you hints on what to try next, without just giving you the answer.
 
 ## Project Setup
 
@@ -30,19 +13,25 @@ npm install
 ### Compile and Hot-Reload for Development
 
 ```sh
-npm run dev
+make dev
 ```
 
-### Type-Check, Compile and Minify for Production
+### Type-Check and lint
 
 ```sh
-npm run build
+make check
+```
+
+### Compile and Minify for Production
+
+```sh
+make build
 ```
 
 ### Run Unit Tests with [Vitest](https://vitest.dev/)
 
 ```sh
-npm run test:unit
+make test
 ```
 
 ### Lint with [ESLint](https://eslint.org/)

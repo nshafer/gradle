@@ -1,2 +1,2 @@
 /// <reference types="vite/client" />
-declare var GITVERSION: string
+declare let GITVERSION: string
