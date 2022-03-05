@@ -198,7 +198,7 @@ svg {
 }
 
 .app-header__button {
-    color: var(--gray-3);
+    color: var(--gray-2);
     background: none;
     border: none;
     height: 2.5em;
