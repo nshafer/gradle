@@ -36,7 +36,7 @@ watch(() => props.visible, (newValue) => {
     <Modal v-show="visible" @close="$emit('close')" title="Answer History">
         <template #body>
             <div class="mb-3">
-                <div v-for="offset in numWords" class="entry">
+                <div v-for="offset in numWords" :key="offset" class="entry">
                     <div class="date">
                         {{ getDateByDayOffset(-offset, today).toLocaleDateString('en-US', {weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'}) }}
                     </div>

@@ -88,9 +88,10 @@ export default defineComponent({
 
         },
         updateLetter(letter: string, event: Event) {
-            // We use this instead of v-model so we can fire on ever input, which doesn't happen with
-            // a IME that does composition, such as on mobile.
+            // We use this instead of v-model so we can fire on every input, which doesn't happen with
+            // an IME that does composition, such as on mobile.
             if (event.target && event.target instanceof HTMLInputElement) {
+                /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
                 (this as {[key: string]:any})[letter] = event.target.value;
             }
         },
