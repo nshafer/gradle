@@ -12,8 +12,7 @@ export default defineConfig({
         GitRevision({}),
         VitePWA({
             includeAssets: [
-                'favicon.ico', 'robots.txt', 'apple-touch-icon.png',
-                '*.svg', '*.png'],
+                'favicon.ico', 'favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
             manifest: {
                 "id": "/",
                 "name": "Wordle Helper",
