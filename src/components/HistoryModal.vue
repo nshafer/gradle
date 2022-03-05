@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { answers } from '../words';
+import { getDateByDayOffset, getWordByDayOffset } from '../game';
 
 import Modal from './Modal.vue';
 
@@ -8,7 +8,6 @@ const props = defineProps(['visible']);
 defineEmits(['close']);
 
 // Get the word for the days
-const startDate = new Date(2021, 5, 19, 0, 0, 0, 0);
 let today = new Date();
 
 watch(() => props.visible, (newValue) => {
@@ -17,24 +16,6 @@ watch(() => props.visible, (newValue) => {
         today = new Date();
     }
 })
-
-function wordIndex(d: Date) {
-    return Math.round((new Date(d).setHours(0, 0, 0, 0) - new Date(startDate).setHours(0, 0, 0, 0)) / 86400000);
-}
-
-function getWord(d: Date) {
-    const index = wordIndex(d) % answers.length;
-    return answers[index];
-}
-
-function getDateByDayOffset(offset: number) {
-    return new Date(today.valueOf() - (offset * 24 * 60 * 60 * 1000));
-}
-
-function getWordByDayOffset(offset: number) {
-    const d = getDateByDayOffset(offset);
-    return getWord(d);
-}
 
 // Control how many to show
 const numWords = ref(10);
@@ -57,10 +38,10 @@ watch(() => props.visible, (newValue) => {
             <div class="mb-3">
                 <div v-for="offset in numWords" class="entry">
                     <div class="date">
-                        {{ getDateByDayOffset(offset).toLocaleDateString('en-US', {weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'}) }}
+                        {{ getDateByDayOffset(-offset, today).toLocaleDateString('en-US', {weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'}) }}
                     </div>
                     <div class="word">
-                        {{ getWordByDayOffset(offset) }}
+                        {{ getWordByDayOffset(-offset, today) }}
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
-import { answers, words} from './words';
+import { wordIndex } from './game';
+import { answers, words } from './words';
 
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -104,10 +105,19 @@ export default class Solver {
     }
 
     suggest() {
-        return this.solve(words);
+        return this.filter(words);
     }
 
-    solve(wordlist=answers) : string[] {
+    solve(removeOldAnswers = false) {
+        if (removeOldAnswers) {
+            const remainingAnswers = answers.slice(wordIndex());
+            return this.filter(remainingAnswers);
+        } else {
+            return this.filter(answers);
+        }
+    }
+    
+    filter(wordlist: string[]) : string[] {
         const matchRegex = this.buildMatchRegex();
         // console.log("matchRegex", matchRegex);
 
