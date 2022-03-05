@@ -106,7 +106,7 @@ export default defineComponent({
                 </template>
             </div>
             <div class="text-center" v-else-if="answers.length == 1">
-                <h2>There is only <strong><b>one</b></strong> possible answer.</h2>
+                <h2>There is only <strong><b>ONE</b></strong> possible answer.</h2>
                 <p>Click on each letter to reveal it.</p>
                 <ObscuredLetters :key="answers[0]" :word="answers[0]" :solver="solver" />
             </div>

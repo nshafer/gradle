@@ -45,7 +45,7 @@ function reveal(i: number) {
     flex-flow: row wrap;
     justify-content: center;
     align-items: center;
-    font-size: 1.1em
+    font-size: 1.3em
 }
 
 .letter {
@@ -68,13 +68,13 @@ function reveal(i: number) {
 
 @media screen and (min-width: 25em) {
     .letters {
-        font-size: 1.4em;
+        font-size: 1.5em;
     }
 }
 
 @media screen and (min-width: 30em) {
     .letters {
-        font-size: 1.7em;
+        font-size: 1.8em;
     }
 }
 
