@@ -51,6 +51,19 @@ const version = computed(() => {
                         </label>
                     </div>
                 </div>
+                
+                <div class="setting">
+                    <div class="setting__label">
+                        <div class="setting__title">
+                            Contact
+                        </div>
+                    </div>
+                    <div class="setting__control">
+                        <a href="https://twitter.com/wordle_helper" target="__blank">
+                            @wordle_helper
+                        </a>
+                    </div>
+                </div>
             </div>
         </template>
 
@@ -62,6 +75,12 @@ const version = computed(() => {
 </template>
 
 <style scoped>
+.settings {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
 .setting {
     display: flex;
     flex-flow: row nowrap;

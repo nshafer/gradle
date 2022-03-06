@@ -113,6 +113,14 @@ svg {
     width: auto;
 }
 
+a {
+    color: var(--gray-1);
+}
+
+a:hover, a:focus {
+    color: var(--gray-2);
+}
+
 .buttons {
     display: flex;
     flex-flow: row nowrap;
@@ -285,6 +293,10 @@ strong {
 
 .text-muted {
     color: var(--gray-2);
+}
+
+.mt-a {
+    margin-top: auto !important;
 }
 
 .mt-3 {
