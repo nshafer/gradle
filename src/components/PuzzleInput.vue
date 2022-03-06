@@ -131,7 +131,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <form @submit.prevent="inputDone">
+    <form class="puzzle-input" @submit.prevent="inputDone">
         <button hidden type="submit" @click.prevent="inputDone">Submit</button>
         <div class="section green">
             <div class="section__header">
@@ -202,6 +202,28 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.puzzle-input {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: stretch;
+    height: 100%;
+    max-height: 40em;
+}
+
+.section {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+}
+
+.section__body {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+}
+
 .inputs {
     display: flex;
     flex-flow: row nowrap;
@@ -229,18 +251,6 @@ export default defineComponent({
     width: 80%;
 }
 
-@media screen and (min-width: 25em) {
-    .input {
-        font-size: 1.4em;
-    }
-}
-
-@media screen and (min-width: 30em) {
-    .input {
-        font-size: 1.7em;
-    }
-}
-
 .input + .input {
     margin-left: .5em;
 }
@@ -264,6 +274,22 @@ export default defineComponent({
 
 .input.gray {
     background: var(--color-absent);
+}
+
+.darktheme .input.gray {
+    background: var(--gray-2);
+}
+
+@media screen and (min-width: 25em) {
+    .input {
+        font-size: 1.4em;
+    }
+}
+
+@media screen and (min-width: 30em) {
+    .input {
+        font-size: 1.7em;
+    }
 }
 
 </style>

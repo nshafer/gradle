@@ -66,13 +66,13 @@ function reveal(i: number) {
     color: rgba(0, 0, 0, 0);
 }
 
-@media screen and (min-width: 25em) {
+@media screen and (min-width: 22em) {
     .letters {
         font-size: 1.5em;
     }
 }
 
-@media screen and (min-width: 30em) {
+@media screen and (min-width: 25em) {
     .letters {
         font-size: 1.8em;
     }

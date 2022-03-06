@@ -201,94 +201,95 @@ export default defineComponent({
         {{ dragStart.toFixed(2) }} {{ dragCurrent.toFixed(2) }} {{ dragOffset.toFixed(2) }} {{ dragOffsetPercent.toFixed(2) }}
         {{ dragVelocity.toFixed(2) }}
     </div>
-    <main class="helper" @keydown.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag">
+
+    <div v-if="benchmark" class="benchmark">
+        Solve: {{ benchmarkResult("solve") }} ms
+    </div>
+
+    <main class="helper" @keydown.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
         <div class="page input-page" :class="{ show: isInputPage }" :style="{ transform: inputPageTransform, transition: dragTransition }">
-            <div v-if="hasInput" class="page-header double">
-                <p>
-                    <b>{{ answers.length }}</b> possible answers.
+            <div class="page-body">
+                <PuzzleInput @inputChanged="updateAnswers" @inputDone="showResultPage"/>
+            </div>
+
+            <div class="page-nav double">
+                <p v-if="hasInput">
+                    <b>{{ answers.length }}</b> possible answer<template v-if="answers.length != 1">s</template>
                 </p>
+                <p v-else class="text-muted">
+                    <b>{{ answers.length }}</b> possible answer<template v-if="answers.length != 1">s</template>
+                </p>
+
                 <button class="button with-icon-right" @click.prevent="showResultPage">
                     Results
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path fill="currentColor" d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z"/></svg>
                 </button>
             </div>
-            <div v-else class="page-header single">
-                <p>
-                    Enter the letters from your puzzle
-                </p>
-            </div>
-
-            <PuzzleInput @inputChanged="updateAnswers" @inputDone="showResultPage"/>
-
-            <div v-if="benchmark" class="benchmark">
-                Solve: {{ benchmarkResult("solve") }} ms
-            </div>
         </div>
 
         <div class="page result-page" :class="{ show: isResultPage }" :style="{ transform: resultPageTransform, transition: dragTransition }">
-            <div v-if="hasInput" class="page-header double">
+            <div class="page-body">
+                <ResultsView :hasInput="hasInput" :solver="solver" :answers="answers" />
+            </div>
+
+            <div class="page-nav double">
                 <button class="button with-icon-left" @click.prevent="showInputPage">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path fill="currentColor" d="M203.9 405.3c5.877 6.594 5.361 16.69-1.188 22.62c-6.562 5.906-16.69 5.375-22.59-1.188L36.1 266.7c-5.469-6.125-5.469-15.31 0-21.44l144-159.1c5.906-6.562 16.03-7.094 22.59-1.188c6.918 6.271 6.783 16.39 1.188 22.62L69.53 256L203.9 405.3z"/></svg>
                     Back
                 </button>
-                <p>
-                    <b>{{ answers.length }}</b> possible answers.
+                <p v-if="hasInput">
+                    <b>{{ answers.length }}</b> possible answer<template v-if="answers.length != 1">s</template>
+                </p>
+                <p v-else class="text-muted">
+                    <b>{{ answers.length }}</b> possible answer<template v-if="answers.length != 1">s</template>
                 </p>
             </div>
-            <div v-else class="page-header double">
-                <button class="button with-icon-left" @click.prevent="showInputPage">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path fill="currentColor" d="M203.9 405.3c5.877 6.594 5.361 16.69-1.188 22.62c-6.562 5.906-16.69 5.375-22.59-1.188L36.1 266.7c-5.469-6.125-5.469-15.31 0-21.44l144-159.1c5.906-6.562 16.03-7.094 22.59-1.188c6.918 6.271 6.783 16.39 1.188 22.62L69.53 256L203.9 405.3z"/></svg>
-                    Back
-                </button>
-                <p>
-                    Enter the letters from your puzzle
-                </p>
-            </div>
-
-            <ResultsView :hasInput="hasInput" :solver="solver" :answers="answers" />
-
         </div>
     </main>
 </template>
 
 <style scoped>
-/* .helper {
-} */
-
-.input-page {
-    padding: .5em;
+.page {
     display: flex;
     flex-flow: column nowrap;
 }
 
-.result-page {
-    padding: .5em;
-}
-
-.page-header {
+.page-nav {
     font-size: 1.2em;
-    min-height: 2.5em;
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
     align-items: center;
-    margin-bottom: .5em;
+    margin-top: .5em;
+    padding: .5em;
+    border-top: 2px solid var(--gray-4);
 }
 
-.page-header p {
+.page-nav p {
     margin: 0;
 }
 
+.page-body {
+    height: 100%;
+    padding: .5em;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .benchmark {
-    margin-top: auto;
-    color: var(--gray-3);
+    position: fixed;
+    top: 0;
+    right: 5em;
+    padding: .25em;
+    background: var(--color-background);
 }
 
 .drag-debug {
     position: fixed;
-    right: 0;
-    bottom: 0;
+    top: 0;
+    left: 3em;
     padding: .25em;
+    background: var(--color-background);
 }
 
 /* Small screens only */
@@ -296,45 +297,21 @@ export default defineComponent({
     .helper {
         position: relative;
         width: 100%;
-        /* overflow-x: hidden; */
-        /* touch-action: pan-y; */
-        /* overflow-y: visible; */
-        /* height: calc(90%); */
         user-select: none;
     }
 
     .page {
         position: fixed;
-        overflow: auto;
         width: 100%;
         top: var(--header-height);
         bottom: 0;
+    }
+
+    .page-body {
         touch-action: pan-y;
     }
 
-    .input-page {
-        /* position: absolute; */
-        /* transform: translateX(-100%);
-        transition: all 100ms; */
-        width: 100%;
-    }
-
-    /* .input-page.show {
-        transform: translateX(0%);
-    } */
-
-    .result-page {
-        /* position: absolute; */
-        /* transform: translateX(100%);
-        transition: all 100ms; */
-        width: 100%;
-    }
-
-    /* .result-page.show {
-        transform: translateX(0%);
-    } */
-
-    .page-header.double {
+    .page-nav.double {
         justify-content: space-between;
     }
 }
@@ -347,18 +324,18 @@ export default defineComponent({
     }
 
     .input-page {
-        padding: 1em .5em 1em 1em;
+        padding: .5em .5em 1em 1em;
     }
 
-    .page-header {
+    .page-nav {
         display: none;
     }
 
     .result-page {
-        padding: 1em 1em 1em .5em;
+        padding: .5em 1em 1em .5em;
     }
 
-    .result-page .page-header .button {
+    .result-page .page-nav .button {
         display: none;
     }
 }
@@ -372,7 +349,7 @@ export default defineComponent({
         padding: 1em 0;
     }
 
-    .page-header {
+    .page-nav {
         display: none;
     }
 

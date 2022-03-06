@@ -272,8 +272,23 @@ strong {
     font-size: 1.2em;
 }
 
+.middle-center {
+    height: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+}
+
 .text-center {
     text-align: center;
+}
+
+.text-muted {
+    color: var(--gray-2);
+}
+
+.mt-3 {
+    margin-top: 1em !important;
 }
 
 .mb-0 {
@@ -292,12 +307,24 @@ strong {
     margin-bottom: 1em !important;
 }
 
+.mb-4 {
+    margin-bottom: 1.5em !important;
+}
+
+.mb-5 {
+    margin-bottom: 2em !important;
+}
+
 .pt-3 {
-    padding-top: 1em;
+    padding-top: 1em !important;
 }
 
 .bt-1 {
     border-top: 1px solid var(--gray-4);
+}
+
+.bb-1 {
+    border-bottom: 1px solid var(--gray-4);
 }
 
 </style>
