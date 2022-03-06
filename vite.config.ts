@@ -33,6 +33,9 @@ export default defineConfig({
                 ],
             },
             registerType: 'prompt',
+            workbox: {
+                offlineGoogleAnalytics: true,
+            },
             devOptions: {
                 enabled: false
             }
