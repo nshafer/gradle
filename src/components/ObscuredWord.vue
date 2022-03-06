@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { shuffleArray } from '@/util';
+import IconHandPointer from './icons/IconHandPointer.vue';
 
 const props = defineProps(['word']);
 const visible = ref(false);
@@ -27,6 +28,9 @@ function reveal() {
             {{ word }}
         </template>
         <template v-else>
+            <div class="click">
+                <IconHandPointer />
+            </div>
             {{ scrambled }}
         </template>
     </div>
@@ -35,8 +39,23 @@ function reveal() {
 <style>
 .wrapper {
     padding: .5em 1em;
-    position:relative;
+    position: relative;
     cursor: pointer;
+}
+
+.click {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    color: var(--gray-2);
+    text-shadow: none;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    padding: .75em;
+    font-size: .8em;
 }
 
 .wrapper.obscured {

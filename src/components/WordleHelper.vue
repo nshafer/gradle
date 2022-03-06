@@ -5,6 +5,8 @@ import type { GreensArray, YellowsArray, GraysArray } from '@/solver';
 import Solver from '../solver';
 import PuzzleInput from './PuzzleInput.vue';
 import ResultsView from './ResultsView.vue';
+import IconAngleLeft from './icons/IconAngleLeft.vue';
+import IconAngleRight from './icons/IconAngleRight.vue';
 
 interface Benchmark {
     [name: string]: number
@@ -19,9 +21,11 @@ function getScreenWidth(): number {
 export default defineComponent({
     name: "WordleHelper",
     components: {
-        PuzzleInput,
-        ResultsView,
-    },
+    PuzzleInput,
+    ResultsView,
+    IconAngleLeft,
+    IconAngleRight
+},
     data() {
         return {
             currentPage: "input",
@@ -222,7 +226,7 @@ export default defineComponent({
 
                 <button class="button with-icon-right" @click.prevent="showResultPage">
                     Results
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path fill="currentColor" d="M219.9 266.7L75.89 426.7c-5.906 6.562-16.03 7.094-22.59 1.188c-6.918-6.271-6.783-16.39-1.188-22.62L186.5 256L52.11 106.7C46.23 100.1 46.75 90.04 53.29 84.1C59.86 78.2 69.98 78.73 75.89 85.29l144 159.1C225.4 251.4 225.4 260.6 219.9 266.7z"/></svg>
+                    <IconAngleRight />
                 </button>
             </div>
         </div>
@@ -234,7 +238,7 @@ export default defineComponent({
 
             <div class="page-nav double">
                 <button class="button with-icon-left" @click.prevent="showInputPage">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><path fill="currentColor" d="M203.9 405.3c5.877 6.594 5.361 16.69-1.188 22.62c-6.562 5.906-16.69 5.375-22.59-1.188L36.1 266.7c-5.469-6.125-5.469-15.31 0-21.44l144-159.1c5.906-6.562 16.03-7.094 22.59-1.188c6.918 6.271 6.783 16.39 1.188 22.62L69.53 256L203.9 405.3z"/></svg>
+                    <IconAngleLeft />
                     Back
                 </button>
                 <p v-if="hasInput">
