@@ -4,6 +4,11 @@ Wordle is an excellent game, but sometimes you just get stuck and can't think of
 It's easy to paint yourself into a corner, especially if you're playing on hard mode.
 When that happens, Worldle Helper can give you hints on what to try next, without just giving you the answer.
 
+## Motivation
+
+This is a simple project to help me learn some new tech... TypeScript, Vite, Vue 3 (and declaritive syntax), PWAs, etc.
+Use at your own risk.
+
 ## Project Setup
 
 ```sh

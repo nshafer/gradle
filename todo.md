@@ -1,7 +1,1 @@
-- GA
-- CloudFlare
-- Twitter account for wordle-helper.app... maybe post the best start word there every day.
 - Create cron to check wordlists from NYT, alert if there is a change
-- WordleBot... choose random start word, play game randomly. Post to wordle-helper.app.
-- Twitter account for the wordle bot.
-- Maybe something around a wordle par?
