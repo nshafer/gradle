@@ -1,5 +1,5 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref, reactive, onMounted, onUnmounted, computed } from 'vue';
 
 import type { GreensArray, YellowsArray, GraysArray } from '@/solver';
 import Solver from '../solver';
@@ -8,206 +8,176 @@ import ResultsView from './ResultsView.vue';
 import IconAngleLeft from './icons/IconAngleLeft.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
 
-interface Benchmark {
-    [name: string]: number
-}
-
-const benchmarks: Benchmark = {};
-
 function getScreenWidth(): number {
     return Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 }
 
-export default defineComponent({
-    name: "WordleHelper",
-    components: {
-    PuzzleInput,
-    ResultsView,
-    IconAngleLeft,
-    IconAngleRight
-},
-    data() {
-        return {
-            currentPage: "input",
-            hasInput: false,
-            solver: null as Solver | null,
-            answers: [] as string[],
-            benchmark: false,
-            benchmarkResults: {} as Benchmark,
-            screenWidth: getScreenWidth(),
-            dragging: false,
-            dragDebug: false,
-            dragStart: 0,
-            dragCurrent: 0,
-            dragVelocity: 0,
-        }
-    },
-    mounted() {
-        window.addEventListener("resize", this.updateWindowWidth);
-    },
-    unmounted() {
-        window.removeEventListener("resize", this.updateWindowWidth);
-    },
-    computed: {
-        isInputPage(): boolean {
-            return this.currentPage === "input";
-        },
-        isResultPage(): boolean {
-            return this.currentPage === "result";
-        },
-        dragEnabled(): boolean {
-            return this.screenWidth < 960;
-        },
-        dragOffset(): number {
-            if (this.dragging) {
-                return this.dragCurrent - this.dragStart
-            } else {
-                return 0;
-            }
-        },
-        dragOffsetPercent(): number {
-            return (this.dragOffset / this.screenWidth) * 100;
-        },
-        dragTransition(): string {
-            if (this.dragging) {
-                return "none";
-            } else {
-                return "all 200ms";
-            }
-        },
-        inputPageTransform(): string {
-            if (this.dragEnabled) {
-                if (this.dragging && Math.abs(this.dragOffset) > 10) {
-                    if (this.currentPage == "input") {
-                        if (this.dragOffset > 0) {
-                            return `translateX(${Math.log(this.dragOffsetPercent)}%)`;
-                        } else {
-                            return `translateX(${this.dragOffsetPercent}%)`;
-                        }
-                    } else {
-                        return `translateX(${this.dragOffsetPercent - 100}%)`;
-                    }
-                } else {
-                    if (this.currentPage == "input") {
-                        return "translateX(0%)"
-                    } else {
-                        return "translateX(-100%)"
-                    }
-                }
-            } else {
-                return "";
-            }
-        },
-        resultPageTransform(): string {
-            if (this.dragEnabled) {
-                if (this.dragging && Math.abs(this.dragOffset) > 10) {
-                    // let dragPercent = Number(this.dragOffsetPercent);
-                    // if (dragPercent > 0) {
-                    //     dragPercent = Math.log(dragPercent);
-                    // }
-                    if (this.currentPage == "result") {
-                        if (this.dragOffset < 0) {
-                            return `translateX(-${Math.log(-this.dragOffsetPercent)}%)`;
-                        } else {
-                            return `translateX(${this.dragOffsetPercent}%)`;
-                        }
-                    } else {
-                        return `translateX(${100 + this.dragOffsetPercent}%)`;
-                    }
-                } else {
-                    if (this.currentPage == "result") {
-                        return "translateX(0%)"
-                    } else {
-                        return "translateX(100%)"
-                    }
-                }
-            } else {
-                return "";
-            }
-        },
-    },
-    methods: {
-        showInputPage() {
-            this.currentPage = "input";
-        },
-        showResultPage() {
-            this.currentPage = "result";
-        },
-        updateAnswers(hasInput: boolean, greens: GreensArray, yellows: YellowsArray, grays: GraysArray) {
-            this.hasInput = hasInput;
-            if (hasInput) {
-                this.benchmarkStart("solve");
-                console.time("solve");
-                this.solver = new Solver(greens, yellows, grays);
-                this.answers = this.solver.solve();
-                this.benchmarkEnd("solve");
-                console.timeEnd("solve");
-            } else {
-                this.answers = [];
-            }
-        },
-        benchmarkStart(name: string) {
-            benchmarks[name] = window.performance.now();
-        },
-        benchmarkEnd(name: string) {
-            const end = window.performance.now();
-            if (benchmarks[name]) {
-                const res = end - benchmarks[name];
-                this.benchmarkResults[name] = res;
-            }
-        },
-        benchmarkResult(name: string): string {
-            if (this.benchmarkResults[name]) {
-                return this.benchmarkResults[name].toFixed(1);
-            } else {
-                return "-"
-            }
-        },
-        updateWindowWidth() {
-            this.screenWidth = getScreenWidth();
-        },
-        startDrag(event: PointerEvent) {
-            this.updateWindowWidth();
-            if (this.dragEnabled) {
-                // console.log("startDrag", event);
-                this.dragging = true;
-                this.dragStart = this.dragCurrent = event.x;
-            }
-        },
-        updateDrag(event: PointerEvent) {
-            if (this.dragEnabled && this.dragging) {
-                // console.log("updateDrag", event);
-                const dragLast = this.dragCurrent;
-                this.dragCurrent = event.x;
-                this.dragVelocity = this.dragCurrent - dragLast;
-                // console.log("dragVelocity", this.dragVelocity);
-            }
-        },
-        endDrag(event: PointerEvent) {
-            if (this.dragEnabled) {
-                // console.log("endDrag", event, this.dragVelocity);
-                if (this.currentPage == "input" && (this.dragOffsetPercent < -50 || (Math.abs(this.dragOffsetPercent) > 10 && this.dragVelocity < -2))) {
-                    this.showResultPage();
-                } else if (this.currentPage == "result" && (this.dragOffsetPercent > 50 || (Math.abs(this.dragOffsetPercent) > 10 && this.dragVelocity > 2))) {
-                    this.showInputPage();
-                }
-                this.dragging = false;
-                this.dragVelocity = 0;
-            }
-        },
-    },
+const hasInput = ref(false);
+const solver = ref<Solver | null>(null);
+const answers = ref<string[]>([]);
+
+function updateAnswers(input: boolean, greens: GreensArray, yellows: YellowsArray, grays: GraysArray) {
+    hasInput.value = input;
+    if (hasInput) {
+        console.time("solve");
+        solver.value = new Solver(greens, yellows, grays);
+        answers.value = solver.value.solve();
+        console.timeEnd("solve");
+    } else {
+        answers.value = [];
+    }
+}
+
+// Page/dragging support
+const page = reactive({
+    current: "input",
+    screenWidth: getScreenWidth(),
+    dragging: false,
+    dragDebug: false,
+    dragStart: 0,
+    dragCurrent: 0,
+    dragVelocity: 0,
 });
+
+function updateWindowWidth() {
+    page.screenWidth = getScreenWidth();
+};
+
+onMounted(() => {
+    window.addEventListener("resize", updateWindowWidth);
+});
+
+onUnmounted(() => {
+    window.removeEventListener("resize", updateWindowWidth);
+});
+
+const isInputPage = computed(() => {
+    return page.current === "input";
+});
+
+const isResultPage = computed(() => {
+    return page.current === "result";
+});
+
+function showInputPage() {
+    page.current = "input";
+}
+
+function showResultPage() {
+    page.current = "result";
+}
+
+const dragEnabled = computed(() => {
+    return page.screenWidth < 960;
+});
+
+const dragOffset = computed(() => {
+    if (page.dragging) {
+        return page.dragCurrent - page.dragStart
+    } else {
+        return 0;
+    }
+})
+
+const dragOffsetPercent = computed(() => {
+    return (dragOffset.value / page.screenWidth) * 100;
+})
+
+const dragTransition = computed(() => {
+    if (page.dragging) {
+        return "none";
+    } else {
+        return "all 200ms";
+    }
+})
+
+const inputPageTransform = computed(() => {
+    if (dragEnabled.value) {
+        if (page.dragging && Math.abs(dragOffset.value) > 10) {
+            if (page.current == "input") {
+                if (dragOffset.value > 0) {
+                    return `translateX(${Math.log(dragOffsetPercent.value)}%)`;
+                } else {
+                    return `translateX(${dragOffsetPercent.value}%)`;
+                }
+            } else {
+                return `translateX(${dragOffsetPercent.value - 100}%)`;
+            }
+        } else {
+            if (page.current == "input") {
+                return "translateX(0%)"
+            } else {
+                return "translateX(-100%)"
+            }
+        }
+    } else {
+        return "";
+    }
+});
+
+const resultPageTransform = computed(() => {
+    if (dragEnabled.value) {
+        if (page.dragging && Math.abs(dragOffset.value) > 10) {
+            if (page.current == "result") {
+                if (dragOffset.value < 0) {
+                    return `translateX(-${Math.log(-dragOffsetPercent.value)}%)`;
+                } else {
+                    return `translateX(${dragOffsetPercent.value}%)`;
+                }
+            } else {
+                return `translateX(${100 + dragOffsetPercent.value}%)`;
+            }
+        } else {
+            if (page.current == "result") {
+                return "translateX(0%)"
+            } else {
+                return "translateX(100%)"
+            }
+        }
+    } else {
+        return "";
+    }
+});
+
+function startDrag(event: PointerEvent) {
+    updateWindowWidth();
+    if (dragEnabled.value) {
+        // console.log("startDrag", event);
+        page.dragging = true;
+        page.dragStart = page.dragCurrent = event.x;
+    }
+}
+
+function updateDrag(event: PointerEvent) {
+    if (dragEnabled.value && page.dragging) {
+        // console.log("updateDrag", event);
+        const dragLast = page.dragCurrent;
+        page.dragCurrent = event.x;
+        page.dragVelocity = page.dragCurrent - dragLast;
+        // console.log("dragVelocity", page.dragVelocity);
+    }
+}
+
+function endDrag(event: PointerEvent) {
+    if (dragEnabled.value) {
+        // console.log("endDrag", event, this.dragVelocity);
+        if (page.current == "input" && (dragOffsetPercent.value < -50 || (Math.abs(dragOffsetPercent.value) > 10 && page.dragVelocity < -2))) {
+            showResultPage();
+        } else if (page.current == "result" && (dragOffsetPercent.value > 50 || (Math.abs(dragOffsetPercent.value) > 10 && page.dragVelocity > 2))) {
+            showInputPage();
+        }
+        page.dragging = false;
+        page.dragVelocity = 0;
+    }
+}
+
 </script>
 
 <template>
-    <div v-if="dragDebug && dragEnabled" class="drag-debug">
-        {{ screenWidth }} {{ currentPage }} {{ dragging }}
-        {{ dragStart.toFixed(2) }} {{ dragCurrent.toFixed(2) }} {{ dragOffset.toFixed(2) }} {{ dragOffsetPercent.toFixed(2) }}
-        {{ dragVelocity.toFixed(2) }}
-    </div>
-
-    <div v-if="benchmark" class="benchmark">
-        Solve: {{ benchmarkResult("solve") }} ms
+    <div v-if="page.dragDebug && dragEnabled" class="drag-debug">
+        {{ page.screenWidth }} {{ page.current }} {{ page.dragging }}
+        {{ page.dragStart.toFixed(2) }} {{ page.dragCurrent.toFixed(2) }} {{ dragOffset.toFixed(2) }} {{ dragOffsetPercent.toFixed(2) }}
+        {{ page.dragVelocity.toFixed(2) }}
     </div>
 
     <main class="helper" @keydown.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
@@ -278,14 +248,6 @@ export default defineComponent({
     padding: .5em;
     overflow-x: hidden;
     overflow-y: auto;
-}
-
-.benchmark {
-    position: fixed;
-    top: 0;
-    right: 5em;
-    padding: .25em;
-    background: var(--color-background);
 }
 
 .drag-debug {
