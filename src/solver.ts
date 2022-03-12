@@ -1,5 +1,5 @@
 import { wordIndex } from './game';
-import { answers, words } from './words';
+import { answers, words, allWords } from './words';
 
 const letters = "abcdefghijklmnopqrstuvwxyz".split("");
 
@@ -104,8 +104,12 @@ export default class Solver {
         return this.uniques(whites);
     }
 
-    suggest() {
-        return this.filter(words);
+    suggest(includeAnswers: boolean = false) {
+        if (includeAnswers) {
+            return this.filter(allWords);
+        } else {
+            return this.filter(words);
+        }
     }
 
     solve(removeOldAnswers = false) {
