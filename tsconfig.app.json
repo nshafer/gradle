@@ -6,7 +6,6 @@
     "target": "esnext",
     "lib": ["esnext", "dom"],
     "composite": true,
-    "script": true,
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
