@@ -15,8 +15,8 @@ export default defineConfig({
                 'favicon.ico', 'favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
             manifest: {
                 "id": "/",
-                "name": "Wordle Helper",
-                "short_name": "Wordle Helper",
+                "name": "Skordle",
+                "short_name": "Skordle",
                 "description": "Help you solve Wordle",
                 "theme_color": "#ffffff",
                 "icons": [

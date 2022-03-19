@@ -9,6 +9,7 @@ defineEmits(['close']);
     <Modal v-show="visible" @close="$emit('close')" title="Help / About">
         <template #body>
             <p>
+                TODO: rewrite
                 Wordle is an excellent game, but sometimes you just get stuck and can't think of any words to try next.
                 It's easy to paint yourself into a corner, especially if you're playing on hard mode.
                 When that happens, Worldle Helper can give you hints on what to try next, without just giving you the answer.
@@ -40,7 +41,7 @@ defineEmits(['close']);
             <p class="pt-3 bt-1">
                 Wordle is © 2022 The New York Times Company.
                 
-                This App / Website is the product of wordle-helper.app which has no
+                This App / Website is the product of skordle.app which has no
                 affiliation with Wordle or The New York Times Company.
             </p>
         </template>

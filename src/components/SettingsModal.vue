@@ -59,8 +59,8 @@ const version = computed(() => {
                         </div>
                     </div>
                     <div class="setting__control">
-                        <a href="https://twitter.com/wordle_helper" target="__blank">
-                            @wordle_helper
+                        <a href="https://twitter.com/Skordle" target="__blank">
+                            @skordleapp
                         </a>
                     </div>
                 </div>
@@ -68,7 +68,7 @@ const version = computed(() => {
         </template>
 
         <template #footer>
-            <small>© 2022 Wordle-Helper.app</small>
+            <small>© 2022 skordle.app</small>
             <small>{{ version }}</small>
         </template>
     </Modal>

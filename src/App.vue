@@ -68,7 +68,7 @@ function closeModal(name: string) {
             </button>
         </div>
 
-        <div class="app-header__title">Wordle Helper</div>
+        <div class="app-header__title">Skordle</div>
 
         <div class="app-header__buttons right">
             <button class="app-header__button" @click="openModal('history')">
