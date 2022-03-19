@@ -13,3 +13,11 @@ registerSW({
         console.log("Offline ready");
     }
 });
+
+import { words, answers, allWords } from './words';
+(window as any).words = words;
+(window as any).answers = answers;
+(window as any).allWords = allWords;
+
+import Solver from './solver';
+(window as any).Solver = Solver;
