@@ -1,4 +1,4 @@
-# Skordle
+# Gradle
 
 Score your wordle games. Save history. Share easily.
 

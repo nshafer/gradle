@@ -1,7 +1,7 @@
 - Create cron to check wordlists from NYT, alert if there is a change
 - Create bot?
 
-Skordle:
+Gradle:
 
 Main interface:
 - Input page (left):
@@ -52,7 +52,7 @@ Wordle 266 Mar 12 3/6*
 ⬜🟩⬜🟩🟨 7.8/10
 🟩🟩🟩🟩🟩 10/10
 Score: 54.5/60
-https://skordle.app/#akdjfslkdjlk23kj4l23k
+https://gradle.app/#akdjfslkdjlk23kj4l23k
 
 
 Wordle 266 3/6

@@ -41,7 +41,7 @@ defineEmits(['close']);
             <p class="pt-3 bt-1">
                 Wordle is © 2022 The New York Times Company.
                 
-                This App / Website is the product of skordle.app which has no
+                This App / Website is the product of gradle.app which has no
                 affiliation with Wordle or The New York Times Company.
             </p>
         </template>
