@@ -12,3 +12,14 @@ export function shuffleArray(arr: Array<any>) {
         .sort((a: Sorter, b: Sorter) => a.sort - b.sort)
         .map((x: Sorter) => x.value);
 }
+
+const validLettersRegex = /[^abcdefghijklmnopqrstuvwxyz]/ig;
+
+export function cleanLetters(val?: string): string {
+    if (val) {
+        return val.toLowerCase().replaceAll(validLettersRegex, "");
+    } else {
+        return "";
+    }
+}
+

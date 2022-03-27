@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, onUnmounted, computed } from 'vue';
+import { ref, reactive, onMounted, onUnmounted, computed, watch } from 'vue';
 
 import type { GreensArray, YellowsArray, GraysArray } from '@/solver';
 import Solver from '../solver';
@@ -7,28 +7,13 @@ import PuzzleInput from './PuzzleInput.vue';
 import ResultsView from './ResultsView.vue';
 import IconAngleLeft from './icons/IconAngleLeft.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
+import type { Guess } from '@/guess';
 
+// Page/dragging support
 function getScreenWidth(): number {
     return Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 }
 
-const hasInput = ref(false);
-const solver = ref<Solver | null>(null);
-const answers = ref<string[]>([]);
-
-function updateAnswers(input: boolean, greens: GreensArray, yellows: YellowsArray, grays: GraysArray) {
-    hasInput.value = input;
-    if (hasInput) {
-        console.time("solve");
-        solver.value = new Solver(greens, yellows, grays);
-        answers.value = solver.value.solve();
-        console.timeEnd("solve");
-    } else {
-        answers.value = [];
-    }
-}
-
-// Page/dragging support
 const page = reactive({
     current: "input",
     screenWidth: getScreenWidth(),
@@ -171,6 +156,21 @@ function endDrag(event: PointerEvent) {
     }
 }
 
+// Handle inputs and show results
+const guesses = ref<Guess[]>([]);
+const selectedGuess = ref<Guess | undefined>(undefined);
+
+watch(guesses, (newGuesses, oldGuesses) => {
+    console.log("guesses updated", oldGuesses, newGuesses);
+    selectedGuess.value = newGuesses[newGuesses.length-1];
+    console.log("selectedGuess now", selectedGuess.value);
+});
+
+function guessClicked(guess?: Guess) {
+    console.log("MainInterface.guessClicked", guess)
+    selectedGuess.value = guess;
+    showResultPage();
+}
 </script>
 
 <template>
@@ -180,148 +180,66 @@ function endDrag(event: PointerEvent) {
         {{ page.dragVelocity.toFixed(2) }}
     </div>
 
-    <main class="helper" @keydown.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
+    <main class="main-interface" @keydown.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
         <div class="page input-page" :class="{ show: isInputPage }" :style="{ transform: inputPageTransform, transition: dragTransition }">
-            <div class="page-body">
-                <PuzzleInput @inputChanged="updateAnswers" @inputDone="showResultPage"/>
-            </div>
+            <PuzzleInput v-model="guesses" :selectedGuess="selectedGuess" @guessClicked="guessClicked"/>
 
-            <div class="page-nav double">
-                <p v-if="hasInput">
-                    <b>{{ answers.length }}</b> possible answer<template v-if="answers.length != 1">s</template>
-                </p>
-                <p v-else class="text-muted">
-                    <b>{{ answers.length }}</b> possible answer<template v-if="answers.length != 1">s</template>
-                </p>
-
-                <button class="button with-icon-right" @click.prevent="showResultPage">
-                    Results
-                    <IconAngleRight />
-                </button>
-            </div>
+            <ul v-for="guess in guesses" :key="guess.id">
+                <li>MAININTERFACE: {{ guess.index }}: ({{ guess.id }}) {{ guess.word }} (previous: {{ guess.previous?.word }})</li>
+            </ul>
         </div>
 
         <div class="page result-page" :class="{ show: isResultPage }" :style="{ transform: resultPageTransform, transition: dragTransition }">
-            <div class="page-body">
-                <ResultsView :hasInput="hasInput" :solver="solver" :answers="answers" />
-            </div>
-
-            <div class="page-nav double">
-                <button class="button with-icon-left" @click.prevent="showInputPage">
-                    <IconAngleLeft />
-                    Back
-                </button>
-                <p v-if="hasInput">
-                    <b>{{ answers.length }}</b> possible answer<template v-if="answers.length != 1">s</template>
-                </p>
-                <p v-else class="text-muted">
-                    <b>{{ answers.length }}</b> possible answer<template v-if="answers.length != 1">s</template>
-                </p>
-            </div>
+            <ResultsView @backClicked="showInputPage"/>
         </div>
+
     </main>
 </template>
 
 <style scoped>
-.page {
-    display: flex;
-    flex-flow: column nowrap;
-}
-
-.page-nav {
-    font-size: 1.2em;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    align-items: center;
-    margin-top: .5em;
-    padding: .5em;
-    border-top: 2px solid var(--gray-4);
-}
-
-.page-nav p {
-    margin: 0;
-}
-
-.page-body {
-    height: 100%;
-    padding: .5em;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-.drag-debug {
-    position: fixed;
-    top: 0;
-    left: 3em;
-    padding: .25em;
-    background: var(--color-background);
-}
-
-/* Small screens only */
-@media screen and (max-width: 59.9375em) {
-    .helper {
-        position: relative;
-        width: 100%;
-        user-select: none;
-    }
-
     .page {
+        overflow-x: hidden;
+    }
+
+    .drag-debug {
         position: fixed;
-        width: 100%;
-        top: var(--header-height);
-        bottom: 0;
+        top: 0;
+        left: 3em;
+        padding: .25em;
+        background: var(--color-background);
     }
 
-    .page-body {
-        touch-action: pan-y;
+    /* Small screens only */
+    @media screen and (max-width: 59.9375em) {
+        .main-interface {
+            position: relative;
+            width: 100%;
+            user-select: none;
+        }
+
+        .page {
+            position: fixed;
+            width: 100%;
+            top: calc(var(--header-height) + .5em);
+            bottom: 0;
+            touch-action: pan-y;
+            padding: .5em;
+        }
+
+        .page-nav.double {
+            justify-content: space-between;
+        }
     }
 
-    .page-nav.double {
-        justify-content: space-between;
-    }
-}
+    /* Large screens only */
+    @media screen and (min-width: 60em) {
+        .main-interface {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
 
-/* Large screens only */
-@media screen and (min-width: 60em) {
-    .helper {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        .page {
+            padding: 1em;
+        }
     }
-
-    .input-page {
-        padding: .5em .5em 1em 1em;
-    }
-
-    .page-nav {
-        display: none;
-    }
-
-    .result-page {
-        padding: .5em 1em 1em .5em;
-    }
-
-    .result-page .page-nav .button {
-        display: none;
-    }
-}
-
-@media screen and (min-width: 81em) {
-    .helper {
-        gap: 1em
-    }
-
-    .input-page {
-        padding: 1em 0;
-    }
-
-    .page-nav {
-        display: none;
-    }
-
-    .result-page {
-        padding: 1em 0;
-    }
-}
-
 </style>
