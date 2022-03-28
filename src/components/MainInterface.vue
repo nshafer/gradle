@@ -4,7 +4,7 @@ import { ref, reactive, onMounted, onUnmounted, computed, watch } from 'vue';
 import type { GreensArray, YellowsArray, GraysArray } from '@/solver';
 import Solver from '../solver';
 import PuzzleInput from './PuzzleInput.vue';
-import ResultsView from './ResultsView.vue';
+import SummaryView from './SummaryView.vue';
 import IconAngleLeft from './icons/IconAngleLeft.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
 import type { Guess } from '@/guess';
@@ -40,16 +40,16 @@ const isInputPage = computed(() => {
     return page.current === "input";
 });
 
-const isResultPage = computed(() => {
-    return page.current === "result";
+const isSummaryPage = computed(() => {
+    return page.current === "summary";
 });
 
 function showInputPage() {
     page.current = "input";
 }
 
-function showResultPage() {
-    page.current = "result";
+function showSummaryPage() {
+    page.current = "summary";
 }
 
 const dragEnabled = computed(() => {
@@ -100,10 +100,10 @@ const inputPageTransform = computed(() => {
     }
 });
 
-const resultPageTransform = computed(() => {
+const summaryPageTransform = computed(() => {
     if (dragEnabled.value) {
         if (page.dragging && Math.abs(dragOffset.value) > 10) {
-            if (page.current == "result") {
+            if (page.current == "summary") {
                 if (dragOffset.value < 0) {
                     return `translateX(-${Math.log(-dragOffsetPercent.value)}%)`;
                 } else {
@@ -113,7 +113,7 @@ const resultPageTransform = computed(() => {
                 return `translateX(${100 + dragOffsetPercent.value}%)`;
             }
         } else {
-            if (page.current == "result") {
+            if (page.current == "summary") {
                 return "translateX(0%)"
             } else {
                 return "translateX(100%)"
@@ -147,8 +147,8 @@ function endDrag(event: PointerEvent) {
     if (dragEnabled.value) {
         // console.log("endDrag", event, this.dragVelocity);
         if (page.current == "input" && (dragOffsetPercent.value < -50 || (Math.abs(dragOffsetPercent.value) > 10 && page.dragVelocity < -2))) {
-            showResultPage();
-        } else if (page.current == "result" && (dragOffsetPercent.value > 50 || (Math.abs(dragOffsetPercent.value) > 10 && page.dragVelocity > 2))) {
+            showSummaryPage();
+        } else if (page.current == "summary" && (dragOffsetPercent.value > 50 || (Math.abs(dragOffsetPercent.value) > 10 && page.dragVelocity > 2))) {
             showInputPage();
         }
         page.dragging = false;
@@ -156,7 +156,7 @@ function endDrag(event: PointerEvent) {
     }
 }
 
-// Handle inputs and show results
+// Handle inputs and show summary
 const guesses = ref<Guess[]>([]);
 const selectedGuess = ref<Guess | undefined>(undefined);
 
@@ -169,7 +169,7 @@ watch(guesses, (newGuesses, oldGuesses) => {
 function guessClicked(guess?: Guess) {
     console.log("MainInterface.guessClicked", guess)
     selectedGuess.value = guess;
-    showResultPage();
+    showSummaryPage();
 }
 </script>
 
@@ -189,8 +189,8 @@ function guessClicked(guess?: Guess) {
             </ul>-->
         </div>
 
-        <div class="page result-page" :class="{ show: isResultPage }" :style="{ transform: resultPageTransform, transition: dragTransition }">
-            <ResultsView @backClicked="showInputPage"/>
+        <div class="page summary-page" :class="{ show: isSummaryPage }" :style="{ transform: summaryPageTransform, transition: dragTransition }">
+            <SummaryView @backClicked="showInputPage"/>
         </div>
 
     </main>
