@@ -184,9 +184,9 @@ function guessClicked(guess?: Guess) {
         <div class="page input-page" :class="{ show: isInputPage }" :style="{ transform: inputPageTransform, transition: dragTransition }">
             <PuzzleInput v-model="guesses" :selectedGuess="selectedGuess" @guessClicked="guessClicked"/>
 
-            <ul v-for="guess in guesses" :key="guess.id">
+            <!--<ul v-for="guess in guesses" :key="guess.id">
                 <li>MAININTERFACE: {{ guess.index }}: ({{ guess.id }}) {{ guess.word }} (previous: {{ guess.previous?.word }})</li>
-            </ul>
+            </ul>-->
         </div>
 
         <div class="page result-page" :class="{ show: isResultPage }" :style="{ transform: resultPageTransform, transition: dragTransition }">
@@ -236,6 +236,7 @@ function guessClicked(guess?: Guess) {
         .main-interface {
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: 100%;
         }
 
         .page {

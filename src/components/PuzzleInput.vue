@@ -5,9 +5,10 @@ import GuessInput from './GuessInput.vue';
 
 import IconTrash from './icons/IconTrash.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
+import GuessDisplay from './GuessDisplay.vue';
 
-// TODO: ask user for date or manually enter word
-const answer = "epoxy";
+// TODO: prompt user for date or manually enter word
+const answer = "nymph";
 
 const props = defineProps<{
     modelValue: Guess[],
@@ -26,6 +27,10 @@ const guesses = computed<Guess[]>({
     set(value) {
         emit("update:modelValue", value);
     }
+});
+
+const completed = computed(() => {
+    return guesses.value.length >= 6 || guesses.value[guesses.value.length]?.isCorrect;
 });
 
 function wordInputDone(word: string) {
@@ -49,12 +54,11 @@ function guessClicked(guess: Guess) {
 <template>
     <div v-for="guess in guesses" :key="guess.id" class="guess" :class="{ selected: guess == selectedGuess }" @click="guessClicked(guess)">
         <div class="title">
-            <!-- replace with component that renders the word with characters colored -->
             <div class="word">
-                {{ guess.word }}
+                <GuessDisplay :guess="guess" />
             </div>
             
-            <button class="button icon" @click="removeGuess(guess)">
+            <button class="button icon" @click.stop="removeGuess(guess)">
                 <IconTrash />
             </button>
         </div>
@@ -63,13 +67,13 @@ function guessClicked(guess: Guess) {
                 {{ guess.index }}: ({{ guess.id }})  (previous: {{ guess.previous?.word }})
             </div>
             
-            <button class="button icon" @click="guessClicked(guess)">
+            <button class="button icon" @click.stop="guessClicked(guess)">
                 <IconAngleRight />
             </button>
         </div>
     </div>
 
-    <GuessInput v-if="guesses.length < 6" :wordIndex="guesses.length" @inputDone="wordInputDone" />
+    <GuessInput v-if="!completed" :wordIndex="guesses.length" @inputDone="wordInputDone" />
 </template>
 
 <style scoped>
@@ -93,8 +97,6 @@ function guessClicked(guess: Guess) {
     }
     
     .word {
-        font-size: 1.2em;
-        text-transform: uppercase;
         padding: .5em;
     }
 

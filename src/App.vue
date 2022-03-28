@@ -193,6 +193,59 @@ function closeModal(name: string) {
         height: 100%;
     }
 
+    .input {
+        background: var(--input-bg);
+        width: 100%;
+        color: var(--input-text-color);
+        border: 1px solid var(--input-border);
+        padding: .2em .4em;
+    }
+
+    .input:focus-visible {
+        border-color: var(--input-border-focus);
+    }
+
+    .input.error {
+        background-color: var(--input-bg-error);
+        border-color: var(--input-border-error);
+        animation: Shake 600ms;
+    }
+
+    .input.error:focus-visible {
+        border-color: var(--input-border-error);
+    }
+
+    .input::placeholder {
+        letter-spacing: normal;
+        text-transform: none;
+        color: var(--input-placeholder-color);
+        font-size: 1rem;
+        font-weight: normal;
+    }
+
+    @keyframes Shake {
+        10%,
+        90% {
+            transform: translateX(-2px);
+        }
+        
+        20%,
+        80% {
+            transform: translateX(4px);
+        }
+        
+        30%,
+        50%,
+        70% {
+            transform: translateX(-8px);
+        }
+        
+        40%,
+        60% {
+            transform: translateX(2px);
+        }
+    }
+
     .app-header {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;

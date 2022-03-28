@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue';
-import { cleanLetters } from '../util';
+import { cleanLetters } from '@/util';
+import { allWords } from '@/words';
 
 const props = defineProps<{
     wordIndex: number
@@ -12,6 +13,7 @@ const emit = defineEmits<{
 
 const input = ref<HTMLInputElement | null>(null);
 const word = ref("");
+const inputError = ref(false);
 
 onMounted(() => {
     input.value?.focus();
@@ -42,22 +44,36 @@ function finishInput() {
 }
 
 function updateWord(event: Event) {
+    inputError.value = false;
     // We use this instead of v-model so we can fire on every input, which doesn't happen with
     // an IME that does composition, such as Chrome mobile.
     if (event.target && event.target instanceof HTMLInputElement) {
-        var cleaned = cleanLetters(event.target.value)
+        var cleaned = cleanLetters(event.target.value).slice(0, 5);
         word.value = event.target.value = cleaned;
     }
-    if (word.value.length >= 5) {
+    // if (word.value.length >= 5) {
+    //     finishInput();
+    // }
+}
+
+function checkWord() {
+    if (word.value.length == 5 && allWords.includes(word.value)) {
         finishInput();
+    } else {
+        inputError.value = true;
     }
 }
+
 </script>
 
 <template>
     <div class="wrapper">
-        <input :value="word" @input="updateWord" ref="input" :placeholder="`${wordNumber} guess`"
-            class="input" type="text" maxlength="5" inputmode="text" enterkeyhint="done"/>
+        <form @submit.prevent="checkWord">
+            <input :value="word" @input="updateWord" ref="input"
+                :placeholder="`${wordNumber} guess`"
+                class="input" :class="{ error: inputError }"
+                type="text" maxlength="5" inputmode="text" enterkeyhint="done"/>
+        </form>
     </div>
 </template>
 
@@ -70,24 +86,11 @@ function updateWord(event: Event) {
     }
 
     .input {
-        background: var(--input-bg);
-        width: 100%;
         max-width: 12em;
-        height: 1.5em;
         font-size: 1.3em;
-        color: var(--input-text-color);
-        /* text-transform: uppercase; */
+        text-transform: uppercase;
         font-weight: bold;
         text-align: center;
-        border: none;
         letter-spacing: .1em;
-    }
-
-    .input::placeholder {
-        letter-spacing: normal;
-        text-transform: none;
-        color: var(--input-placeholder-color);
-        font-size: 1rem;
-        font-weight: normal;
     }
 </style>

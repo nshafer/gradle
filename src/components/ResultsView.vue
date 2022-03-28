@@ -6,7 +6,7 @@ const emit = defineEmits(["backClicked"]);
 
 <template>
     <div class="results">
-        <button class="button" @click="$emit('backClicked')">
+        <button class="button with-icon-left" @click="$emit('backClicked')">
             <IconAngleLeft /> Back
         </button>
 
@@ -15,7 +15,7 @@ const emit = defineEmits(["backClicked"]);
 
 <style scoped>
     .results {
-        height: 100%;
+        /* height: 100%; */
         background: var(--gray-4);
         padding: 1em;
     }
