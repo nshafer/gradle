@@ -15,7 +15,7 @@ Main interface:
         - Maybe include option to include guesses, with spoiler tags for reddit, discord.
         - Include link to self with input state in hash, base64'd
 
-- Result page (right):
+- Summary page (right):
     - Reduction summary
         - Show how many answers are left after this guess. 
         - Show how many words this guess eliminated.
@@ -76,3 +76,8 @@ Scoredle 266 3/6*
 ⬜🟩🟨🟨⬜ ||ROADS|| (25)
 ⬜🟩⬜🟩🟨 ||NOMAD|| (3)
 🟩🟩🟩🟩🟩 ||TODAY||
+
+
+
+## New grading based on Information theory
+

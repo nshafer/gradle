@@ -8,7 +8,7 @@ import IconAngleRight from './icons/IconAngleRight.vue';
 import GuessDisplay from './GuessDisplay.vue';
 
 // TODO: prompt user for date or manually enter word
-const answer = "nymph";
+const answer = "crepe";
 
 const props = defineProps<{
     modelValue: Guess[],
@@ -30,15 +30,18 @@ const guesses = computed<Guess[]>({
 });
 
 const completed = computed(() => {
-    return guesses.value.length >= 6 || guesses.value[guesses.value.length]?.isCorrect;
+    return guesses.value.length >= 6 || guesses.value[guesses.value.length-1]?.isCorrect;
 });
 
 function wordInputDone(word: string) {
-    console.log("wordInputDone", word);
+    // console.log("wordInputDone", word);
     const guessIndex = guesses.value.length;
     const previous = guessIndex > 0 ? guesses.value[guessIndex-1] : undefined;
-    guesses.value = [...guesses.value, new Guess(word, guessIndex, answer, previous)];
+    const guess = new Guess(word, guessIndex, answer, previous);
+    guesses.value = [...guesses.value, guess];
     // guesses.value.push(new Guess(word, guessIndex, previous));
+    console.log("Added guess", guess);
+    // console.log("guesses", guesses.value);
 }
 
 function removeGuess(guess: Guess) {
@@ -46,7 +49,7 @@ function removeGuess(guess: Guess) {
 }
 
 function guessClicked(guess: Guess) {
-    console.log("PuzzleInput.guessClicked", guess)
+    // console.log("PuzzleInput.guessClicked", guess)
     emit('guessClicked', guess);
 }
 </script>
@@ -64,7 +67,7 @@ function guessClicked(guess: Guess) {
         </div>
         <div class="subtitle">
             <div class="grade">
-                {{ guess.index }}: ({{ guess.id }})  (previous: {{ guess.previous?.word }})
+                {{ guess.previousWordCount }} -> {{ guess.wordCount }} ({{ guess.wordReductionPercentString }}%) [{{ guess.wordReductionScoreString}}] [{{ guess.hintScoreString }}] {{ guess.scoreString }} ({{ guess.scorePercentString }}%)
             </div>
             
             <button class="button icon" @click.stop="guessClicked(guess)">

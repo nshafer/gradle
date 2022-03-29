@@ -24,9 +24,12 @@ defineProps<{
     }
 
     .letter {
-        padding: .5em;
+        padding: .25em .5em;
         background: var(--color-absent);
         margin: .2em;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 1.5em;
     }
 
     .letter.correct {

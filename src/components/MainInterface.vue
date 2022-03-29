@@ -161,9 +161,9 @@ const guesses = ref<Guess[]>([]);
 const selectedGuess = ref<Guess | undefined>(undefined);
 
 watch(guesses, (newGuesses, oldGuesses) => {
-    console.log("guesses updated", oldGuesses, newGuesses);
+    // console.log("guesses updated", oldGuesses, newGuesses);
     selectedGuess.value = newGuesses[newGuesses.length-1];
-    console.log("selectedGuess now", selectedGuess.value);
+    // console.log("selectedGuess now", selectedGuess.value);
 });
 
 function guessClicked(guess?: Guess) {
