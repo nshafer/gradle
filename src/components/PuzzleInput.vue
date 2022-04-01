@@ -8,7 +8,7 @@ import IconAngleRight from './icons/IconAngleRight.vue';
 import GuessDisplay from './GuessDisplay.vue';
 
 // TODO: prompt user for date or manually enter word
-const answer = "crepe";
+const answer = "shall";
 
 const props = defineProps<{
     modelValue: Guess[],
@@ -48,6 +48,10 @@ function removeGuess(guess: Guess) {
     guesses.value = guesses.value.slice(0, guess.index);
 }
 
+function removeLastGuess() {
+guesses.value = guesses.value.slice(0, guesses.value.length-1);
+}
+
 function guessClicked(guess: Guess) {
     // console.log("PuzzleInput.guessClicked", guess)
     emit('guessClicked', guess);
@@ -55,7 +59,7 @@ function guessClicked(guess: Guess) {
 </script>
 
 <template>
-    <div v-for="guess in guesses" :key="guess.id" class="guess" :class="{ selected: guess == selectedGuess }" @click="guessClicked(guess)">
+    <div v-for="guess in guesses" :key="guess.id" class="guess" :class="{ selected: guess == selectedGuess }" @click="guessClicked(guess)" @keyup.ctrl.delete="removeLastGuess">
         <div class="title">
             <div class="word">
                 <GuessDisplay :guess="guess" />
@@ -67,7 +71,13 @@ function guessClicked(guess: Guess) {
         </div>
         <div class="subtitle">
             <div class="grade">
-                {{ guess.previousWordCount }} -> {{ guess.wordCount }} ({{ guess.wordReductionPercentString }}%) [{{ guess.wordReductionScoreString}}] [{{ guess.hintScoreString }}] {{ guess.scoreString }} ({{ guess.scorePercentString }}%)
+                {{ guess.previousWordsRemaining.length }} -> {{ guess.wordsRemaining.length }}
+                ({{ (guess.wordReductionPercent*100).toFixed(2) }}%)
+                U[{{ guess.uncertainty.toFixed(2) }}]
+                P[{{ guess.probability.toFixed(2) }}]
+                B[{{ guess.bits.toFixed(2) }}]
+                {{ (guess.percentage*100).toFixed(0) }}%: {{ (guess.grade*100).toFixed(0) }}%
+                {{ guess.letterGrade }}
             </div>
             
             <button class="button icon" @click.stop="guessClicked(guess)">
@@ -76,7 +86,7 @@ function guessClicked(guess: Guess) {
         </div>
     </div>
 
-    <GuessInput v-if="!completed" :wordIndex="guesses.length" @inputDone="wordInputDone" />
+    <GuessInput v-if="!completed" :wordIndex="guesses.length" @inputDone="wordInputDone" @goBack="removeLastGuess" />
 </template>
 
 <style scoped>

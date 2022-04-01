@@ -1,16 +1,11 @@
-import type { GreensArray, YellowsArray, GraysArray } from "./solver";
 import Solver from "./solver";
-import { allWords } from "./words";
+import { allWords, answers } from "./words";
+import { letterGrade } from "./game";
 
-enum HintState {
+enum Hint {
     Correct = "correct",
     Present = "present",
     Absent = "absent",
-}
-
-interface Hint {
-    letter: string,
-    state: HintState,
 }
 
 var id = 0;
@@ -19,7 +14,60 @@ function generateId(): number {
     return id++;
 }
 
-export class Guess {
+class Calculable {
+    wordsRemaining: string[] = [];
+    answersRemaining: string[] = [];
+
+    get previousWordsRemaining(): string[] {
+        throw new Error("Not Implemented");
+    }
+
+    get previousAnswersRemaining(): string[] {
+        throw new Error("Not Implemented");
+    }
+
+    get wordReduction() {
+        return this.previousWordsRemaining.length - this.wordsRemaining.length;
+    }
+
+    get wordReductionPercent(): number {
+        return this.wordReduction / this.previousWordsRemaining.length;
+    }
+
+    // How many bits of uncertainty there are in the words remaining from the previous guess
+    get uncertainty(): number {
+        // `-log2(1 / numPrevious)` simplified
+        return Math.log2(this.previousWordsRemaining.length);
+    }
+
+    // The probability that this guess was the correct one
+    get probability(): number {
+        return this.wordsRemaining.length / this.previousWordsRemaining.length;
+    }
+
+    get bits(): number {
+        return Math.log2(1 / this.probability);
+    }
+
+    get percentage(): number {
+        if (this.bits > 0 && this.uncertainty > 0) {
+            return this.bits / this.uncertainty;
+        } else {
+            return 1;
+        }
+    }
+
+    get grade(): number {
+        return 1 - Math.pow(1 - this.percentage, 2);
+    }
+
+    get letterGrade(): string {
+        return letterGrade(this.grade);
+    }
+
+}
+
+export class Guess extends Calculable {
     id: number;
     word: string;
     index: number;
@@ -27,208 +75,148 @@ export class Guess {
     previous?: Guess;
     isCorrect: boolean;
     
-    letters: string[];
-    hints: Hint[];
-
-    // Count of hint colors for grading
-    numCorrect: number;
-    numPresent: number;
-    numAbsent: number;
-
-    // Letter colors for this and all previous guesses
-    greens: GreensArray;
-    yellows: YellowsArray;
-    grays: GraysArray;
-    
-    // Words from the list remaining after this and all previous guesses
-    solver?: Solver;
-    wordsRemaining: string[] = [];
-
-    // Reduction grading constants
-    reductionExponent = 2;
-    reductionMax = 5;
-
-    // Hint grading constants
-    hintExponent = 2;
-    correctPoints = 1;
-    presentPoints = 0.5;
-    absentPoints = 0;
-    maxHintPoints = 5;  // This should generally be correctPoints * 5
+    letters: Letter[] = [];
 
     constructor(word: string, index: number, answer: string, previous?: Guess) {
+        super();
+
         this.id = generateId();
         this.word = word;
         this.index = index;
         this.answer = answer;
         this.previous = previous;
         this.isCorrect = this.word == this.answer;
-        this.letters = word.split("");
         
         // Calculate the hint colors based on this word versus the given answer
-        this.hints = this.calculateHints();
-        this.numCorrect = this.hints.filter((hint) => hint.state == HintState.Correct).length;
-        this.numPresent = this.hints.filter((hint) => hint.state == HintState.Present).length;
-        this.numAbsent = 5 - this.numCorrect - this.numPresent;
+        this.splitWord();
+        this.calculateHints();
 
-        // Recursively gather all greens and yellows for the solver
-        this.greens = this.gatherGreens();
-        this.yellows = this.gatherYellows();
-        this.grays = this.gatherGrays();
-
-        this.wordsRemaining = this.solve();
+        this.solve();
     }
 
-    calculateHints(): Hint[] {
+    splitWord() {
+        const letters = this.word.split("");
+        for (let i = 0; i < letters.length; i++) {
+            this.letters.push(new Letter(this, i, letters[i]));
+        }
+    }
+
+    calculateHints() {
         const answerLetters = this.answer.split("");
         const remainingLetters = [...answerLetters];
-        const hints: Hint[] = [];
-
-        // First set all letters and state to Absent
-        for (const letter of this.letters) {
-            hints.push({letter: letter, state: HintState.Absent});
-        }
-
-        // Now find all correct letters, removing them from remainingLetters
-        for (let i = 0; i < hints.length; i++) {
-            if (hints[i].letter == answerLetters[i]) {
-                hints[i].state = HintState.Correct;
+        
+        // Find all correct letters, removing them from remainingLetters
+        for (let i = 0; i < this.letters.length; i++) {
+            if (this.letters[i].letter == answerLetters[i]) {
+                this.letters[i].hint = Hint.Correct;
                 remainingLetters.splice(i, 1);
             }
         }
 
         // For all hints that are still gray, determine if they are present elsewhere
-        for (let i = 0; i < hints.length; i++) {
-            if (hints[i].state == HintState.Absent && remainingLetters.indexOf(hints[i].letter) != -1) {
-                hints[i].state = HintState.Present;
-                remainingLetters.splice(remainingLetters.indexOf(hints[i].letter), 1);
+        for (let i = 0; i < this.letters.length; i++) {
+            if (this.letters[i].hint == Hint.Absent && remainingLetters.indexOf(this.letters[i].letter) != -1) {
+                this.letters[i].hint = Hint.Present;
+                remainingLetters.splice(remainingLetters.indexOf(this.letters[i].letter), 1);
             }
         }
-
-        return hints;
     }
 
-    gatherGreens(): GreensArray {
-        let greens: GreensArray;
-        if (this.previous) {
-            greens = this.previous.gatherGreens();
-        } else {
-            greens = new Array(5).fill(null);
-        }
-
-        for (let i = 0; i < this.hints.length; i++) {
-            if (this.hints[i].state == HintState.Correct) {
-                greens[i] = this.hints[i].letter;
-            }
-        }
-
-        return greens;
-    }
-
-    gatherYellows(): YellowsArray {
-        let yellows: YellowsArray;
-        if (this.previous) {
-            yellows = this.previous.gatherYellows();
-        } else {
-            yellows = new Array(5).fill(null);
-        }
-
-        for (let i = 0; i < this.hints.length; i++) {
-            if (this.hints[i].state == HintState.Present) {
-                if (yellows[i] == null) {
-                    yellows[i] = new Array();
-                }
-                yellows[i]!.push(this.hints[i].letter);
-            }
-        }
-
-        return yellows;
-    }
-
-    gatherGrays(): GraysArray {
-        let grays: GraysArray;
-        if (this.previous) {
-            grays = this.previous.gatherGrays();
-        } else {
-            grays = new Array();
-        }
-
-        for (let i = 0; i < this.hints.length; i++) {
-            if (this.hints[i].state == HintState.Absent && !grays.includes(this.hints[i].letter)) {
-                grays.push(this.hints[i].letter);
-            }
-        }
-
-        return grays;
-    }
-
-    solve(): string[] {
+    solve() {
         console.time("solve");
-        this.solver = new Solver(this.greens, this.yellows, this.grays);
-        const words = this.solver.filter(allWords);
+
+        // Find words and answers remaining for each hint calculated cumulatively.
+        this.wordsRemaining = [...this.previousWordsRemaining];
+        this.answersRemaining = [...this.previousAnswersRemaining];
+        for (let letter of this.letters) {
+            this.wordsRemaining = letter.wordsRemaining = letter.solve(this.wordsRemaining);
+            this.answersRemaining = letter.answersRemaining = letter.solve(this.answersRemaining);
+        }
+        
         console.timeEnd("solve");
-        return words;
     }
 
-    get previousWordCount() {
+    get previousWordsRemaining() {
         if (this.previous) {
-            return this.previous.wordsRemaining.length;
+            return this.previous.wordsRemaining;
         } else {
-            return allWords.length;
+            return allWords;
         }
     }
 
-    get wordCount() {
-        return this.wordsRemaining.length;
+    get previousAnswersRemaining() {
+        if (this.previous) {
+            return this.previous.answersRemaining;
+        } else {
+            return answers;
+        }
+    }
+}
+
+export class Letter extends Calculable {
+    guess: Guess;
+    index: number;
+    letter: string;
+    hint: Hint = Hint.Absent;
+
+    constructor(guess: Guess, index: number, letter: string) {
+        super();
+
+        this.guess = guess;
+        this.index = index;
+        this.letter = letter;
+    }
+
+    get previousLetter(): Letter | null {
+        if (this.index > 0) {
+            return this.guess.letters[this.index-1];
+        } else {
+            return null;
+        }
+
     }
     
-    get wordReduction() {
-        return this.previousWordCount - this.wordCount;
-    }
-
-    get wordReductionPercent(): number {
-        return this.wordReduction / this.previousWordCount;
-    }
-
-    get wordReductionPercentString(): string {
-        return (this.wordReductionPercent * 100).toFixed(2).toString();
-    }
-
-    get wordReductionScore(): number {
-        if (this.wordCount == 1) {
-            return 1 * this.reductionMax;
+    get previousWordsRemaining() {
+        if (this.previousLetter) {
+            return this.previousLetter.wordsRemaining;
         } else {
-            return Math.pow(this.wordReductionPercent, this.reductionExponent) * this.reductionMax;
+            return this.guess.previousWordsRemaining;
         }
     }
 
-    get wordReductionScoreString(): string {
-        return this.wordReductionScore.toFixed(2).toString();
+    get previousAnswersRemaining() {
+        if (this.previousLetter) {
+            return this.previousLetter.answersRemaining;
+        } else {
+            return this.guess.previousAnswersRemaining;
+        }
     }
+    
+    solve(words: string[]): string[] {
+        let solver: Solver;
+        
+        switch (this.hint) {
+            case Hint.Correct:
+                const greens = new Array(5).fill(null);
+                greens[this.index] = this.letter;
+                solver = new Solver(greens, new Array(5).fill(null), []);
+                break;
+        
+            case Hint.Present:
+                const yellows = new Array(5).fill(null);
+                yellows[this.index] = [this.letter];
+                solver = new Solver(new Array(5).fill(null), yellows, []);
+                break;
+        
+            case Hint.Absent:
+                solver = new Solver(new Array(5).fill(null), new Array(5).fill(null), [this.letter]);
+                break;
+        
+            default:
+                throw new Error(`Invalid Hint: ${this.hint}`);
+        }
 
-    get hintScore(): number {
-        return (this.numCorrect * this.correctPoints) + (this.numPresent * this.presentPoints) + (this.numAbsent * this.absentPoints);
+        return solver.filter(words);
     }
-
-    get hintScoreString(): string {
-        return this.hintScore.toFixed(2).toString();
-    }
-
-    get score(): number {
-        return this.wordReductionScore + this.hintScore;
-    }
-
-    get scoreString(): string {
-        return this.score.toFixed(2).toString();
-    }
-
-    get scorePercent(): number {
-        return this.score / (this.reductionMax + this.maxHintPoints);
-    }
-
-    get scorePercentString(): string {
-        return (this.scorePercent * 100).toFixed(2).toString();
-    }
-
-    // get grade(): string {
-    // }
 }
+

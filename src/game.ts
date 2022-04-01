@@ -22,3 +22,33 @@ export function getWordByDayOffset(offset: number, today: Date = new Date()) {
     const d = getDateByDayOffset(offset, today);
     return getWord(d);
 }
+
+export function letterGrade(grade: number): string {
+    if (grade >= 0.97) {
+        return "A+";
+    } else if (grade >= 0.93) {
+        return "A";
+    } else if (grade >= 0.90) {
+        return "A-";
+    } else if (grade >= 0.87) {
+        return "B+";
+    } else if (grade >= 0.83) {
+        return "B";
+    } else if (grade >= 0.80) {
+        return "B-";
+    } else if (grade >= 0.77) {
+        return "C+";
+    } else if (grade >= 0.73) {
+        return "C";
+    } else if (grade >= 0.70) {
+        return "C-";
+    } else if (grade >= 0.67) {
+        return "D+";
+    } else if (grade >= 0.63) {
+        return "D";
+    } else if (grade >= 0.60) {
+        return "D-";
+    } else {
+        return "F";
+    }
+}

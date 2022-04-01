@@ -8,7 +8,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e: 'inputDone', word: string): void
+    (e: 'inputDone', word: string): void,
+    (e: 'goBack'): void,
 }>();
 
 const input = ref<HTMLInputElement | null>(null);
@@ -69,7 +70,9 @@ function checkWord() {
 <template>
     <div class="wrapper">
         <form @submit.prevent="checkWord">
-            <input :value="word" @input="updateWord" ref="input"
+            <input :value="word" ref="input"
+                @input="updateWord"
+                @keyup.ctrl.delete="$emit('goBack')"
                 :placeholder="`${wordNumber} guess`"
                 class="input" :class="{ error: inputError }"
                 type="text" maxlength="5" inputmode="text" enterkeyhint="done"/>

@@ -81,3 +81,5 @@ Scoredle 266 3/6*
 
 ## New grading based on Information theory
 
+https://www.desmos.com/calculator/wgagodxuym
+

@@ -9,8 +9,8 @@ defineProps<{
 
 <template>
     <div class="guess-display">
-        <div v-for="hint in guess.hints" class="letter" :class="hint.state">
-            {{ hint.letter }}
+        <div v-for="letter in guess.letters" class="letter" :class="letter.hint">
+            {{ letter.letter }}
         </div>
     </div>
 </template>

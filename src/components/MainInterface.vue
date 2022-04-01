@@ -180,7 +180,7 @@ function guessClicked(guess?: Guess) {
         {{ page.dragVelocity.toFixed(2) }}
     </div>
 
-    <main class="main-interface" @keydown.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
+    <main class="main-interface" @keyup.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
         <div class="page input-page" :class="{ show: isInputPage }" :style="{ transform: inputPageTransform, transition: dragTransition }">
             <PuzzleInput v-model="guesses" :selectedGuess="selectedGuess" @guessClicked="guessClicked"/>
 
