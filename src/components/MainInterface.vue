@@ -183,14 +183,10 @@ function guessClicked(guess?: Guess) {
     <main class="main-interface" @keyup.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
         <div class="page input-page" :class="{ show: isInputPage }" :style="{ transform: inputPageTransform, transition: dragTransition }">
             <PuzzleInput v-model="guesses" :selectedGuess="selectedGuess" @guessClicked="guessClicked"/>
-
-            <!--<ul v-for="guess in guesses" :key="guess.id">
-                <li>MAININTERFACE: {{ guess.index }}: ({{ guess.id }}) {{ guess.word }} (previous: {{ guess.previous?.word }})</li>
-            </ul>-->
         </div>
 
         <div class="page summary-page" :class="{ show: isSummaryPage }" :style="{ transform: summaryPageTransform, transition: dragTransition }">
-            <SummaryView @backClicked="showInputPage"/>
+            <SummaryView :guess="selectedGuess" @backClicked="showInputPage"/>
         </div>
 
     </main>

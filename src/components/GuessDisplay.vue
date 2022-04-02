@@ -9,7 +9,7 @@ defineProps<{
 
 <template>
     <div class="guess-display">
-        <div v-for="letter in guess.letters" class="letter" :class="letter.hint">
+        <div v-for="letter in guess.letters" class="tile" :class="letter.hint">
             {{ letter.letter }}
         </div>
     </div>
@@ -23,20 +23,7 @@ defineProps<{
         margin: -.2em;
     }
 
-    .letter {
-        padding: .25em .5em;
-        background: var(--color-absent);
+    .tile {
         margin: .2em;
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 1.5em;
-    }
-
-    .letter.correct {
-        background-color: var(--color-correct);
-    }
-
-    .letter.present {
-        background-color: var(--color-present);
     }
 </style>

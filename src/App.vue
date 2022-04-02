@@ -175,11 +175,11 @@ function closeModal(name: string) {
     }
 
     .button.icon {
+        display: block;
         color: var(--gray-2);
         background: none;
         border: none;
         min-width: 2em;
-        height: 2em;
         margin: 0;
         padding: .5em;
         cursor: pointer;
@@ -191,6 +191,27 @@ function closeModal(name: string) {
 
     .button.icon svg {
         height: 100%;
+        width: auto;
+    }
+
+    .tile {
+        padding: .25em .5em;
+        background: var(--color-absent);
+        color: var(--tile-text-color);
+        text-transform: uppercase;
+        font-weight: bold;
+        width: 1.7em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .tile.correct {
+        background-color: var(--color-correct);
+    }
+
+    .tile.present {
+        background-color: var(--color-present);
     }
 
     .input {
