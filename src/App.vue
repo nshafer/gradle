@@ -179,7 +179,8 @@ function closeModal(name: string) {
         color: var(--gray-2);
         background: none;
         border: none;
-        min-width: 2em;
+        height: 2.25em;
+        min-width: 2.25em;
         margin: 0;
         padding: .5em;
         cursor: pointer;
@@ -240,7 +241,6 @@ function closeModal(name: string) {
         letter-spacing: normal;
         text-transform: none;
         color: var(--input-placeholder-color);
-        font-size: 1rem;
         font-weight: normal;
     }
 

@@ -68,32 +68,23 @@ function checkWord() {
 </script>
 
 <template>
-    <div class="wrapper">
-        <form @submit.prevent="checkWord">
-            <input :value="word" ref="input"
-                @input="updateWord"
-                @keyup.ctrl.delete="$emit('goBack')"
-                :placeholder="`${wordNumber} guess`"
-                class="input" :class="{ error: inputError }"
-                type="text" maxlength="5" inputmode="text" enterkeyhint="done"/>
-        </form>
-    </div>
+    <form @submit.prevent="checkWord">
+        <input :value="word" ref="input"
+            @input="updateWord"
+            @keyup.ctrl.delete="$emit('goBack')"
+            :placeholder="`${wordNumber} guess`"
+            class="input" :class="{ error: inputError }"
+            type="text" maxlength="5" inputmode="text" enterkeyhint="done"/>
+    </form>
 </template>
 
 <style scoped>
-    .wrapper {
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: center;
-        align-items: center;
-    }
-
     .input {
-        max-width: 12em;
-        font-size: 1.3em;
+        font-size: 1.5em;
         text-transform: uppercase;
         font-weight: bold;
-        text-align: center;
         letter-spacing: .1em;
+        line-height: 1;
+        padding: .5em;
     }
 </style>

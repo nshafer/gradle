@@ -69,7 +69,7 @@ function guessClicked(guess: Guess) {
                 <GuessDisplay :guess="guess" />
             </div>
             
-            <button class="button icon" @click.stop="removeGuess(guess)">
+            <button class="button icon" @click.stop="removeGuess(guess)" title="Remove this guess">
                 <IconTrash />
             </button>
         </div>
@@ -79,7 +79,7 @@ function guessClicked(guess: Guess) {
                     Solved in {{ guess.index+1 }} guesses
                 </div>
 
-                <button class="button icon" @click.stop="guessClicked(guess)">
+                <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
                     <IconAngleRight />
                 </button>
             </template>
@@ -97,7 +97,7 @@ function guessClicked(guess: Guess) {
                     </div>
                 </div>
                 
-                <button class="button icon" @click.stop="guessClicked(guess)">
+                <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
                     <IconAngleRight />
                 </button>
             </template>
@@ -108,10 +108,16 @@ function guessClicked(guess: Guess) {
         </div>
     </div>
 
-    <GuessInput v-if="!completed" :wordIndex="guesses.length" @inputDone="wordInputDone" @goBack="removeLastGuess" />
+    <div v-if="!completed" class="guess-input">
+        <GuessInput :wordIndex="guesses.length" @inputDone="wordInputDone" @goBack="removeLastGuess" />
+    </div>
 </template>
 
 <style scoped>
+    .guess-input p {
+        margin: 0 0 1em;
+    }
+
     .guess {
         display: grid;
         grid-template-columns: auto max-content;
@@ -120,28 +126,26 @@ function guessClicked(guess: Guess) {
             "title grade"
             "subtitle grade";
 
-        border: 2px solid transparent;
         margin-bottom: 1em;
     }
 
     .guess.selected {
-        /* outline: var(--gray-3) solid 2px;
-        outline-offset: 3px; */
-        border-color: var(--gray-2);
+        outline: var(--gray-2) solid 2px;
+        outline-offset: 3px;
     }
-
+    
     .title {
         grid-area: title;
         display: flex;
         flex-flow: row nowrap;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
         background: var(--gray-5);
         padding-right: 0.5em;
     }
 
     .word {
-        padding: .5em;
+        padding: .25em .5em;
         font-size: 1.25em;
     }
 
@@ -173,7 +177,7 @@ function guessClicked(guess: Guess) {
         grid-area: grade;
         background: var(--gray-5);
         width: 5em;
-        padding: 1em;
+        padding: .5em;
         display: flex;
         flex-flow: column nowrap;
         justify-content: center;
@@ -231,11 +235,18 @@ function guessClicked(guess: Guess) {
         
         .grade {
             width: 6em;
-            padding: 1em;
         }
         
         .letter {
             font-size: 3em;
         }
+    }
+
+    /* Small screens only */
+    @media screen and (max-width: 59.9375em) {
+    }
+
+    /* Large screens only */
+    @media screen and (min-width: 60em) {
     }
 </style>
