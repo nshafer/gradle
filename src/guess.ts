@@ -1,8 +1,9 @@
 import Solver from "./solver";
+import type { GreensArray, YellowsArray, GraysArray } from './solver';
 import { allWords, answers } from "./words";
 import { letterGrade } from "./game";
 
-enum Hint {
+export enum Hint {
     Correct = "correct",
     Present = "present",
     Absent = "absent",
@@ -31,7 +32,11 @@ class Calculable {
     }
 
     get wordReductionPercent(): number {
-        return this.wordReduction / this.previousWordsRemaining.length;
+        if (this.previousWordsRemaining.length <= 0) {
+            return 0;
+        } else {
+            return this.wordReduction / this.previousWordsRemaining.length;
+        }
     }
 
     // How many bits of uncertainty there are in the words remaining from the previous guess
@@ -42,7 +47,11 @@ class Calculable {
 
     // The probability that this guess was the correct one
     get probability(): number {
-        return this.wordsRemaining.length / this.previousWordsRemaining.length;
+        if (this.previousWordsRemaining.length <= 0) {
+            return 0;
+        } else {
+            return this.wordsRemaining.length / this.previousWordsRemaining.length;
+        }
     }
 
     get bits(): number {
@@ -50,10 +59,10 @@ class Calculable {
     }
 
     get percentage(): number {
-        if (this.bits > 0 && this.uncertainty > 0) {
-            return this.bits / this.uncertainty;
+        if (this.uncertainty <= 0) {
+            return 0;
         } else {
-            return 1;
+            return this.bits / this.uncertainty;
         }
     }
 
@@ -151,6 +160,15 @@ export class Guess extends Calculable {
             return answers;
         }
     }
+
+    get grade(): number {
+        if (this.isCorrect) {
+            // Correct guesses are always 100% A+
+            return 1;
+        } else {
+            return super.grade;
+        }
+    }
 }
 
 export class Letter extends Calculable {
@@ -192,30 +210,61 @@ export class Letter extends Calculable {
         }
     }
     
-    solve(words: string[]): string[] {
-        let solver: Solver;
-        
-        switch (this.hint) {
-            case Hint.Correct:
-                const greens = new Array(5).fill(null);
-                greens[this.index] = this.letter;
-                solver = new Solver(greens, new Array(5).fill(null), []);
-                break;
-        
-            case Hint.Present:
-                const yellows = new Array(5).fill(null);
-                yellows[this.index] = [this.letter];
-                solver = new Solver(new Array(5).fill(null), yellows, []);
-                break;
-        
-            case Hint.Absent:
-                solver = new Solver(new Array(5).fill(null), new Array(5).fill(null), [this.letter]);
-                break;
-        
-            default:
-                throw new Error(`Invalid Hint: ${this.hint}`);
+    gatherGreens(): GreensArray {
+        let greens: GreensArray;
+        if (this.previousLetter) {
+            greens = this.previousLetter.gatherGreens();
+        } else {
+            greens = new Array(5).fill(null);
         }
 
+        if (this.hint == Hint.Correct) {
+            greens[this.index] = this.letter;
+        }
+        
+        return greens;
+    }
+
+    gatherYellows(): YellowsArray {
+        let yellows: YellowsArray;
+        if (this.previousLetter) {
+            yellows = this.previousLetter.gatherYellows();
+        } else {
+            yellows = new Array(5).fill(null);
+        }
+
+        if (this.hint == Hint.Present) {
+            if (yellows[this.index] == null) {
+                yellows[this.index] = new Array();
+            }
+            yellows[this.index]!.push(this.letter);
+        }
+        
+        return yellows;
+    }
+
+    gatherGrays(): GraysArray {
+        let grays: GraysArray;
+        if (this.previousLetter) {
+            grays = this.previousLetter.gatherGrays();
+        } else {
+            grays = new Array();
+        }
+
+        if (this.hint == Hint.Absent) {
+            grays.push(this.letter);
+        }
+
+        return grays;
+    }
+
+    solve(words: string[]): string[] {
+        const greens = this.gatherGreens();
+        const yellows = this.gatherYellows();
+        const grays = this.gatherGrays();
+
+        const solver = new Solver(greens, yellows, grays);
+        
         return solver.filter(words);
     }
 }
