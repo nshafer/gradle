@@ -61,18 +61,12 @@ export default class Solver {
 
     filter(wordlist: string[]) : string[] {
         const matchRegex = this.buildMatchRegex();
-        console.log("matchRegex", matchRegex);
-
         const includeRegex = this.buildIncludeRegex();
-        console.log("includeRegex", includeRegex);
-
         const excludeRegex = this.buildExcludeRegex();
-        console.log("exludeRegex", excludeRegex);
+        
+        // console.log("matchRegex", matchRegex, "includeRegex", includeRegex, "excludeRegex", excludeRegex);
 
-        return wordlist.filter(word => word.match(matchRegex) && word.match(excludeRegex) && word.match(includeRegex));
-        // return wordlist.filter(word => word.match(matchRegex) && word.match(includeRegex));
-        // return wordlist.filter(word => word.match(excludeRegex));
-        // return wordlist.filter(word => word.match(includeRegex));
+        return wordlist.filter(word => word.match(matchRegex) && word.match(includeRegex) && word.match(excludeRegex));
     }
 
     // Build the regex pattern that matches a specific character in a specific position
