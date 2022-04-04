@@ -53,7 +53,7 @@ function showSummaryPage() {
 }
 
 const dragEnabled = computed(() => {
-    return page.screenWidth < 960;
+    return page.screenWidth < 70*16;
 });
 
 const dragOffset = computed(() => {
@@ -206,7 +206,7 @@ function guessClicked(guess?: Guess) {
     }
 
     /* Small screens only */
-    @media screen and (max-width: 59.9375em) {
+    @media screen and (max-width: 69.9375em) {
         .main-interface {
             position: relative;
             width: 100%;
@@ -228,7 +228,7 @@ function guessClicked(guess?: Guess) {
     }
 
     /* Large screens only */
-    @media screen and (min-width: 60em) {
+    @media screen and (min-width: 70em) {
         .main-interface {
             display: grid;
             grid-template-columns: 1fr 1fr;

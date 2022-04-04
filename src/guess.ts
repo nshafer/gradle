@@ -54,6 +54,10 @@ class Calculable {
         }
     }
 
+    get fractional(): number {
+        return 1 / this.probability;
+    }
+
     get bits(): number {
         return Math.log2(1 / this.probability);
     }
@@ -74,6 +78,9 @@ class Calculable {
         return letterGrade(this.grade);
     }
 
+    get letterGradeSimple(): string {
+        return this.letterGrade.toLowerCase().replaceAll("+", " plus").replaceAll("-", " minus")
+    }
 }
 
 export class Guess extends Calculable {

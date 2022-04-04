@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
 import { Guess } from '../guess';
+
 import GuessInput from './GuessInput.vue';
+import GuessDisplay from './GuessDisplay.vue';
 
 import IconTrash from './icons/IconTrash.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
-import GuessDisplay from './GuessDisplay.vue';
+import IconCaretRight from "./icons/IconCaretRight.vue";
 
 // TODO: prompt user for date or manually enter word
 const answer = "snout";
@@ -32,10 +34,6 @@ const guesses = computed<Guess[]>({
 const completed = computed(() => {
     return guesses.value.length >= 6 || guesses.value[guesses.value.length-1]?.isCorrect;
 });
-
-function letterGradeCssClass(letterGrade: string): string {
-    return letterGrade.toLowerCase().replaceAll("+", " plus").replaceAll("-", " minus");
-}
 
 function wordInputDone(word: string) {
     // console.log("wordInputDone", word);
@@ -88,7 +86,9 @@ function guessClicked(guess: Guess) {
                 <div class="summary">
                     <div class="remaining">
                         <b>Words:</b>
-                        {{ guess.previousWordsRemaining.length }} -> {{ guess.wordsRemaining.length }}
+                        {{ guess.previousWordsRemaining.length }}
+                        <div class="icon-inline"><IconCaretRight /></div>
+                        {{ guess.wordsRemaining.length }}
                     </div>
                     
                     <div class="bits">
@@ -102,7 +102,7 @@ function guessClicked(guess: Guess) {
                 </button>
             </template>
         </div>
-        <div class="grade" :class="[letterGradeCssClass(guess.letterGrade)]">
+        <div class="grade grade-color" :class="[guess.letterGradeSimple]">
             <div class="letter">{{ guess.letterGrade }}</div>
             <div class="percent">{{ (guess.grade*100).toFixed(0) }}%</div>
         </div>
@@ -175,49 +175,6 @@ function guessClicked(guess: Guess) {
     
     .grade {
         grid-area: grade;
-        background: var(--gray-5);
-        width: 5em;
-        padding: .5em;
-        display: flex;
-        flex-flow: column nowrap;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .grade.a {
-        background: var(--grade-a-bg);
-        color: var(--grade-a-fg);
-    }
-
-    .grade.b {
-        background: var(--grade-b-bg);
-        color: var(--grade-b-fg);
-    }
-
-    .grade.c {
-        background: var(--grade-c-bg);
-        color: var(--grade-c-fg);
-    }
-
-    .grade.d {
-        background: var(--grade-d-bg);
-        color: var(--grade-d-fg);
-    }
-
-    .grade.f {
-        background: var(--grade-f-bg);
-        color: var(--grade-f-fg);
-    }
-
-    .letter {
-        flex: 0 0 auto;
-        font-size: 2.5em;
-        text-shadow: 3px 2px 12px rgba(0, 0, 0, 0.7);
-    }
-
-    .percent {
-        font-size: 1.1em;
-        font-weight: bold;
     }
 
     @media screen and (min-width: 35em) {
@@ -234,19 +191,15 @@ function guessClicked(guess: Guess) {
         }
         
         .grade {
-            width: 6em;
-        }
-        
-        .letter {
-            font-size: 3em;
+            font-size: 1.2em;
         }
     }
 
     /* Small screens only */
-    @media screen and (max-width: 59.9375em) {
+    @media screen and (max-width: 69.9375em) {
     }
 
     /* Large screens only */
-    @media screen and (min-width: 60em) {
+    @media screen and (min-width: 70em) {
     }
 </style>

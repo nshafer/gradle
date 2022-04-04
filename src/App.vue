@@ -110,6 +110,12 @@ function closeModal(name: string) {
         width: auto;
     }
 
+    .icon-inline {
+        display: inline-block;
+        height: 1em;
+        vertical-align: -0.15em;
+    }
+
     a {
         color: var(--gray-1);
     }
@@ -346,14 +352,70 @@ function closeModal(name: string) {
         padding: .75em .5em;
     }
 
-    @media screen and (min-width: 60em) {
+    @media screen and (min-width: 70em) {
         .section__body {
             padding: 1em;
         }
     }
 
+    .grade {
+        width: 5em;
+        padding: .5em;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .grade .letter {
+        flex: 0 0 auto;
+        font-size: 2.5em;
+        text-shadow: 3px 2px 12px rgba(0, 0, 0, 0.7);
+    }
+
+    .grade .percent {
+        font-size: 1.1em;
+        font-weight: bold;
+    }
+
+    .grade-color {
+        background: var(--gray-5) !important;
+    }
+
+    .grade-color.a {
+        background: var(--grade-a-bg) !important;
+        color: var(--grade-a-fg) !important;
+    }
+
+    .grade-color.b {
+        background: var(--grade-b-bg) !important;
+        color: var(--grade-b-fg) !important;
+    }
+
+    .grade-color.c {
+        background: var(--grade-c-bg) !important;
+        color: var(--grade-c-fg) !important;
+    }
+
+    .grade-color.d {
+        background: var(--grade-d-bg) !important;
+        color: var(--grade-d-fg) !important;
+    }
+
+    .grade-color.f {
+        background: var(--grade-f-bg) !important;
+        color: var(--grade-f-fg) !important;
+    }
+
     strong {
         font-size: 1.2em;
+    }
+
+    /* hijacked for variable letters */
+    small {
+        font-style: italic;
+        font-size: 1em;
+        font-weight: bold;
     }
 
     .middle-center {
