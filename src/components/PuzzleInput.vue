@@ -140,7 +140,7 @@ function guessClicked(guess: Guess) {
         flex-flow: row nowrap;
         justify-content: flex-start;
         align-items: center;
-        background: var(--gray-5);
+        background: var(--page-bg2);
         padding-right: 0.5em;
     }
 
@@ -155,7 +155,7 @@ function guessClicked(guess: Guess) {
         flex-flow: row nowrap;
         justify-content: space-between;
         align-items: center;
-        background: var(--gray-4);
+        background: var(--page-bg);
         padding-right: 0.5em;
     }
 

@@ -39,7 +39,7 @@ defineEmits(["backClicked"]);
                                 to
                                 <b>{{ guess.wordsRemaining.length }}</b>
                                 which is a reduction of
-                                <b>{{ (guess.wordReductionPercent*100).toFixed(1) }}%</b>.
+                                <b>{{ (guess.wordReductionPercent*100).toFixed(2) }}%</b>.
 
                                 <p>
                                     <small>w<sub>p</sub></small> = {{ guess.previousWordsRemaining.length }}
@@ -54,7 +54,7 @@ defineEmits(["backClicked"]);
                             {{ guess.previousWordsRemaining.length }}
                             <div class="icon-inline"><IconCaretRight /></div>
                             {{ guess.wordsRemaining.length }}
-                            ({{ (guess.probability*100).toFixed(1) }}%)
+                            ({{ (guess.wordReductionPercent*100).toFixed(1) }}%)
                         </span>
                     </div>
                 </div>
@@ -114,7 +114,7 @@ defineEmits(["backClicked"]);
                 </div>
             </div>
             
-            <div class="detail-row">
+            <div class="detail-row mb-3">
                 <div class="detail">
                     <div class="detail-label">
                         Probability
@@ -175,6 +175,39 @@ defineEmits(["backClicked"]);
                 </div>
             </div>
 
+            <div class="letter-details mb-3">
+                <table class="letter-table">
+                    <thead>
+                        <tr>
+                            <th>Letter</th>
+                            <th>Words</th>
+                            <th>Reduction</th>
+                            <th>Bits</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="letter in guess.letters" :key="letter.index">
+                            <th>
+                                <div class="tile" :class="letter.hint">
+                                    {{ letter.letter }}
+                                </div>
+                            </th>
+                            <td>
+                                {{ letter.previousWordsRemaining.length }}
+                                <div class="icon-inline"><IconCaretRight /></div>
+                                {{ letter.wordsRemaining.length }}
+                            </td>
+                            <td>
+                                {{ (letter.wordReductionPercent*100).toFixed(1) }}%
+                            </td>
+                            <td>
+                                {{ letter.bits.toFixed(2) }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <div class="control">
                 <div class="buttons">
                     <button class="return button with-icon-left" @click="$emit('backClicked')">
@@ -199,14 +232,7 @@ defineEmits(["backClicked"]);
 
 <style scoped>
     .summary {
-        height: 100%;
-        max-height: 35em;
-        background: var(--gray-5);
-        /* padding: 1em; */
-    }
-
-    .darktheme .summary {
-        background: var(--gray-4);
+        background: var(--page-bg);
     }
 
     .sheet {
@@ -220,12 +246,9 @@ defineEmits(["backClicked"]);
         flex-flow: row nowrap;
         justify-content: space-between;
         align-items: center;
-        background: var(--gray-4);
+        background: var(--detail-label-bg);
+        color: var(--detail-label-fg);
         margin-bottom: .5em;
-    }
-
-    .darktheme .header {
-        background: var(--gray-5);
     }
 
     .word {
@@ -241,7 +264,6 @@ defineEmits(["backClicked"]);
     }
 
     .detail {
-        background: var(--gray-4);
         flex: 1 0 0%;
         width: 100%;
         margin: .25em;
@@ -250,11 +272,9 @@ defineEmits(["backClicked"]);
         justify-content: stretch;
     }
 
-    .darktheme .detail {
-        background: var(--gray-5);
-    }
-
     .detail-label {
+        background: var(--detail-label-bg);
+        color: var(--detail-label-fg);
         flex-grow: 1;
         padding: .25em .5em;
         display: flex;
@@ -265,8 +285,8 @@ defineEmits(["backClicked"]);
     }
 
     .detail-value {
-        background: var(--gray-3);
-        color: var(--gray-7);
+        background: var(--detail-value-bg);
+        color: var(--detail-value-fg);
         font-weight: bold;
         padding: .25em .75em;
         display: flex;
@@ -276,10 +296,6 @@ defineEmits(["backClicked"]);
         white-space: nowrap;
     }
     
-    .darktheme .detail-value {
-        color: var(--gray-1);
-    }
-
     .detail-unit {
         font-size: .8em;
         font-style: italic;
@@ -310,11 +326,44 @@ defineEmits(["backClicked"]);
         flex-flow: row nowrap;
         justify-content: center;
         align-items: center;
-        background: var(--gray-2);
+        background: var(--detail-label-bg);
+        color: var(--detail-label-fg);
         padding: .25em;
         font-size: 1.5em;
         font-weight: bold;
         width: 1.5em;
         margin-right: .5em;
     }
+
+    .letter-details {
+        padding: 0 .5em;
+        overflow-x: auto;
+    }
+
+    .letter-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .letter-table thead {
+        /* background: var(--gray-5); */
+    }
+
+    .letter-table th, .letter-table td {
+        padding: .3em;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .letter-table tbody th {
+        background: var(--detail-label-bg);
+        color: var(--detail-label-fg);
+    }
+    
+    .letter-table tbody td {
+        background: var(--detail-value-bg);
+        color: var(--detail-value-fg);
+    }
+
+
 </style>

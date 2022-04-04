@@ -208,7 +208,7 @@ function closeModal(name: string) {
         text-transform: uppercase;
         font-weight: bold;
         width: 1.7em;
-        display: flex;
+        display: inline-flex;
         justify-content: center;
         align-items: center;
     }

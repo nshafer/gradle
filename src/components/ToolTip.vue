@@ -3,19 +3,19 @@ import { computed } from "vue";
 import Popper from "vue3-popper";
 
 const props = defineProps<{
-    wide?: string,
+    wide?: boolean,
 }>();
 
 const classes = computed(() => {
     return {
-        wide: props.wide == "true",
+        wide: props.wide,
     }
 });
 
 </script>
 
 <template>
-    <Popper v-bind="$attrs" arrow="true" :class="classes">
+    <Popper v-bind="$attrs" :arrow="true" :class="classes">
         <slot />
         <template #content="props">
             <slot name="content" v-bind="props" />
