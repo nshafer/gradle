@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, onUnmounted, computed, watch } from 'vue';
 
-import type { GreensArray, YellowsArray, GraysArray } from '@/solver';
-import Solver from '../solver';
 import PuzzleInput from './PuzzleInput.vue';
 import SummaryView from './SummaryView.vue';
-import IconAngleLeft from './icons/IconAngleLeft.vue';
-import IconAngleRight from './icons/IconAngleRight.vue';
 import type { Guess } from '@/guess';
 
 // Page/dragging support

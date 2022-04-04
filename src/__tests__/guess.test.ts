@@ -84,51 +84,42 @@ describe('Guess', () => {
 
     test("double letters only first Present is hinted", () => {
         const guess = new Guess("worry", 0, "renew");
-
-        expect(guess.letters[2].hint).toEqual(Hint.Present);
-        expect(guess.letters[3].hint).toEqual(Hint.Absent);
+        expect(guess.letters.map(l => l.hint)).toEqual([Hint.Present, Hint.Absent, Hint.Present, Hint.Absent, Hint.Absent]);
     });
 
     test("double letters only Correct is hinted", () => {
         const guess = new Guess("niner", 0, "renew");
-
-        expect(guess.letters[0].hint).toEqual(Hint.Absent);
-        expect(guess.letters[2].hint).toEqual(Hint.Correct);
+        expect(guess.letters.map(l => l.hint)).toEqual([Hint.Absent, Hint.Absent, Hint.Correct, Hint.Correct, Hint.Present]);
     });
 
     test("double letters Present both are hinted", () => {
         const guess = new Guess("event", 0, "renew");
-
-        expect(guess.letters[0].hint).toEqual(Hint.Present);
-        expect(guess.letters[2].hint).toEqual(Hint.Present);
+        expect(guess.letters.map(l => l.hint)).toEqual([Hint.Present, Hint.Absent, Hint.Present, Hint.Present, Hint.Absent]);
     });
 
     test("double letters Present and Correct are hinted", () => {
         const guess = new Guess("enter", 0, "renew");
-
-        expect(guess.letters[0].hint).toEqual(Hint.Present);
-        expect(guess.letters[3].hint).toEqual(Hint.Correct);
+        expect(guess.letters.map(l => l.hint)).toEqual([Hint.Present, Hint.Present, Hint.Absent, Hint.Correct, Hint.Present]);
     });
 
-    test("each letter accumulates from previous", () => {
+    test("each letter adds up to guess", () => {
         const guess = new Guess("worry", 0, "renew");
         expect(guess.isCorrect).toBe(false);
         expect(guess.letters.map(l => l.hint)).toEqual([Hint.Present, Hint.Absent, Hint.Present, Hint.Absent, Hint.Absent]);
-        expect(guess.bits).greaterThanOrEqual(1).lessThanOrEqual(13);
-
-        // expect(guess.uncertainty).greaterThanOrEqual(1).lessThanOrEqual(3);
-        // expect(guess.uncertainty).toBeCloseTo(guess3.uncertainty - guess3.bits);
-        // expect(guess.bits).greaterThanOrEqual(1).lessThanOrEqual(3);
-        // expect(guess.grade).greaterThanOrEqual(.9);
-
+        expect(guess.bits).greaterThanOrEqual(7).lessThanOrEqual(8);
+        expect(guess.letters.map(l => l.bits).reduce((acc, n) => acc + n)).toEqual(guess.bits);
     });
 
     test("yellow turns to green after gray", () => {
         const answer = "shawl";
-        // woman, await
         const guess1 = new Guess("woman", 0, answer);
         const guess2 = new Guess("await", 0, answer);
         expect(guess2.wordsRemaining.length).greaterThan(0);
-
     });
+
+    test("multiple greens and yellows", () => {
+        const answer = "robot";
+        const guess = new Guess("motor", 0, answer);
+        expect(guess.letters.map((l) => l.hint)).toEqual([Hint.Absent, Hint.Correct, Hint.Present, Hint.Correct, Hint.Present]);
+    })
 })

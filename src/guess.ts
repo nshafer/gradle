@@ -1,5 +1,5 @@
 import Solver from "./solver";
-import type { GreensArray, YellowsArray, GraysArray } from './solver';
+import type { LetterArray } from './solver';
 import { allWords, answers } from "./words";
 import { letterGrade } from "./game";
 
@@ -131,7 +131,7 @@ export class Guess extends Calculable {
         for (let i = 0; i < this.letters.length; i++) {
             if (this.letters[i].letter == answerLetters[i]) {
                 this.letters[i].hint = Hint.Correct;
-                remainingLetters.splice(i, 1);
+                remainingLetters[i] = "_";
             }
         }
 
@@ -139,7 +139,7 @@ export class Guess extends Calculable {
         for (let i = 0; i < this.letters.length; i++) {
             if (this.letters[i].hint == Hint.Absent && remainingLetters.indexOf(this.letters[i].letter) != -1) {
                 this.letters[i].hint = Hint.Present;
-                remainingLetters.splice(remainingLetters.indexOf(this.letters[i].letter), 1);
+                remainingLetters[remainingLetters.indexOf(this.letters[i].letter)] = "_";
             }
         }
     }
@@ -250,60 +250,27 @@ export class Letter extends Calculable {
         }
     }
     
-    gatherGreens(): GreensArray {
-        let greens: GreensArray;
+    gatherLetters(hint: Hint): LetterArray {
+        let letters: LetterArray;
         if (this.previousLetter) {
-            greens = this.previousLetter.gatherGreens();
+            letters = this.previousLetter.gatherLetters(hint);
         } else {
-            greens = new Array(5).fill(null);
+            letters = new Array(5).fill(null);
         }
 
-        if (this.hint == Hint.Correct) {
-            greens[this.index] = this.letter;
+        if (this.hint == hint) {
+            letters[this.index] = this.letter;
         }
         
-        return greens;
-    }
-
-    gatherYellows(): YellowsArray {
-        let yellows: YellowsArray;
-        if (this.previousLetter) {
-            yellows = this.previousLetter.gatherYellows();
-        } else {
-            yellows = new Array(5).fill(null);
-        }
-
-        if (this.hint == Hint.Present) {
-            if (yellows[this.index] == null) {
-                yellows[this.index] = new Array();
-            }
-            yellows[this.index]!.push(this.letter);
-        }
-        
-        return yellows;
-    }
-
-    gatherGrays(): GraysArray {
-        let grays: GraysArray;
-        if (this.previousLetter) {
-            grays = this.previousLetter.gatherGrays();
-        } else {
-            grays = new Array();
-        }
-
-        if (this.hint == Hint.Absent) {
-            grays.push(this.letter);
-        }
-
-        return grays;
+        return letters;
     }
 
     solve(words: string[]): string[] {
-        const greens = this.gatherGreens();
-        const yellows = this.gatherYellows();
-        const grays = this.gatherGrays();
+        const correct = this.gatherLetters(Hint.Correct);
+        const present = this.gatherLetters(Hint.Present);
+        const absent = this.gatherLetters(Hint.Absent);
 
-        const solver = new Solver(greens, yellows, grays);
+        const solver = new Solver(correct, present, absent);
         
         return solver.filter(words);
     }
