@@ -10,7 +10,7 @@ import IconAngleRight from './icons/IconAngleRight.vue';
 import IconCaretRight from "./icons/IconCaretRight.vue";
 
 // TODO: prompt user for date or manually enter word
-const answer = "snout";
+const answer = "shawl";
 
 const props = defineProps<{
     modelValue: Guess[],

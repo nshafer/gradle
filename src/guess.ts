@@ -16,6 +16,8 @@ function generateId(): number {
 }
 
 class Calculable {
+    // Base word lists all calculations are based on
+    
     wordsRemaining: string[] = [];
     answersRemaining: string[] = [];
 
@@ -27,6 +29,8 @@ class Calculable {
         throw new Error("Not Implemented");
     }
 
+    // Calculations based on the above
+    
     get wordReduction() {
         return this.previousWordsRemaining.length - this.wordsRemaining.length;
     }
@@ -92,6 +96,7 @@ export class Guess extends Calculable {
     isCorrect: boolean;
     
     letters: Letter[] = [];
+    resolvedLetters: Letter[] = [];
 
     constructor(word: string, index: number, answer: string, previous?: Guess) {
         super();
@@ -106,6 +111,7 @@ export class Guess extends Calculable {
         // Calculate the hint colors based on this word versus the given answer
         this.splitWord();
         this.calculateHints();
+        this.calculateResolvedLetters();
 
         this.solve();
     }
@@ -138,13 +144,29 @@ export class Guess extends Calculable {
         }
     }
 
+    calculateResolvedLetters() {
+        // Sort letters by desired resolution order. First greens, then yellows, then grays.
+        // This is needed so that we observe their effects in the correct order.
+        this.resolvedLetters = [
+            ...this.letters.filter(l => l.hint == Hint.Correct),
+            ...this.letters.filter(l => l.hint == Hint.Present),
+            ...this.letters.filter(l => l.hint == Hint.Absent),
+        ];
+
+        // Update the letter's resolutionIndex so they can find their previous letter
+        for (let i = 0; i < this.resolvedLetters.length; i++) {
+            this.resolvedLetters[i].resolutionIndex = i;
+        }
+    }
+
     solve() {
         console.time("solve");
 
-        // Find words and answers remaining for each hint calculated cumulatively.
+        // Start with a copy of the previous Guess's remaining words
         this.wordsRemaining = [...this.previousWordsRemaining];
         this.answersRemaining = [...this.previousAnswersRemaining];
-        for (let letter of this.letters) {
+
+        for (let letter of this.resolvedLetters) {
             this.wordsRemaining = letter.wordsRemaining = letter.solve(this.wordsRemaining);
             this.answersRemaining = letter.answersRemaining = letter.solve(this.answersRemaining);
         }
@@ -180,9 +202,14 @@ export class Guess extends Calculable {
 
 export class Letter extends Calculable {
     guess: Guess;
-    index: number;
     letter: string;
     hint: Hint = Hint.Absent;
+
+    // The position of this letter in the word in original order
+    index: number;
+
+    // The order in which this letter resolves during the solve
+    resolutionIndex?: number;
 
     constructor(guess: Guess, index: number, letter: string) {
         super();
@@ -193,8 +220,14 @@ export class Letter extends Calculable {
     }
 
     get previousLetter(): Letter | null {
-        if (this.index > 0) {
-            return this.guess.letters[this.index-1];
+        if (this.resolutionIndex == undefined) {
+            throw new Error("Attempted to get previous letter before resolution order was resolved");
+        } else if (this.resolutionIndex > 0) {
+            const previousLetter = this.guess.letters.find(l => l.resolutionIndex == this.resolutionIndex! - 1);
+            if (!previousLetter) {
+                throw new Error(`Could not find previous letter in resolution order: ${this.resolutionIndex! - 1}`);
+            }
+            return previousLetter;
         } else {
             return null;
         }

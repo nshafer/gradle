@@ -27,11 +27,11 @@ describe('Guess', () => {
         // This is a very good grade
         expect(guess.grade).greaterThan(.9);
         
-        // Each letter should only ever reduce the possible words remaining
-        expect(guess.letters[0].wordsRemaining.length).toBeGreaterThanOrEqual(guess.letters[1].wordsRemaining.length);
-        expect(guess.letters[1].wordsRemaining.length).toBeGreaterThanOrEqual(guess.letters[2].wordsRemaining.length);
-        expect(guess.letters[2].wordsRemaining.length).toBeGreaterThanOrEqual(guess.letters[3].wordsRemaining.length);
-        expect(guess.letters[3].wordsRemaining.length).toBeGreaterThanOrEqual(guess.letters[4].wordsRemaining.length);
+        // Each letter should only ever reduce the possible words remaining (in resolution order)
+        expect(guess.resolvedLetters[0].wordsRemaining.length).toBeGreaterThanOrEqual(guess.resolvedLetters[1].wordsRemaining.length);
+        expect(guess.resolvedLetters[1].wordsRemaining.length).toBeGreaterThanOrEqual(guess.resolvedLetters[2].wordsRemaining.length);
+        expect(guess.resolvedLetters[2].wordsRemaining.length).toBeGreaterThanOrEqual(guess.resolvedLetters[3].wordsRemaining.length);
+        expect(guess.resolvedLetters[3].wordsRemaining.length).toBeGreaterThanOrEqual(guess.resolvedLetters[4].wordsRemaining.length);
 
         // The bits of each letter should add up to the bits of the guess
         expect(guess.letters.map(l => l.bits).reduce((acc, n) => acc + n)).toEqual(guess.bits);
@@ -120,6 +120,15 @@ describe('Guess', () => {
         // expect(guess.uncertainty).toBeCloseTo(guess3.uncertainty - guess3.bits);
         // expect(guess.bits).greaterThanOrEqual(1).lessThanOrEqual(3);
         // expect(guess.grade).greaterThanOrEqual(.9);
+
+    });
+
+    test("yellow turns to green after gray", () => {
+        const answer = "shawl";
+        // woman, await
+        const guess1 = new Guess("woman", 0, answer);
+        const guess2 = new Guess("await", 0, answer);
+        expect(guess2.wordsRemaining.length).greaterThan(0);
 
     });
 })

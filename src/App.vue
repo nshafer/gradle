@@ -124,21 +124,21 @@ function closeModal(name: string) {
         color: var(--gray-2);
     }
 
+    .button {
+        background: var(--button-background);
+        color: var(--button-text);
+        padding: .75em 1em;
+        border: none;
+        font-size: 1em;
+        line-height: 1;
+        cursor: pointer;
+    }
+
     .buttons {
         display: flex;
         flex-flow: row nowrap;
         margin-bottom: 1em;
         margin: -.25em;
-    }
-
-    .button {
-        background: var(--button-background);
-        color: var(--button-text);
-        padding: .5em 1em;
-        border: none;
-        font-size: 1em;
-        line-height: 1;
-        cursor: pointer;
     }
 
     .buttons .button {

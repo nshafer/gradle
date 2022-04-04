@@ -27,159 +27,171 @@ defineEmits(["backClicked"]);
                 </div>
             </div>
 
-            <div class="detail-row">
-                <div class="detail">
-                    <div class="detail-label">
-                        Possible Words
-                        <ToolTip>
-                            <button class="button icon"><IconCircleInfo /></button>
-                            <template #content>
-                                This guess reduced the list of words from
-                                <b>{{ guess.previousWordsRemaining.length }}</b>
-                                to
-                                <b>{{ guess.wordsRemaining.length }}</b>
-                                which is a reduction of
-                                <b>{{ (guess.wordReductionPercent*100).toFixed(2) }}%</b>.
+            <div class="body">
+                <div class="detail-row">
+                    <div class="detail">
+                        <div class="detail-label">
+                            Possible Words
+                            <ToolTip>
+                                <button class="button icon"><IconCircleInfo /></button>
+                                <template #content>
+                                    This guess reduced the list of words from
+                                    <b>{{ guess.previousWordsRemaining.length }}</b>
+                                    to
+                                    <b>{{ guess.wordsRemaining.length }}</b>
+                                    which is a reduction of
+                                    <b>{{ (guess.wordReductionPercent*100).toFixed(2) }}%</b>.
 
-                                <p>
-                                    <small>w<sub>p</sub></small> = {{ guess.previousWordsRemaining.length }}
-                                    <br/>
-                                    <small>w<sub>n</sub></small> = {{ guess.wordsRemaining.length }}
-                                </p>
-                            </template>
-                        </ToolTip>
-                    </div>
-                    <div class="detail-value">
-                        <span>
-                            {{ guess.previousWordsRemaining.length }}
-                            <div class="icon-inline"><IconCaretRight /></div>
-                            {{ guess.wordsRemaining.length }}
-                            ({{ (guess.wordReductionPercent*100).toFixed(1) }}%)
-                        </span>
+                                    <p>
+                                        <small>w<sub>p</sub></small> = {{ guess.previousWordsRemaining.length }}
+                                        <br/>
+                                        <small>w<sub>n</sub></small> = {{ guess.wordsRemaining.length }}
+                                    </p>
+                                </template>
+                            </ToolTip>
+                        </div>
+                        <div class="detail-value">
+                            <span>
+                                {{ guess.previousWordsRemaining.length }}
+                                <div class="icon-inline"><IconCaretRight /></div>
+                                {{ guess.wordsRemaining.length }}
+                                ({{ (guess.wordReductionPercent*100).toFixed(1) }}%)
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="detail-row">
-                <div class="detail">
-                    <div class="detail-label">
-                        Bits of entropy
-                        <ToolTip>
-                            <button class="button icon">
-                                <IconCircleInfo />
-                            </button>
-                            <template #content>
-                                The <i>bits of entropy</i> is a measure of how many
-                                times the list of possible words was cut in half,
-                                over and over.
-                                This guess cut the list of words in half
-                                {{ guess.bits.toFixed(2) }}
-                                times, making it roughly 1/{{ guess.fractional.toFixed(0) }} in size.
+                
+                <div class="detail-row">
+                    <div class="detail">
+                        <div class="detail-label">
+                            Bits
+                            <ToolTip>
+                                <button class="button icon">
+                                    <IconCircleInfo />
+                                </button>
+                                <template #content>
+                                    The <i>bits of entropy</i> is a measure of how many
+                                    times the list of possible words was cut in half,
+                                    over and over.
+                                    This guess cut the list of words in half
+                                    {{ guess.bits.toFixed(2) }}
+                                    times, making it roughly 1/{{ guess.fractional.toFixed(0) }} in size.
 
-                                <p>
-                                    <small>b</small> = log<sub>2</sub>(1 / <small>p</small>)
-                                    = {{ guess.bits.toFixed(4) }}
-                                </p>
-                            </template>
-                        </ToolTip>
+                                    <p>
+                                        <small>b</small> = log<sub>2</sub>(1 / <small>p</small>)
+                                        = {{ guess.bits.toFixed(4) }}
+                                    </p>
+                                </template>
+                            </ToolTip>
+                        </div>
+                        <div class="detail-value">
+                            {{ guess.bits.toFixed(2) }}
+                        </div>
                     </div>
-                    <div class="detail-value">
-                        {{ guess.bits.toFixed(2) }}
+                    <div class="detail">
+                        <div class="detail-label">
+                            Uncertainty
+                            <ToolTip>
+                                <button class="button icon">
+                                    <IconCircleInfo />
+                                </button>
+                                <template #content>
+                                    Uncertainty is another way of saying how many <i>bits of entropy</i>
+                                    exist in the number of words that were in the list before this guess.
+                                    Or put another way, it would take
+                                    {{ guess.bits.toFixed(2) }} <i>bits of entropy</i> to reduce the list
+                                    of words to 1 final possibility.
+
+                                    <p>
+                                        <small>u</small> = log<sub>2</sub>(<small>w<sub>p</sub></small>)
+                                        = {{ guess.uncertainty.toFixed(4) }}
+                                    </p>
+                                </template>
+                            </ToolTip>
+                        </div>
+                        <div class="detail-value">
+                            {{ guess.uncertainty.toFixed(2) }}
+                        </div>
                     </div>
                 </div>
-                <div class="detail">
-                    <div class="detail-label">
-                        Uncertainty
-                        <ToolTip>
-                            <button class="button icon">
-                                <IconCircleInfo />
-                            </button>
-                            <template #content>
-                                Uncertainty is another way of saying how many <i>bits of entropy</i>
-                                exist in the number of words that were in the list before this guess.
-                                Or put another way, it would take
-                                {{ guess.bits.toFixed(2) }} <i>bits of entropy</i> to reduce the list
-                                of words to 1 final possibility.
+                
+                <div class="detail-row mb-3">
+                    <div class="detail">
+                        <div class="detail-label">
+                            Probability
+                            <ToolTip>
+                                <button class="button icon">
+                                    <IconCircleInfo />
+                                </button>
+                                <template #content>
+                                    There was a
+                                    {{ (guess.probability*100).toFixed(2) }}%
+                                    chance that this guess would reduce the list as much as it did.
+                                    The lower the probability, the more <i>bits of entropy</i> in this guess,
+                                    and the higher your final grade.
 
-                                <p>
-                                    <small>u</small> = log<sub>2</sub>(<small>w<sub>p</sub></small>)
-                                    = {{ guess.uncertainty.toFixed(4) }}
-                                </p>
-                            </template>
-                        </ToolTip>
+                                    <p>
+                                        <small>p</small> = <small>W<sub>p</sub></small> / <small>W<sub>n</sub></small>
+                                        = {{ guess.probability.toFixed(8) }}
+                                    </p>
+                                </template>
+                            </ToolTip>
+                        </div>
+                        <div class="detail-value">
+                            1 in {{ guess.fractional.toFixed(0) }}
+                        </div>
                     </div>
-                    <div class="detail-value">
-                        {{ guess.uncertainty.toFixed(2) }}
+                    <div class="detail">
+                        <div class="detail-label">
+                            Grade
+                            <ToolTip>
+                                <button class="button icon">
+                                    <IconCircleInfo />
+                                </button>
+                                <template #content>
+                                    Each <i>bit of entropy</i> is exponentially more difficult to attain,
+                                    so the final grade for this guess is the percent of the
+                                    <b>Bits of entropy</b> out of the <b>Uncertainty</b> plotted on an
+                                    exponential curve.
+                                    <p>
+                                        <small>g<sub>p</sub></small> = <small>b</small> / <small>u</small>
+                                        =
+                                        {{ guess.percentage.toFixed(4) }}
+                                    </p>
+                                    <p>
+                                        <small>g<sub>f</sub></small>
+                                        =
+                                        1 -
+                                        (1 - <small>g<sub>p</sub></small>)
+                                        <sup>2</sup>
+                                        =
+                                        {{ guess.grade.toFixed(4) }}
+                                    </p>
+                                </template>
+                            </ToolTip>
+                        </div>
+                        <div class="detail-value grade-color" :class="[guess.letterGradeSimple]">
+                            {{ (guess.grade*100).toFixed(2) }}%
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="detail-row mb-3">
-                <div class="detail">
-                    <div class="detail-label">
-                        Probability
-                        <ToolTip>
-                            <button class="button icon">
-                                <IconCircleInfo />
-                            </button>
-                            <template #content>
-                                There was a
-                                {{ (guess.probability*100).toFixed(2) }}%
-                                chance that this guess would reduce the list as much as it did.
-                                The lower the probability, the more <i>bits of entropy</i> in this guess,
-                                and the higher your final grade.
 
-                                <p>
-                                    <small>p</small> = <small>W<sub>p</sub></small> / <small>W<sub>n</sub></small>
-                                    = {{ guess.probability.toFixed(8) }}
-                                </p>
-                            </template>
-                        </ToolTip>
-                    </div>
-                    <div class="detail-value">
-                        1 in {{ guess.fractional.toFixed(0) }}
-                    </div>
-                </div>
-                <div class="detail">
-                    <div class="detail-label">
-                        Final Grade
-                        <ToolTip>
-                            <button class="button icon">
-                                <IconCircleInfo />
-                            </button>
-                            <template #content>
-                                Each <i>bit of entropy</i> is exponentially more difficult to attain,
-                                so the final grade for this guess is the percent of the
-                                <b>Bits of entropy</b> out of the <b>Uncertainty</b> plotted on an
-                                exponential curve.
-                                <p>
-                                    <small>g<sub>p</sub></small> = <small>b</small> / <small>u</small>
-                                    =
-                                    {{ guess.percentage.toFixed(4) }}
-                                </p>
-                                <p>
-                                    <small>g<sub>f</sub></small>
-                                    =
-                                    1 -
-                                    (1 - <small>g<sub>p</sub></small>)
-                                    <sup>2</sup>
-                                    =
-                                    {{ guess.grade.toFixed(4) }}
-                                </p>
-                            </template>
-                        </ToolTip>
-                    </div>
-                    <div class="detail-value grade-color" :class="[guess.letterGradeSimple]">
-                        {{ (guess.grade*100).toFixed(2) }}%
-                    </div>
-                </div>
-            </div>
-
-            <div class="letter-details mb-3">
-                <table class="letter-table">
+                <table class="letter-table mb-3">
                     <thead>
                         <tr>
-                            <th>Letter</th>
+                            <th>
+                                Letter
+                                <ToolTip class="tooltip">
+                                    <button class="button icon">
+                                        <IconCircleInfo />
+                                    </button>
+                                    <template #content>
+                                        For each letter, show how many possible words were reduced and the
+                                        <i>bits of entropy</i> that letter provides to the final answer.
+                                        Letters are resolved in a specific order, Correct, Present then Absent.
+                                    </template>
+                                </ToolTip>
+                            </th>
                             <th>Words</th>
                             <th>Reduction</th>
                             <th>Bits</th>
@@ -188,6 +200,10 @@ defineEmits(["backClicked"]);
                     <tbody>
                         <tr v-for="letter in guess.letters" :key="letter.index">
                             <th>
+                                <span class="text-muted">
+                                    {{ letter.resolutionIndex! + 1 }}:
+                                </span>
+                                
                                 <div class="tile" :class="letter.hint">
                                     {{ letter.letter }}
                                 </div>
@@ -208,7 +224,7 @@ defineEmits(["backClicked"]);
                 </table>
             </div>
 
-            <div class="control">
+            <div class="footer">
                 <div class="buttons">
                     <button class="return button with-icon-left" @click="$emit('backClicked')">
                         <IconAngleLeft /> Back
@@ -241,6 +257,10 @@ defineEmits(["backClicked"]);
         flex-flow: column nowrap;
     }
 
+    .body {
+        padding: .5em;
+    }
+
     .header {
         display: flex;
         flex-flow: row nowrap;
@@ -248,7 +268,6 @@ defineEmits(["backClicked"]);
         align-items: center;
         background: var(--detail-label-bg);
         color: var(--detail-label-fg);
-        margin-bottom: .5em;
     }
 
     .word {
@@ -259,7 +278,6 @@ defineEmits(["backClicked"]);
     .detail-row {
         display: flex;
         flex-flow: row wrap;
-        padding: 0 .5em;
         margin: 0 -.25em;
     }
 
@@ -276,7 +294,7 @@ defineEmits(["backClicked"]);
         background: var(--detail-label-bg);
         color: var(--detail-label-fg);
         flex-grow: 1;
-        padding: .25em .5em;
+        padding: .25em 0 .25em .5em;
         display: flex;
         flex-flow: row nowrap;
         justify-content: space-between;
@@ -288,7 +306,7 @@ defineEmits(["backClicked"]);
         background: var(--detail-value-bg);
         color: var(--detail-value-fg);
         font-weight: bold;
-        padding: .25em .75em;
+        padding: .25em .5em;
         display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
@@ -301,9 +319,10 @@ defineEmits(["backClicked"]);
         font-style: italic;
     }
 
-    .control {
-        padding: 0.5em;
-        margin-top: auto;
+    .footer {
+        background: var(--detail-label-bg);
+        color: var(--detail-label-fg);
+        padding: .5em;
     }
 
     .no-guesses {
@@ -336,7 +355,6 @@ defineEmits(["backClicked"]);
     }
 
     .letter-details {
-        padding: 0 .5em;
         overflow-x: auto;
     }
 
@@ -345,12 +363,13 @@ defineEmits(["backClicked"]);
         border-collapse: collapse;
     }
 
-    .letter-table thead {
-        /* background: var(--gray-5); */
+    .letter-table thead .tooltip {
+        vertical-align: middle;
     }
 
     .letter-table th, .letter-table td {
         padding: .3em;
+        vertical-align: middle;
         text-align: center;
         white-space: nowrap;
     }
@@ -365,5 +384,28 @@ defineEmits(["backClicked"]);
         color: var(--detail-value-fg);
     }
 
+    /* Small screens only */
+    @media screen and (max-width: 69.9375em) {
+    }
 
+    /* Large screens only */
+    @media screen and (min-width: 70em) {
+        .body {
+            padding: 1em;
+        }
+        
+        .footer {
+            padding: 1em;
+        }
+    }
+    
+    @media screen and (min-width: 30em) {
+        .detail-label {
+            padding: .25em .5em;
+        }
+
+        .detail-value {
+            padding: .25em .75em;
+        }
+    }
 </style>
