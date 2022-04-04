@@ -377,11 +377,13 @@ defineEmits(["backClicked"]);
     .letter-table tbody th {
         background: var(--detail-label-bg);
         color: var(--detail-label-fg);
+        width: 20%;
     }
     
     .letter-table tbody td {
         background: var(--detail-value-bg);
         color: var(--detail-value-fg);
+        width: calc(80%/3);
     }
 
     /* Small screens only */
