@@ -115,7 +115,7 @@ defineEmits(["backClicked"]);
                     </div>
                 </div>
                 
-                <div class="detail-row mb-3">
+                <div class="detail-row">
                     <div class="detail">
                         <div class="detail-label">
                             Probability
@@ -388,6 +388,13 @@ defineEmits(["backClicked"]);
 
     /* Small screens only */
     @media screen and (max-width: 69.9375em) {
+        .summary {
+            height: 100%;
+        }
+        
+        .body {
+            flex-grow: 1;
+        }
     }
 
     /* Large screens only */
@@ -397,6 +404,7 @@ defineEmits(["backClicked"]);
         }
         
         .footer {
+            display: none;
             padding: 1em;
         }
     }

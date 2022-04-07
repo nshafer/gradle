@@ -155,7 +155,7 @@ function guessClicked(guess: Guess) {
         grid-area: title;
         display: flex;
         flex-flow: row nowrap;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
         background: var(--page-bg2);
         padding-right: 0.5em;
