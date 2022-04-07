@@ -1,6 +1,6 @@
 import { answers } from './words';
 
-const startDate = new Date(2021, 5, 19, 0, 0, 0, 0);
+export const startDate = new Date(2021, 5, 19, 0, 0, 0, 0);
 
 export function dateIndex(d: Date = new Date()) {
     return Math.round((new Date(d).setHours(0, 0, 0, 0) - new Date(startDate).setHours(0, 0, 0, 0)) / 86400000);

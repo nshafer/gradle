@@ -83,7 +83,6 @@ function checkWord() {
         font-size: 1.5em;
         text-transform: uppercase;
         font-weight: bold;
-        letter-spacing: .1em;
         line-height: 1;
         padding: .5em;
     }

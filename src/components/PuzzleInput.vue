@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
-import { Guess } from '../guess';
+import { ref, watch, computed } from 'vue';
+import { Guess } from '@/guess';
 
 import GuessInput from './GuessInput.vue';
 import GuessDisplay from './GuessDisplay.vue';
+import AnswerPicker from './AnswerPicker.vue';
 
 import IconTrash from './icons/IconTrash.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
 import IconCaretRight from "./icons/IconCaretRight.vue";
 
-// TODO: prompt user for date or manually enter word
-const answer = "renew";
+const answer = ref("");
 
 const props = defineProps<{
     modelValue: Guess[],
@@ -39,7 +39,7 @@ function wordInputDone(word: string) {
     // console.log("wordInputDone", word);
     const guessIndex = guesses.value.length;
     const previous = guessIndex > 0 ? guesses.value[guessIndex-1] : undefined;
-    const guess = new Guess(word, guessIndex, answer, previous);
+    const guess = new Guess(word, guessIndex, answer.value, previous);
     guesses.value = [...guesses.value, guess];
     // guesses.value.push(new Guess(word, guessIndex, previous));
     console.log("Added guess", guess);
@@ -54,6 +54,13 @@ function removeLastGuess() {
     guesses.value = guesses.value.slice(0, guesses.value.length-1);
 }
 
+// Remove all guesses if the answer changes
+watch(answer, (newAnswer, oldAnswer) => {
+    if (newAnswer !== oldAnswer) {
+        guesses.value = [];
+    }
+});
+
 function guessClicked(guess: Guess) {
     // console.log("PuzzleInput.guessClicked", guess)
     emit('guessClicked', guess);
@@ -61,59 +68,69 @@ function guessClicked(guess: Guess) {
 </script>
 
 <template>
-    <div v-for="guess in guesses" :key="guess.id" class="guess" :class="{ selected: guess == selectedGuess }" @click="guessClicked(guess)" @keyup.ctrl.delete="removeLastGuess">
-        <div class="title">
-            <div class="word">
-                <GuessDisplay :guess="guess" />
-            </div>
-            
-            <button class="button icon" @click.stop="removeGuess(guess)" title="Remove this guess">
-                <IconTrash />
-            </button>
-        </div>
-        <div class="subtitle">
-            <template v-if="guess.isCorrect">
-                <div class="summary">
-                    Solved in {{ guess.index+1 }} guesses
-                </div>
+    <AnswerPicker @answerUpdated="newAnswer => answer = newAnswer" />
 
-                <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
-                    <IconAngleRight />
-                </button>
-            </template>
+    <!-- {{ ansewr }}-->
 
-            <template v-else>
-                <div class="summary">
-                    <div class="remaining">
-                        <b>Words:</b>
-                        {{ guess.previousWordsRemaining.length }}
-                        <div class="icon-inline"><IconCaretRight /></div>
-                        {{ guess.wordsRemaining.length }}
-                    </div>
-                    
-                    <div class="bits">
-                        {{ guess.bits.toFixed(1) }} / {{ guess.uncertainty.toFixed(1) }}
-                        <span class="bits-label">bits of entropy</span>
-                    </div>
+    <template v-if="answer">
+        <div v-for="guess in guesses" :key="guess.id" class="guess" :class="{ selected: guess == selectedGuess }" @click="guessClicked(guess)" @keyup.ctrl.delete="removeLastGuess">
+            <div class="title">
+                <div class="word">
+                    <GuessDisplay :guess="guess" />
                 </div>
                 
-                <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
-                    <IconAngleRight />
+                <button class="button icon" @click.stop="removeGuess(guess)" title="Remove this guess">
+                    <IconTrash />
                 </button>
-            </template>
-        </div>
-        <div class="grade grade-color" :class="[guess.letterGradeSimple]">
-            <div class="letter">{{ guess.letterGrade }}</div>
-            <div class="percent">{{ (guess.grade*100).toFixed(0) }}%</div>
-        </div>
-    </div>
+            </div>
+            <div class="subtitle">
+                <template v-if="guess.isCorrect">
+                    <div class="summary">
+                        Solved in {{ guess.index+1 }} guesses
+                    </div>
 
-    <div v-if="!completed" class="guess-input">
-        <GuessInput :wordIndex="guesses.length" @inputDone="wordInputDone" @goBack="removeLastGuess" />
-    </div>
+                    <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
+                        <IconAngleRight />
+                    </button>
+                </template>
+
+                <template v-else>
+                    <div class="summary">
+                        <div class="remaining">
+                            <b>Words:</b>
+                            {{ guess.previousWordsRemaining.length }}
+                            <div class="icon-inline"><IconCaretRight /></div>
+                            {{ guess.wordsRemaining.length }}
+                        </div>
+                        
+                        <div class="bits">
+                            {{ guess.bits.toFixed(1) }} / {{ guess.uncertainty.toFixed(1) }}
+                            <span class="bits-label">bits of entropy</span>
+                        </div>
+                    </div>
+                    
+                    <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
+                        <IconAngleRight />
+                    </button>
+                </template>
+            </div>
+            <div class="grade grade-color" :class="[guess.letterGradeSimple]">
+                <div class="letter">{{ guess.letterGrade }}</div>
+                <div class="percent">{{ (guess.grade*100).toFixed(0) }}%</div>
+            </div>
+        </div>
+
+        <div v-if="!completed" class="guess-input">
+            <GuessInput :wordIndex="guesses.length" @inputDone="wordInputDone" @goBack="removeLastGuess" />
+        </div>
+    </template>
 </template>
 
 <style scoped>
+    .answer-picker {
+        margin-bottom: 1em;
+    }
+
     .guess-input p {
         margin: 0 0 1em;
     }
