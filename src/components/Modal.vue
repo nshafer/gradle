@@ -51,6 +51,7 @@ defineEmits<{
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 10;
 }
 
 @supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {

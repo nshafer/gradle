@@ -38,7 +38,7 @@ const close = async () => {
   padding: 1em;
   background-color: var(--color-background);
   border: 1px solid var(--gray-4);
-  z-index: 1;
+  z-index: 100;
 }
 .pwa-toast .message {
   margin-bottom: .5em;

@@ -179,6 +179,7 @@ watch(pickedAnswer, (answer) => {
         padding: 0 .5em;
         text-align: center;
         width: 100%;
+        z-index: 1;
     }
 
     .input::placeholder {
