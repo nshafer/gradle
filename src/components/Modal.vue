@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import IconXMark from './icons/IconXMark.vue';
 
-defineProps(['title']);
-const emit = defineEmits(['close']);
+defineProps<{
+    visible: boolean,
+    title: string,
+}>();
 
-function close() {
-    emit('close');
-}
+defineEmits<{
+    (e: 'close'): void
+}>();
 
 </script>
 
 <template>
     <transition name="modal-fade">
-        <div class="container" @click.self="close">
+        <div v-show="visible" class="container" @click.self="$emit('close')">
             <div class="modal">
                 <header class="header">
                     {{ title }}
-                    <button class="button icon lg" @click="close">
+                    <button class="button icon lg" @click="$emit('close')">
                         <IconXMark />
                     </button>
                 </header>
@@ -26,9 +28,11 @@ function close() {
                 </section>
 
                 <footer class="footer">
-                    <slot name="footer">
-                    </slot>
-                    <!-- <button class="footer-close button" @click="close">Close</button> -->
+                    <div class="footer-content">
+                        <slot name="footer">
+                        </slot>
+                    </div>
+                    <button class="footer-close button" @click="$emit('close')">Close</button>
                 </footer>
             </div>
         </div>
@@ -63,11 +67,12 @@ function close() {
     flex-direction: column;
     width: 90%;
     max-width: 50em;
-    height: 90%;
+    min-height: 65%;
+    max-height: 90%;
 }
 
 .header, .footer {
-    padding: .5em 1em;
+    padding: 1em;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
@@ -79,12 +84,17 @@ function close() {
     color: var(--gray-1);
 }
 
-/* .footer {
+.footer {
+    justify-content: flex-start;
     border-top: 1px solid var(--gray-4);
-} */
+}
+
+.footer-content {
+    flex: 1;
+}
 
 .footer-close {
-    margin-left: auto;
+    margin-left: 1em;
 }
 
 .body {

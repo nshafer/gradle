@@ -437,8 +437,24 @@ function closeModal(name: string) {
         margin-top: auto !important;
     }
 
+    .mt-1 {
+        margin-top: .25em !important;
+    }
+
+    .mt-2 {
+        margin-top: .5em !important;
+    }
+
     .mt-3 {
         margin-top: 1em !important;
+    }
+
+    .mt-4 {
+        margin-top: 1.5em !important;
+    }
+
+    .mt-5 {
+        margin-top: 2em !important;
     }
 
     .mb-0 {

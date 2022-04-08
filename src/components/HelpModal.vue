@@ -6,7 +6,7 @@ defineEmits(['close']);
 </script>
 
 <template>
-    <Modal v-show="visible" @close="$emit('close')" title="Help / About">
+    <Modal :visible="visible" @close="$emit('close')" title="Help / About">
         <template #body>
             <p>
                 TODO: rewrite

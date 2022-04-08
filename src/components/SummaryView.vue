@@ -1,16 +1,21 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import type { Guess } from "@/guess";
 import IconAngleLeft from "./icons/IconAngleLeft.vue";
 import GuessDisplay from "./GuessDisplay.vue";
 import IconCaretRight from "./icons/IconCaretRight.vue";
 import IconCircleInfo from "./icons/IconCircleInfo.vue";
 import ToolTip from "./ToolTip.vue";
+import IconFilterList from "./icons/IconFilterList.vue";
+import WordListModal from "./WordListModal.vue";
 
 defineProps<{
     guess: Guess | undefined
 }>();
 
 defineEmits(["backClicked"]);
+
+const showWordListModal = ref(false);
 
 </script>
 
@@ -32,30 +37,35 @@ defineEmits(["backClicked"]);
                     <div class="detail">
                         <div class="detail-label">
                             Possible Words
-                            <ToolTip>
-                                <button class="button icon"><IconCircleInfo /></button>
-                                <template #content>
-                                    This guess reduced the list of words from
-                                    <b>{{ guess.previousWordsRemaining.length }}</b>
-                                    to
-                                    <b>{{ guess.wordsRemaining.length }}</b>
-                                    which is a reduction of
-                                    <b>{{ (guess.wordReductionPercent*100).toFixed(2) }}%</b>.
+                            <div class="detail-buttons">
+                                <button class="button icon" @click="showWordListModal = true">
+                                    <IconFilterList />
+                                </button>
+                                
+                                <ToolTip>
+                                    <button class="button icon"><IconCircleInfo /></button>
+                                    <template #content>
+                                        This guess reduced the list of words from
+                                        <b>{{ guess.previousWordsRemaining.length }}</b>
+                                        to
+                                        <b>{{ guess.wordsRemaining.length }}</b>
+                                        which is a reduction of
+                                        <b>{{ (guess.wordReductionPercent*100).toFixed(2) }}%</b>.
 
-                                    <p>
-                                        <small>w<sub>p</sub></small> = {{ guess.previousWordsRemaining.length }}
-                                        <br/>
-                                        <small>w<sub>n</sub></small> = {{ guess.wordsRemaining.length }}
-                                    </p>
-                                </template>
-                            </ToolTip>
+                                        <p>
+                                            <small>w<sub>p</sub></small> = {{ guess.previousWordsRemaining.length }}
+                                            <br/>
+                                            <small>w<sub>n</sub></small> = {{ guess.wordsRemaining.length }}
+                                        </p>
+                                    </template>
+                                </ToolTip>
+                            </div>
                         </div>
                         <div class="detail-value">
                             <span>
                                 {{ guess.previousWordsRemaining.length }}
                                 <div class="icon-inline"><IconCaretRight /></div>
                                 {{ guess.wordsRemaining.length }}
-                                ({{ (guess.wordReductionPercent*100).toFixed(1) }}%)
                             </span>
                         </div>
                     </div>
@@ -244,6 +254,8 @@ defineEmits(["backClicked"]);
             </div>
         </div>
     </div>
+
+    <WordListModal v-if="guess" :visible="showWordListModal" @close="showWordListModal = false" :words="guess.wordsRemaining" />
 </template>
 
 <style scoped>
@@ -312,6 +324,11 @@ defineEmits(["backClicked"]);
         justify-content: space-between;
         align-items: center;
         white-space: nowrap;
+    }
+
+    .detail-buttons {
+        display: flex;
+        flex-flow: row nowrap;
     }
     
     .detail-unit {

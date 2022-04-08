@@ -13,7 +13,7 @@ const version = computed(() => {
 </script>
 
 <template>
-    <Modal v-show="visible" @close="$emit('close')" title="Help / About">
+    <Modal :visible="visible" @close="$emit('close')" title="Settings">
         <template #body>
             <div class="settings">
                 <div class="setting">
@@ -68,8 +68,10 @@ const version = computed(() => {
         </template>
 
         <template #footer>
-            <small>© 2022 gradle.app</small>
-            <small>{{ version }}</small>
+            <div class="footer">
+                <small>© 2022 gradle.app</small>
+                <small>{{ version }}</small>
+            </div>
         </template>
     </Modal>
 </template>
@@ -150,4 +152,8 @@ const version = computed(() => {
     transform: translateX(50%);
 }
 
+.footer {
+    display: flex;
+    justify-content: space-between;
+}
 </style>

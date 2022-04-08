@@ -33,7 +33,7 @@ watch(() => props.visible, (newValue) => {
 </script>
 
 <template>
-    <Modal v-show="visible" @close="$emit('close')" title="Answer History">
+    <Modal :visible="visible" @close="$emit('close')" title="Answer History">
         <template #body>
             <div class="mb-3">
                 <div v-for="offset in numWords" :key="offset" class="entry">
