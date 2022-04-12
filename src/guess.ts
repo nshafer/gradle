@@ -93,7 +93,7 @@ export class Guess extends Calculable {
     index: number;
     answer: string;
     previous?: Guess;
-    isCorrect: boolean;
+    hardMode: boolean;
     
     letters: Letter[] = [];
     resolvedLetters: Letter[] = [];
@@ -106,14 +106,62 @@ export class Guess extends Calculable {
         this.index = index;
         this.answer = answer;
         this.previous = previous;
-        this.isCorrect = this.word == this.answer;
         
         // Calculate the hint colors based on this word versus the given answer
         this.splitWord();
         this.calculateHints();
         this.calculateResolvedLetters();
+        
+        this.hardMode = this.calculateHardMode();
 
         this.solve();
+    }
+
+    get isCorrect() {
+        return this.word == this.answer;
+    }
+    
+    get isFirst() {
+        return this.previous == null;
+    }
+
+    calculateHardMode() {
+        // If this is the first guess, then hard mode is assumed
+        if (this.previous == null) {
+            return true;
+        }
+
+        // If the previous guess wasn't hard mode, then we don't even need to calulate this guess.
+        if (this.previous.hardMode == false) {
+            console.debug(`calculateHardMode: prevous guess is not hardmode, returning false`);
+            return false;
+        }
+
+        // Check if any greens were not reused in the same position.
+        for (let i = 0; i < this.previous.letters.length; i++) {
+            if (this.previous.letters[i].hint == Hint.Correct && this.letters[i].hint != Hint.Correct) {
+                console.debug(`calculateHardMode: Correct hint at ${i} not preserved`);
+                return false;
+            }
+        }
+
+        // Gather all of the Present letters from the previous guess and make sure they're Present or Correct
+        const previousLetters = this.previous.letters.filter(l => l.hint == Hint.Present).map(l => l.letter);
+        const presentLetters = this.letters.filter(l => l.hint == Hint.Correct || l.hint == Hint.Present).map(l => l.letter);
+
+        // Now for each present letter in the previous guess, make sure it's in presentLetters, removing it as we go
+        for (let letter of previousLetters) {
+            const idx = presentLetters.indexOf(letter);
+            if (idx == -1) {
+                console.debug(`calculateHardMode: Present hint ${letter} not found in ${presentLetters}`);
+                return false;
+            } else {
+                presentLetters.splice(idx, 1);
+            }
+        }
+
+        // If everything passed, then this is hard mode
+        return true;
     }
 
     splitWord() {

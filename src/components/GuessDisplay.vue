@@ -12,6 +12,9 @@ defineProps<{
         <div v-for="letter in guess.letters" class="tile" :class="letter.hint">
             {{ letter.letter }}
         </div>
+        <div v-if="guess.hardMode" class="hard-mode">
+            *
+        </div>
     </div>
 </template>
 
@@ -25,5 +28,9 @@ defineProps<{
 
     .tile {
         margin: .2em;
+    }
+
+    .hard-mode {
+        /* align-self: flex-start; */
     }
 </style>

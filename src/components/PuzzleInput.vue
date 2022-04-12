@@ -105,7 +105,7 @@ function guessClicked(guess: Guess) {
                         
                         <div class="bits">
                             {{ guess.bits.toFixed(1) }} / {{ guess.uncertainty.toFixed(1) }}
-                            <span class="bits-label">bits of entropy</span>
+                            <span class="bits-label">bits</span>
                         </div>
                     </div>
                     
