@@ -156,6 +156,7 @@ function endDrag(event: PointerEvent) {
 const guesses = ref<Guess[]>([]);
 const selectedGuess = ref<Guess | undefined>(undefined);
 
+// Select the last guess whenever the list changes, such as a new one is added
 watch(guesses, (newGuesses, oldGuesses) => {
     // console.log("guesses updated", oldGuesses, newGuesses);
     selectedGuess.value = newGuesses[newGuesses.length-1];
@@ -163,7 +164,7 @@ watch(guesses, (newGuesses, oldGuesses) => {
 });
 
 function guessClicked(guess?: Guess) {
-    console.log("MainInterface.guessClicked", guess)
+    // console.log("MainInterface.guessClicked", guess)
     selectedGuess.value = guess;
     showSummaryPage();
 }

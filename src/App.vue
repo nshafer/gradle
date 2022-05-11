@@ -127,11 +127,13 @@ function closeModal(name: string) {
     .button {
         background: var(--button-background);
         color: var(--button-text);
-        padding: .75em 1em;
+        padding: .6em 1em;
         border: none;
         font-size: 1em;
         line-height: 1;
         cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: bold;
     }
 
     .buttons {
@@ -185,6 +187,7 @@ function closeModal(name: string) {
         color: var(--gray-2);
         background: none;
         border: none;
+        font-size: 1.1rem;
         height: 2.25em;
         min-width: 2.25em;
         margin: 0;
@@ -361,7 +364,7 @@ function closeModal(name: string) {
     .grade {
         width: 5em;
         padding: .5em;
-        display: flex;
+        display: inline-flex;
         flex-flow: column nowrap;
         justify-content: center;
         align-items: center;
@@ -373,7 +376,7 @@ function closeModal(name: string) {
         text-shadow: 3px 2px 12px rgba(0, 0, 0, 0.7);
     }
 
-    .grade .percent {
+    .grade .label {
         font-size: 1.1em;
         font-weight: bold;
     }
@@ -427,6 +430,10 @@ function closeModal(name: string) {
 
     .text-center {
         text-align: center;
+    }
+
+    .text-right {
+        text-align: right;
     }
 
     .text-muted {

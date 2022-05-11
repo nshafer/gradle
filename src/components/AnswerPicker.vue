@@ -141,6 +141,7 @@ watch(pickedAnswer, (answer) => {
         <div v-if="inputError" class="error">
             {{ inputError }}
         </div>
+        <div class="picked-answer">{{ pickedAnswer }}</div>
     </div>
 </template>
 
@@ -149,6 +150,7 @@ watch(pickedAnswer, (answer) => {
     } */
 
     .toggle {
+        flex: 1;
         display: flex;
         flex-flow: row nowrap;
         justify-content: stretch;
@@ -215,18 +217,15 @@ watch(pickedAnswer, (answer) => {
         letter-spacing: .05em;
     }
 
-    @media screen and (min-width: 23em) {
-        .answer-picker {
-            flex-flow: row wrap;
-            justify-content: space-between;
-        }
-    }
-
     .error {
         font-size: 1.4em;
         text-align: center;
         padding: .5em 1em;
         background: var(--error);
         margin-top: 1em;
+    }
+
+    .picked-answer {
+        display: none;
     }
 </style>

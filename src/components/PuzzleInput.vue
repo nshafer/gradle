@@ -5,10 +5,13 @@ import { Guess } from '@/guess';
 import GuessInput from './GuessInput.vue';
 import GuessDisplay from './GuessDisplay.vue';
 import AnswerPicker from './AnswerPicker.vue';
+import ToolTip from './ToolTip.vue';
 
 import IconTrash from './icons/IconTrash.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
 import IconCaretRight from "./icons/IconCaretRight.vue";
+import IconCircleInfo from "./icons/IconCircleInfo.vue";
+import { letterGrade, letterGradeSimple } from '@/game';
 
 const answer = ref("");
 
@@ -65,6 +68,44 @@ function guessClicked(guess: Guess) {
     // console.log("PuzzleInput.guessClicked", guess)
     emit('guessClicked', guess);
 }
+
+const allGrades = computed(() => {
+    const grades: number[] = [];
+
+    for (let guess of guesses.value) {
+        grades.push(guess.grade);
+    }
+
+    const unusedGuesses = 6 - guesses.value.length;
+    for (let i = 0; i < unusedGuesses; i++) {
+        grades.push(1);
+    }
+
+    return grades;
+});
+
+const finalGrade = computed(() => {
+    // Average of all guess grades
+    let sum = 0;
+    
+    for (let guess of guesses.value) {
+        sum += guess.grade;
+    }
+
+    // Add 100 per unused guess
+    sum += (6 - guesses.value.length) * 1;
+    
+    return sum/6;
+});
+
+const finalLetterGrade = computed(() => {
+    return letterGrade(finalGrade.value);
+});
+
+const finalLetterGradeSimple = computed(() => {
+    return letterGradeSimple(finalGrade.value);
+});
+
 </script>
 
 <template>
@@ -73,9 +114,9 @@ function guessClicked(guess: Guess) {
     <!-- {{ ansewr }}-->
 
     <template v-if="answer">
-        <div v-for="guess in guesses" :key="guess.id" class="guess" :class="{ selected: guess == selectedGuess }" @click="guessClicked(guess)" @keyup.ctrl.delete="removeLastGuess">
+        <div v-for="guess in guesses" :key="guess.id" class="guess" :class="{ selected: guess == selectedGuess, 'is-correct': guess.isCorrect }, [guess.letterGradeSimple]" @click="guessClicked(guess)" @keyup.ctrl.delete="removeLastGuess">
             <div class="title">
-                <div class="word">
+                <div class="title-heading">
                     <GuessDisplay :guess="guess" />
                 </div>
                 
@@ -84,43 +125,78 @@ function guessClicked(guess: Guess) {
                 </button>
             </div>
             <div class="subtitle">
-                <template v-if="guess.isCorrect">
-                    <div class="summary">
-                        Solved in {{ guess.index+1 }} guesses
+                <div class="summary">
+                    <div v-if="guess.isCorrect" class="remaining">
+                        <b>Solved in {{ guesses.length }} guesses.</b>
                     </div>
-
-                    <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
-                        <IconAngleRight />
-                    </button>
-                </template>
-
-                <template v-else>
-                    <div class="summary">
-                        <div class="remaining">
-                            <b>Words:</b>
-                            {{ guess.previousWordsRemaining.length }}
-                            <div class="icon-inline"><IconCaretRight /></div>
-                            {{ guess.wordsRemaining.length }}
-                        </div>
-                        
-                        <div class="bits">
-                            {{ guess.bits.toFixed(1) }} / {{ guess.uncertainty.toFixed(1) }}
-                            <span class="bits-label">bits</span>
-                        </div>
+                    <div v-else class="remaining">
+                        <b>Words:</b>
+                        {{ guess.previousWordsRemaining.length }}
+                        <div class="icon-inline"><IconCaretRight /></div>
+                        {{ guess.wordsRemaining.length }}
                     </div>
-                    
-                    <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
-                        <IconAngleRight />
-                    </button>
-                </template>
+                </div>
+                
+                <div class="bits">
+                    {{ guess.bits.toFixed(1) }} / {{ guess.uncertainty.toFixed(1) }}
+                    <span class="bits-label">bits</span>
+                </div>
+                
+                <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
+                    <IconAngleRight />
+                </button>
             </div>
             <div class="grade grade-color" :class="[guess.letterGradeSimple]">
                 <div class="letter">{{ guess.letterGrade }}</div>
-                <div class="percent">{{ (guess.grade*100).toFixed(0) }}%</div>
+                <div class="label">{{ (guess.grade*100).toFixed(0) }}%</div>
             </div>
         </div>
 
-        <div v-if="!completed" class="guess-input">
+        <div v-if="completed" class="final-grade">
+            <div class="final-grade__main">
+                <div class="final-grade__body">
+                    <div class="final-grade__title">
+                        <div class="final-grade__heading">
+                            Final Grade
+                        </div>
+                        <ToolTip>
+                            <button class="button icon"><IconCircleInfo /></button>
+                            <template #content>
+                                A final grade is calculated by averaging the grade of each guess;
+                                extra guesses are worth 100% each.
+
+                                <p>
+                                    <small>g<sub>f</sub></small> =
+                                    avg(<template v-for="(grade, i) in allGrades">{{ grade.toFixed(2) }}<template v-if="i < allGrades.length-1">, </template></template>)
+                                </p>
+                            </template>
+                        </ToolTip>
+                    </div>
+
+                    <div class="final-grade__subtitle">
+                        <div class="final-grade__subtitle">
+                            <div class="final-grade__guesses">
+                                {{ guesses.length }} / 6 Guesses.
+                            </div>
+                            <div v-if="guesses[guesses.length-1].hardMode">
+                                Hard mode.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="share-button button primary">
+                    Share
+                </button>
+            </div>
+            
+            <div class="grade grade-color" :class="[finalLetterGradeSimple]">
+                <div class="letter">{{ finalLetterGrade }}</div>
+                <div class="label">{{ (finalGrade*100).toFixed(0) }}%</div>
+            </div>
+        </div>
+
+        <div v-else class="guess-input">
             <GuessInput :wordIndex="guesses.length" @inputDone="wordInputDone" @goBack="removeLastGuess" />
         </div>
     </template>
@@ -129,6 +205,10 @@ function guessClicked(guess: Guess) {
 <style scoped>
     .answer-picker {
         margin-bottom: 1em;
+    }
+
+    .guess-input {
+        padding: 0 1em;
     }
 
     .guess-input p {
@@ -150,7 +230,7 @@ function guessClicked(guess: Guess) {
         outline: var(--gray-2) solid 2px;
         outline-offset: 3px;
     }
-    
+
     .title {
         grid-area: title;
         display: flex;
@@ -161,7 +241,7 @@ function guessClicked(guess: Guess) {
         padding-right: 0.5em;
     }
 
-    .word {
+    .title-heading {
         padding: .25em .5em;
         font-size: 1.25em;
     }
@@ -194,8 +274,52 @@ function guessClicked(guess: Guess) {
         grid-area: grade;
     }
 
+    .final-grade {
+        display: flex;
+        flex-flow: row nowrap;
+
+        padding-top: 1em;
+        margin: 1em 0;
+        border-top: 1px solid var(--gray-4);
+    }
+
+    .final-grade__main {
+        flex: 1;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--page-bg2);
+        padding: 1em;
+    }
+
+    .final-grade__title {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+    }
+
+    .final-grade__subtitle {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+    }
+
+    .final-grade__heading {
+        font-size: 1.5em;
+    }
+
+    .final-grade__guesses {
+        margin-right: .5em;
+    }
+
+    .share-button {
+        margin-left: auto;
+        background-color: var(--button-green);
+    }
+
     @media screen and (min-width: 35em) {
-        .word {
+        .title-heading {
             font-size: 1.5em;
         }
 
@@ -203,12 +327,15 @@ function guessClicked(guess: Guess) {
             flex: 1;
             display: flex;
             flex-flow: row wrap;
-            justify-content: space-between;
             align-items: center;
         }
         
         .grade {
             font-size: 1.2em;
+        }
+
+        .final-grade__heading {
+            font-size: 2em;
         }
     }
 

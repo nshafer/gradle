@@ -1,11 +1,11 @@
 Miscellaneous:
-- Create cron to check wordlists from NYT, alert if there is a change
-- Create bot?
-- Animations
-- Hand written grades
-- Optimize solver for null green, yellow, gray lists, perhaps avoid creating regex completely.
-- Maybe support other grading systems, e.g. Japan (S, A, B, C, F)
-- Detect hard mode. Give bonus for hard mode?
+- [ ] Create cron to check wordlists from NYT, alert if there is a change
+- [ ] Create bot?
+- [ ] Animations
+- [ ] Hand written grades
+- [x] Optimize solver for null green, yellow, gray lists, perhaps avoid creating regex completely.
+- [ ] Maybe support other grading systems, e.g. Japan (S, A, B, C, F)
+- [x] Detect hard mode. Give bonus for hard mode?
 
 Gradle:
 

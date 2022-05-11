@@ -1,7 +1,7 @@
 import Solver from "./solver";
 import type { LetterArray } from './solver';
 import { allWords, answers } from "./words";
-import { letterGrade } from "./game";
+import { letterGrade, letterGradeSimple } from "./game";
 
 export enum Hint {
     Correct = "correct",
@@ -83,7 +83,7 @@ class Calculable {
     }
 
     get letterGradeSimple(): string {
-        return this.letterGrade.toLowerCase().replaceAll("+", " plus").replaceAll("-", " minus")
+        return letterGradeSimple(this.grade);
     }
 }
 

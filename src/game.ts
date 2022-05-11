@@ -52,3 +52,7 @@ export function letterGrade(grade: number): string {
         return "F";
     }
 }
+
+export function letterGradeSimple(grade: number): string {
+    return letterGrade(grade).toLowerCase().replaceAll("+", " plus").replaceAll("-", " minus")
+}

@@ -10,7 +10,7 @@ import IconFilterList from "./icons/IconFilterList.vue";
 import WordListModal from "./WordListModal.vue";
 
 defineProps<{
-    guess: Guess | undefined
+    guess: Guess | undefined,
 }>();
 
 defineEmits(["backClicked"]);
@@ -74,7 +74,7 @@ const showWordListModal = ref(false);
                 <div class="detail-row">
                     <div class="detail">
                         <div class="detail-label">
-                            Bits
+                            Bits of Info
                             <ToolTip>
                                 <button class="button icon">
                                     <IconCircleInfo />

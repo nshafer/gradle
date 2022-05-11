@@ -20,7 +20,7 @@ defineProps<{
 
 <style scoped>
     .guess-display {
-        display: flex;
+        display: inline-flex;
         flex-flow: row nowrap;
         align-items: center;
         margin: -.2em;
@@ -30,7 +30,7 @@ defineProps<{
         margin: .2em;
     }
 
-    .hard-mode {
-        /* align-self: flex-start; */
-    }
+    /* .hard-mode {
+        align-self: flex-start;
+    } */
 </style>
