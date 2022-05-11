@@ -163,7 +163,7 @@ const finalLetterGradeSimple = computed(() => {
                             <button class="button icon"><IconCircleInfo /></button>
                             <template #content>
                                 A final grade is calculated by averaging the grade of each guess;
-                                extra guesses are worth 100% each.
+                                extra unused guesses are worth 100% each.
 
                                 <p>
                                     <small>g<sub>f</sub></small> =
