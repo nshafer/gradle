@@ -2,23 +2,34 @@ import { answers } from './words';
 
 export const startDate = new Date(2021, 5, 19, 0, 0, 0, 0);
 
-export function dateIndex(d: Date = new Date()) {
+export function dateIndex(d: Date = new Date()): number {
     return Math.round((new Date(d).setHours(0, 0, 0, 0) - new Date(startDate).setHours(0, 0, 0, 0)) / 86400000);
 }
+// (window as any).dateIndex = dateIndex;
 
-export function wordIndex(d: Date = new Date()) {
+export function wordIndex(d: Date = new Date()): number {
     return dateIndex(d) % answers.length;
 }
+// (window as any).wordIndex = wordIndex;
 
-export function getWord(d: Date = new Date()) {
+export function getWord(d: Date = new Date()): string {
     return answers[wordIndex(d)];
 }
+// (window as any).getWord = getWord;
 
-export function getDateByDayOffset(offset: number, today: Date = new Date()) {
+export function getDateByDayOffset(offset: number, today: Date = new Date()): Date {
     return new Date(today.valueOf() + (offset * 24 * 60 * 60 * 1000));
 }
+// (window as any).getDateByDayOffset = getDateByDayOffset;
 
-export function getWordByDayOffset(offset: number, today: Date = new Date()) {
+export function getDateByDateIndex(index: number): Date {
+    const newDate = new Date(startDate);
+    newDate.setDate(newDate.getDate() + index);
+    return newDate;
+}
+// (window as any).getDateByDateIndex = getDateByDateIndex;
+
+export function getWordByDayOffset(offset: number, today: Date = new Date()): string {
     const d = getDateByDayOffset(offset, today);
     return getWord(d);
 }
