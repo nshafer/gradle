@@ -34,7 +34,7 @@ describe('Guess', () => {
         expect(guess.resolvedLetters[3].wordsRemaining.length).toBeGreaterThanOrEqual(guess.resolvedLetters[4].wordsRemaining.length);
 
         // The bits of each letter should add up to the bits of the guess
-        expect(guess.letters.map(l => l.bits).reduce((acc, n) => acc + n)).toEqual(guess.bits);
+        expect(guess.letters.map(l => l.bits).reduce((acc, n) => acc + n)).toBeCloseTo(guess.bits);
 
     });
 
@@ -107,7 +107,7 @@ describe('Guess', () => {
         expect(guess.isCorrect).toBe(false);
         expect(guess.letters.map(l => l.hint)).toEqual([Hint.Present, Hint.Absent, Hint.Present, Hint.Absent, Hint.Absent]);
         expect(guess.bits).greaterThanOrEqual(7).lessThanOrEqual(8);
-        expect(guess.letters.map(l => l.bits).reduce((acc, n) => acc + n)).toEqual(guess.bits);
+        expect(guess.letters.map(l => l.bits).reduce((acc, n) => acc + n)).toBeCloseTo(guess.bits);
     });
 
     test("yellow turns to green after gray", () => {
