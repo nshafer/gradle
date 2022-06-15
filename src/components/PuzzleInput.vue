@@ -111,8 +111,6 @@ const finalLetterGradeSimple = computed(() => {
 <template>
     <AnswerPicker @answerUpdated="newAnswer => answer = newAnswer" />
 
-    <!-- {{ ansewr }}-->
-
     <template v-if="answer">
         <div v-for="guess in guesses" :key="guess.id" class="guess" :class="{ selected: guess == selectedGuess, 'is-correct': guess.isCorrect }, [guess.letterGradeSimple]" @click="guessClicked(guess)" @keyup.ctrl.delete="removeLastGuess">
             <div class="title">
