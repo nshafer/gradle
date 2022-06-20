@@ -4,6 +4,9 @@ build:
 dev:
 	npm run dev
 
+devs:
+	npm run devs
+
 check:
 	npm run typecheck
 	npm run lint

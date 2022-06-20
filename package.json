@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite --host='0.0.0.0'",
+    "devs": "vite --host='0.0.0.0' --https",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview --port 5050",
     "test": "vitest --environment jsdom run",
