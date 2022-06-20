@@ -70,11 +70,10 @@ function checkWord() {
 <template>
     <form @submit.prevent="checkWord">
         <input :value="word" ref="input"
-            @input="updateWord"
-            @keyup.ctrl.delete="$emit('goBack')"
+            @input="updateWord" @keyup.ctrl.delete="$emit('goBack')"
             :placeholder="`${wordNumber} guess`"
             class="input" :class="{ error: inputError }"
-            type="text" maxlength="5" inputmode="text" enterkeyhint="done"/>
+            type="text" maxlength="5" inputmode="text" enterkeyhint="done" autocomplete="off"/>
     </form>
 </template>
 

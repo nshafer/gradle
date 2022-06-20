@@ -16,7 +16,6 @@ const scrambled = computed(() => {
 });
 
 function reveal() {
-    console.log("reveal", visible, props.word);
     visible.value = true;
 }
 

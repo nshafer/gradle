@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { ref, nextTick, onMounted, watch } from 'vue';
+import { ref, nextTick, onBeforeMount, onMounted, watch } from 'vue';
 import { getWord, startDate } from '../game';
 import { computed } from '@vue/reactivity';
 import { allWords } from '@/words';
 import { addDays, isoDateString, parseDateString } from '@/util';
 
 const props = defineProps<{
-    initialDate?: Date,
-    initialAnswer?: string,
+    date?: Date
+    answer?: string
 }>();
 
 const emit = defineEmits<{
-    (e: 'answerUpdated', value: string): void,
+    (e: 'update:date', value: Date | undefined): void,
+    (e: 'update:answer', value: string): void,
 }>();
 
 // Toggle between setting answer by date or manually inputting
@@ -28,11 +29,10 @@ function setManualInput() {
     });
 }
 
-onMounted(() => {
-    if (props.initialDate) {
+onBeforeMount(() => {
+    if (props.date) {
         inputType.value = "date";
-    }
-    if (props.initialAnswer) {
+    } else if (props.answer) {
         inputType.value = "manual";
     }
 })
@@ -42,12 +42,20 @@ const maxDate = ref(new Date());
 const dateInput = ref("");
 const dateInputEl = ref<HTMLInputElement | null>(null);
 
-const dateAnswer = computed(() => {
+const dateSelected = computed(() => {
     const date = parseDateString(dateInput.value);
     if (date && date instanceof Date && !isNaN(date.getTime()) && date >= startDate && date <= maxDate.value) {
-        return getWord(date);
+        return date;
     } else {
-        return "";
+        return undefined;
+    }
+})
+
+const dateAnswer = computed(() => {
+    if (dateSelected.value !== undefined) {
+        return getWord(dateSelected.value);
+    } else {
+        return ""
     }
 });
 
@@ -68,9 +76,9 @@ function updateMaxDate() {
 }
 
 onMounted(() => {
-    if (props.initialDate) {
+    if (props.date) {
         // Set the date picker as the given date
-        dateInput.value = isoDateString(props.initialDate);
+        dateInput.value = isoDateString(props.date);
     } else {
         // Set today's date as the default value
         dateInput.value = isoDateString(new Date());
@@ -81,7 +89,7 @@ onMounted(() => {
 });
 
 // Manual answer input
-const manualInput = ref(props.initialAnswer || "");
+const manualInput = ref(props.answer || "");
 const manualInputEl = ref<HTMLInputElement | null>(null);
 
 const cleanedAnswer = computed(() => {
@@ -102,7 +110,15 @@ const pickedAnswer = computed(() => {
     } else {
         throw new Error("invalid inputType");
     }
-})
+});
+
+const pickedDate = computed(() => {
+    if (inputType.value == "date") {
+        return dateSelected.value;
+    } else {
+        return undefined;
+    }
+});
 
 const inputError = computed(() => {
     if (inputType.value == "date" && !dateAnswer.value) {
@@ -115,7 +131,11 @@ const inputError = computed(() => {
 });
 
 watch(pickedAnswer, (answer) => {
-    emit("answerUpdated", answer);
+    emit("update:answer", answer);
+})
+
+watch(pickedDate, (date) => {
+    emit("update:date", date);
 })
 
 </script>
@@ -130,7 +150,7 @@ watch(pickedAnswer, (answer) => {
                 @click="setDatePicker" @keyup.space="setDatePicker" @keyup.enter="setDatePicker">
                 Pick Date
             </div>
-            
+
             <input v-if="inputType == 'manual'" ref="manualInputEl" v-model="manualInput"
                 class="selection input manual" type="text" placeholder="Answer" maxlength="5" />
             <div v-else class="selection manual placeholder right" tabindex="0"
@@ -142,6 +162,7 @@ watch(pickedAnswer, (answer) => {
             {{ inputError }}
         </div>
         <div class="picked-answer">{{ pickedAnswer }}</div>
+        <div class="picked-date">{{ pickedDate }}</div>
     </div>
 </template>
 
@@ -225,7 +246,7 @@ watch(pickedAnswer, (answer) => {
         margin-top: 1em;
     }
 
-    .picked-answer {
+    .picked-answer, .picked-date {
         display: none;
     }
 </style>

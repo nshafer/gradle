@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, onUnmounted, computed, watch } from 'vue';
+import { ref, reactive, onBeforeMount, onMounted, onUnmounted, computed, watch } from 'vue';
 
 import PuzzleInput from './PuzzleInput.vue';
 import SummaryView from './SummaryView.vue';
-import type { Guess } from '@/guess';
+import { Guess } from '@/guess';
+import { decodeShareCode } from '@/encoding';
 
 // Page/dragging support
 function getScreenWidth(): number {
@@ -154,7 +155,52 @@ function endDrag(event: PointerEvent) {
 
 // Handle inputs and show summary
 const guesses = ref<Guess[]>([]);
-const selectedGuess = ref<Guess | undefined>(undefined);
+const puzzleAnswer = ref<string | undefined>();
+const puzzleDate = ref<Date | undefined>();
+const selectedGuess = ref<Guess | undefined>();
+
+function appendGuess(guess: Guess) {
+    // console.log("appendGuess", guess.word, guess);
+    guesses.value = [...guesses.value, guess];
+    // guesses.value.push(guess);
+    // console.log("Added guess", guess.word, guess);
+    // console.log("guesses", guesses.value.map(guess => guess.word), guesses.value);
+}
+
+function removeGuess(index: number) {
+    // Remove the given guess index and all that follow
+    guesses.value = guesses.value.slice(0, index);
+}
+
+// Load guesses in share-code
+onBeforeMount(() => {
+    if (window.location.hash != "") {
+        let shareCode = window.location.hash;
+        if (shareCode.at(0) == "#") {
+            shareCode = shareCode.slice(1);
+        }
+
+        console.log("Decoding shareCode", shareCode);
+        const shareData = decodeShareCode(shareCode);
+
+        if (shareData.answer) {
+            puzzleAnswer.value = shareData.answer
+        } else {
+            throw new Error("Cannot decode answer from share code");
+        }
+
+        if (shareData.date) {
+            puzzleDate.value = shareData.date;
+        }
+
+        for (let word of shareData.guesses) {
+            const guessIndex = guesses.value.length;
+            const previous = guessIndex > 0 ? guesses.value[guessIndex - 1] : undefined;
+            const guess = new Guess(word, guessIndex, puzzleAnswer.value, previous);
+            appendGuess(guess);
+        }
+    }
+})
 
 // Select the last guess whenever the list changes, such as a new one is added
 watch(guesses, (newGuesses, oldGuesses) => {
@@ -179,7 +225,7 @@ function guessClicked(guess?: Guess) {
 
     <main class="main-interface" @keyup.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
         <div class="page input-page" :class="{ show: isInputPage }" :style="{ transform: inputPageTransform, transition: dragTransition }">
-            <PuzzleInput v-model="guesses" :selectedGuess="selectedGuess" @guessClicked="guessClicked"/>
+            <PuzzleInput :guesses="guesses" :selectedGuess="selectedGuess" :answer="puzzleAnswer" :date="puzzleDate" @appendGuess="appendGuess" @removeGuess="removeGuess" @guessClicked="guessClicked"/>
         </div>
 
         <div class="page summary-page" :class="{ show: isSummaryPage }" :style="{ transform: summaryPageTransform, transition: dragTransition }">

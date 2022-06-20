@@ -6,6 +6,9 @@
 - [x] Optimize solver for null green, yellow, gray lists, perhaps avoid creating regex completely.
 - [ ] Maybe support other grading systems, e.g. Japan (S, A, B, C, F)
 - [x] Detect hard mode. Give bonus for hard mode?
+- [ ] Detect bust, show x/6
+- [ ] Support light/dark mode for share glyphs
+
 
 # Main interface
 - Input page (left):
@@ -102,3 +105,14 @@ v1 = shift(v1, -16)
 
 
 https://github.com/peterolson/BigInteger.js#readme
+
+
+
+https://localhost:3000/#32hywXxOD96wQR
+http://localhost:3000/#70YjoBYnDUTfqmf8mT
+http://localhost:3000/#6TyzuuFNJt6ri2bmVw
+http://localhost:3000/#SKWEAuTXgKQXfkHx
+
+
+366;craneadieuknowsuntillastsinput
+alcyJqoYyMPn3r41VPjPCr6eOg46L

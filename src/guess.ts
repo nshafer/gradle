@@ -246,6 +246,10 @@ export class Guess extends Calculable {
             return super.grade;
         }
     }
+
+    get unicodeHints(): string {
+        return this.letters.map((letter) => letter.unicodeHint).join("");
+    }
 }
 
 export class Letter extends Calculable {
@@ -321,6 +325,19 @@ export class Letter extends Calculable {
         const solver = new Solver(correct, present, absent);
         
         return solver.filter(words);
+    }
+
+    get unicodeHint(): string {
+        switch (this.hint) {
+            case Hint.Correct:
+                return "🟩";
+            case Hint.Present:
+                return "🟨";
+            case Hint.Absent:
+                return "⬛";
+            default:
+                return "⬛";
+        }
     }
 }
 

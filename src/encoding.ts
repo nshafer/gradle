@@ -6,7 +6,7 @@ the share code, so when decoded it will return the list of guesses, puzzle date 
 
 Encoding:
   where:
-    version = 4 bits; 0-15; 16 possible versions of possible share-codes
+    version = 4 bits; 0-15; 16 possible versions of share-codes
     data = whatever data this version of the encoding needs
 
 Version 0:
@@ -15,11 +15,11 @@ Version 0:
   - each guess is 5 characters
   - there are between 1 and 6 guesses, inclusive
   - data:
-    - version: 4 bits; 0-15; 16 possible versions of possible share-codes
-    - letter: 5 bits; 0-31; a=0, b=1, y=24, z=25
+    - version: 4 bits; 0-15; 16 possible versions of share-codes
+    - puzzle: up to 6 guesses; 25 - 150bits
     - guess: 5 letters; 25 bits
-    - puzzle: Up to 6 guesss; 150 bits
-    - total: 4+(25*n); n = number of guesss
+    - letter: 5 bits; 0-31; a=0, b=1, y=24, z=25
+    - total: 4+(25*n) bits; n = number of guesss
 
 Share code for version 0
 
@@ -38,12 +38,12 @@ Version 1:
   - there are between 1 and 6 guesses, inclusive
   - includes the puzzle date as a 16 bit count of days since 2021-06-19
   - data:
-    - version: 4 bits; 0-15; 16 possible versions of possible share-codes
-    - letter: 5 bits; 0-31; a=0, b=1, y=24, z=25
-    - guess: 5 letters; 25 bits
-    - puzzle: Up to 6 guesss; 150 bits
-    - total: 4+(25*n); n = number of guesss
+    - version: 4 bits; 0-15; 16 possible versions of share-codes
     - date: 16 bits; 0-65535; n days since wordle epoch, allows 179.5 years
+    - puzzle: up to 6 guesses; 25 - 150bits
+    - guess: 5 letters; 25 bits
+    - letter: 5 bits; 0-31; a=0, b=1, y=24, z=25
+    - total: 4+16+(25*n) bits; n = number of guesss
 
 Share code for version 1
 
@@ -56,9 +56,7 @@ Share code for version 1
                                        01011       l; 5 bits  |
                                             00100  e; 5 bits /
 
-
-
-This bit packed data is then base encoded using characters 0-9, a-z, A-Z, [!$&'*+,;=-._~:@]
+This bit packed data is then base62 encoded using characters 0-9, a-z, A-Z
 
 */
 
@@ -72,8 +70,8 @@ const encodingAlphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR
 
 interface ShareData {
     guesses: string[],
+    answer: string,
     date?: Date,
-    answer?: string,
 }
 
 export function encodeShareCode(guesses: string[], date?: Date, answer?: string): string {
@@ -114,6 +112,7 @@ export function decodeShareCode(code: string): ShareData {
         console.error(`Invalid share-code (${code})`, error);
         return {
             guesses: [],
+            answer: "",
         };
     }
 }
@@ -172,7 +171,7 @@ function binStringToShareData0(data: string): ShareData {
 
     return {
         guesses: guesses,
-        answer: guesses.length > 0 ? guesses[guesses.length-1] : undefined,
+        answer: guesses.length > 0 ? guesses[guesses.length-1] : "",
     }
 }
 
@@ -218,7 +217,7 @@ function binStringToShareData1(data: string): ShareData {
     return {
         guesses: guesses,
         date: date,
-        answer: guesses.length > 0 ? guesses[guesses.length - 1] : undefined,
+        answer: guesses.length > 0 ? guesses[guesses.length - 1] : "",
     }
 }
 
