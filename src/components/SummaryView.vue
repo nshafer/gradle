@@ -246,11 +246,28 @@ const showWordListModal = ref(false);
             <h3>Quick Start</h3>
             <div class="instruction">
                 <div class="instruction-step">1</div>
-                <div class="instruction-text">Select which puzzle you want graded.</div>
+                <div class="instruction-text">
+                    Select which puzzle you want graded.
+                    <div class="text-muted">Either by date or by entering the answer.</div>
+                </div>
             </div>
             <div class="instruction">
                 <div class="instruction-step">2</div>
-                <div class="instruction-text">Enter each of your guesses.</div>
+                <div class="instruction-text">
+                    Enter each of your guesses.
+                    <div class="text-muted">
+                        Enter each word in the order you guessed.
+                    </div>
+                </div>
+            </div>
+            <div class="instruction">
+                <div class="instruction-step">3</div>
+                <div class="instruction-text">
+                    Get your grade!
+                    <div class="text-muted">
+                        Share it with a unique link.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
