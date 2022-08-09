@@ -59,7 +59,7 @@ const version = computed(() => {
                         </div>
                     </div>
                     <div class="setting__control">
-                        <a href="https://twitter.com/Gradle" target="__blank">
+                        <a href="https://twitter.com/gradleapp" target="__blank">
                             @gradleapp
                         </a>
                     </div>
