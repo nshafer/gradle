@@ -8,42 +8,52 @@ defineEmits(['close']);
 <template>
     <Modal :visible="visible" @close="$emit('close')" title="Help / About">
         <template #body>
-            <p>
-                TODO: rewrite
-                Wordle is an excellent game, but sometimes you just get stuck and can't think of any words to try next.
-                It's easy to paint yourself into a corner, especially if you're playing on hard mode.
-                When that happens, Worldle Helper can give you hints on what to try next, without just giving you the answer.
-            </p>
-
-            <h3>Instructions</h3>
+            <h3>Gradle</h3>
 
             <p>
-                First, enter each green letter currently visible in your Wordle game, in the position that they are in.
-                If you don't have a green for a given position, then leave it blank.
+                Gradle will grade your Wordle game and give you a final grade based on how well you played.
+                A good grade is obtained by reducing the list of possible words as much as possible with each guess.
             </p>
 
             <p>
-                Next, for each column of the game, enter all yellow letters visible in that position.
-                You can enter multiple letters for each position if you have gotten multiple yellows in that column.
+                Each guess is first evaluated for correct (green), present (yellow) and absent (gray) letters.
+                Then that information is used to filter which words in the list could possibly be the answer.
             </p>
 
             <p>
-                Finally, enter all gray letters in the puzzle or on the keyboard at the bottom.
+                The best grades are going to be depend on the answer that day.
+                Your favorite starting word or words may not always be the best guess if they don't reduce the
+                possible list of words very much.
+            </p>
+
+            <h3>Details</h3>
+
+            <p>
+                Gradle determines a grade by using information theory to figure out how many times a given guess cut the
+                possible wordlist in half, also known as a <b>bit of information</b>.
+                It compares how many bits your guess is worth against the <b>uncertainty</b>, or how many bits would be
+                required to reduce the list to exactly 1 possibility, then plots that on an exponential curve to
+                determine your final grade.
             </p>
 
             <p>
-                Once you have entered the current "state" of the game, simply click the Results button.
-                There you will be told how many possible answers it could be, and be given the option to see what words to try next.
-                You can see possible answers, or just other english words that are not in the possible answer list, so you can type
-                those in and just get more information on what letters might or might not be in the answer.
+                More information can be found in the tooltips that break down exactly how your grade was calculated.
             </p>
 
-            <p class="pt-3 bt-1">
+            <p>
+                This tool was heavily inspired by
+                <a href="https://youtu.be/v68zYyaEmEA" target="_blank">Solving Wordle using information theory</a>
+                by 3Blue1Brown.
+            </p>
+
+            <p class="pt-3 bt-1 text-small text-muted">
                 Wordle is © 2022 The New York Times Company.
-                
+            </p>
+            <p class="text-small text-muted">
                 This App / Website is the product of gradle.app which has no
                 affiliation with Wordle or The New York Times Company.
             </p>
         </template>
     </Modal>
 </template>
+

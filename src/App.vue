@@ -436,6 +436,10 @@ function closeModal(name: string) {
         text-align: right;
     }
 
+    .text-small {
+        font-size: .8em;
+    }
+    
     .text-muted {
         color: var(--gray-2);
     }
