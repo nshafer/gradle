@@ -33,7 +33,11 @@ defineEmits(['close']);
                 possible wordlist in half, also known as a <b>bit of information</b>.
                 It compares how many bits your guess is worth against the <b>uncertainty</b>, or how many bits would be
                 required to reduce the list to exactly 1 possibility, then plots that on an exponential curve to
-                determine your final grade.
+                determine your final grade for each guess.
+            </p>
+
+            <p>
+                A final grade is determined by averaging all grades. Any unused guesses are considered 100% guesses.
             </p>
 
             <p>
