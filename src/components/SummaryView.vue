@@ -41,9 +41,11 @@ const showWordListModal = ref(false);
                                 <button class="button icon" @click="showWordListModal = true">
                                     <IconFilterList />
                                 </button>
-                                
+
                                 <ToolTip>
-                                    <button class="button icon"><IconCircleInfo /></button>
+                                    <button class="button icon">
+                                        <IconCircleInfo />
+                                    </button>
                                     <template #content>
                                         This guess reduced the list of words from
                                         <b>{{ guess.previousWordsRemaining.length }}</b>
@@ -54,7 +56,7 @@ const showWordListModal = ref(false);
 
                                         <p>
                                             <small>w<sub>p</sub></small> = {{ guess.previousWordsRemaining.length }}
-                                            <br/>
+                                            <br />
                                             <small>w<sub>n</sub></small> = {{ guess.wordsRemaining.length }}
                                         </p>
                                     </template>
@@ -64,13 +66,15 @@ const showWordListModal = ref(false);
                         <div class="detail-value">
                             <span>
                                 {{ guess.previousWordsRemaining.length }}
-                                <div class="icon-inline"><IconCaretRight /></div>
+                                <div class="icon-inline">
+                                    <IconCaretRight />
+                                </div>
                                 {{ guess.wordsRemaining.length }}
                             </span>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="detail-row">
                     <div class="detail">
                         <div class="detail-label">
@@ -109,7 +113,7 @@ const showWordListModal = ref(false);
                                     Uncertainty is another way of saying how many <i>bits of entropy</i>
                                     exist in the number of words that were in the list before this guess.
                                     Or put another way, it would take
-                                    {{ guess.bits.toFixed(2) }} <i>bits of entropy</i> to reduce the list
+                                    {{ guess.uncertainty.toFixed(2) }} <i>bits of entropy</i> to reduce the list
                                     of words to 1 final possibility.
 
                                     <p>
@@ -124,7 +128,7 @@ const showWordListModal = ref(false);
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="detail-row">
                     <div class="detail">
                         <div class="detail-label">
@@ -213,14 +217,16 @@ const showWordListModal = ref(false);
                                 <span class="text-muted">
                                     {{ letter.resolutionIndex! + 1 }}:
                                 </span>
-                                
+
                                 <div class="tile" :class="letter.hint">
                                     {{ letter.letter }}
                                 </div>
                             </th>
                             <td>
                                 {{ letter.previousWordsRemaining.length }}
-                                <div class="icon-inline"><IconCaretRight /></div>
+                                <div class="icon-inline">
+                                    <IconCaretRight />
+                                </div>
                                 {{ letter.wordsRemaining.length }}
                             </td>
                             <td>
@@ -272,7 +278,8 @@ const showWordListModal = ref(false);
         </div>
     </div>
 
-    <WordListModal v-if="guess" :visible="showWordListModal" @close="showWordListModal = false" :words="guess.wordsRemaining" />
+    <WordListModal v-if="guess" :visible="showWordListModal" @close="showWordListModal = false"
+        :words="guess.wordsRemaining" />
 </template>
 
 <style scoped>
