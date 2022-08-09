@@ -4,7 +4,6 @@ import Popper from "vue3-popper";
 
 const props = defineProps<{
     wide?: boolean,
-    show?: boolean,
 }>();
 
 const classes = computed(() => {
@@ -16,7 +15,7 @@ const classes = computed(() => {
 </script>
 
 <template>
-    <Popper v-bind="$attrs" :arrow="true" :class="classes" :show="show">
+    <Popper v-bind="$attrs" :arrow="true" :class="classes">
         <slot />
         <template #content="props">
             <slot name="content" v-bind="props" />
