@@ -24,6 +24,18 @@ const classes = computed(() => {
 </template>
 
 <style scoped>
+    :root {
+        --popper-theme-background-color: var(--tooltip-bg);
+        --popper-theme-background-color-hover: var(--tooltip-bg);
+        --popper-theme-text-color: var(--tooltip-fg);
+        --popper-theme-border-width: 1px;
+        --popper-theme-border-style: solid;
+        --popper-theme-border-color: var(--tooltip-border);
+        --popper-theme-border-radius: 5px;
+        --popper-theme-padding: 1rem;
+        --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
+    }
+
   :deep(.popper) {
     background: var(--tooltip-bg);
     padding: 1rem;
