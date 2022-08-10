@@ -26,8 +26,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="185.7016"
-     inkscape:cy="337.56177"
+     inkscape:cx="77.701072"
+     inkscape:cy="242.48307"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -58,26 +58,26 @@
      id="layer1"
      transform="translate(0,-161.53332)">
     <g
-       id="g872"
-       transform="translate(0.77096357,6.4143949)">
+       id="g851"
+       transform="matrix(1,0,0,1.0157198,0.09308795,1.2910784)">
       <path
          transform="matrix(0.26458333,0,0,0.26458333,0,161.53332)"
          inkscape:connector-curvature="0"
-         id="text843"
-         d="M 318.20312,90.935547 C 307.92983,143.37628 297.65062,195.81567 287.375,248.25586 v 124.32226 h 62.69141 V 254.96875 h 92.33984 v 117.60937 h 62.33398 V 90.935547 H 442.40625 V 202.74023 H 350.06641 V 90.935547 Z"
-         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:100.71868134px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';letter-spacing:0px;word-spacing:0px;fill:#6aaa64;fill-opacity:1;stroke:none;stroke-width:9.51672554" />
-      <text
-         transform="scale(0.96090581,1.0406847)"
          id="text3719"
-         y="249.94231"
-         x="-0.63845617"
-         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:100.71867371px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';letter-spacing:0px;word-spacing:0px;fill:#6aaa64;fill-opacity:1;stroke:none;stroke-width:2.51796699"
-         xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';fill:#6aaa64;fill-opacity:1;stroke-width:2.51796699"
-           y="249.94231"
-           x="-0.63845617"
-           id="tspan3717"
-           sodipodi:role="line">W</tspan></text>
+         d="M 4.3457031,78.75 67.230469,396.82031 h 73.634761 l 38.74415,-181.3164 39.55468,181.3164 h 73.83789 l 21.01172,-106.62109 h -25.93555 v -98.9668 h 45.4375 L 355.68359,78.75 H 285.0918 L 251.21484,278.19922 210.03711,78.75 H 149.58594 L 109.01758,278.19922 75.140625,78.75 Z"
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:114.06747437px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';letter-spacing:0px;word-spacing:0px;fill:#00695c;fill-opacity:1;stroke:none;stroke-width:10.77802944" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:114.06747437px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';letter-spacing:0px;word-spacing:0px;fill:#00695c;fill-opacity:1;stroke:none;stroke-width:2.85168695;stroke-opacity:1"
+         x="81.102333"
+         y="254.97882"
+         id="text824"
+         transform="scale(0.96362191,1.0377514)"><tspan
+           sodipodi:role="line"
+           id="tspan822"
+           x="81.102333"
+           y="254.97882"
+           style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';fill:#00695c;fill-opacity:1;stroke:none;stroke-width:2.85168695;stroke-opacity:1">+</tspan></text>
     </g>
   </g>
 </svg>
