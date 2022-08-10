@@ -492,6 +492,11 @@ function closeModal(name: string) {
         margin-bottom: 2em !important;
     }
 
+    .px-3 {
+        padding-left: 1em !important;
+        padding-right: 1em !important;
+    }
+
     .pt-3 {
         padding-top: 1em !important;
     }

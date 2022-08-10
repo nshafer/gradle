@@ -8,6 +8,7 @@ import AnswerPicker from './AnswerPicker.vue';
 import ToolTip from './ToolTip.vue';
 
 import IconTrash from './icons/IconTrash.vue';
+import IconTrashCanUndo from './icons/IconTrashCanUndo.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
 import IconCaretRight from "./icons/IconCaretRight.vue";
 import IconCircleInfo from "./icons/IconCircleInfo.vue";
@@ -49,6 +50,12 @@ function removeGuess(guess: Guess) {
 
 function removeLastGuess() {
     emit('removeGuess', props.guesses.length - 1);
+}
+
+function resetGuesses() {
+    if (props.guesses.length > 0) {
+        emit('removeGuess', 0);
+    }
 }
 
 // Remove all guesses if the answer changes
@@ -183,7 +190,12 @@ watch(() => props.guesses, (newGuesses) => {
 </script>
 
 <template>
-    <AnswerPicker v-model:date="puzzleDate" v-model:answer="puzzleAnswer" />
+    <div class="tools">
+        <AnswerPicker v-model:date="puzzleDate" v-model:answer="puzzleAnswer" />
+        <button class="button icon px-3" @click.stop="resetGuesses" title="Reset">
+            <IconTrashCanUndo />
+        </button>
+    </div>
 
     <template v-if="puzzleAnswer">
         <div v-for="guess in guesses" :key="guess.id" class="guess"
@@ -302,8 +314,17 @@ watch(() => props.guesses, (newGuesses) => {
 </template>
 
 <style scoped>
-    .answer-picker {
+    .tools {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 1em;
+    }
+
+    .answer-picker {
+        /* margin-bottom: 1em; */
+        flex: 1;
     }
 
     .guess-input {
