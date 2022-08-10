@@ -185,7 +185,12 @@ const showWordListModal = ref(false);
                             </ToolTip>
                         </div>
                         <div class="detail-value grade-color" :class="[guess.letterGradeSimple]">
-                            {{ (guess.grade*100).toFixed(2) }}%
+                            <template v-if="guess.grade == 1">
+                                100%
+                            </template>
+                            <template v-else>
+                                {{ (guess.grade*100).toFixed(2) }}%
+                            </template> 
                         </div>
                     </div>
                 </div>
