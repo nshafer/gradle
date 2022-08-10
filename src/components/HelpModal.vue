@@ -21,7 +21,7 @@ defineEmits(['close']);
             </p>
 
             <p>
-                The best grades are going to be depend on the answer that day.
+                The best grades are going to depend on the answer that day.
                 Your favorite starting word or words may not always be the best guess if they don't reduce the
                 possible list of words very much.
             </p>
