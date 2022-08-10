@@ -71,6 +71,10 @@ const completed = computed(() => {
     return props.guesses.length >= 6 || props.guesses[props.guesses.length - 1]?.isCorrect;
 });
 
+const busted = computed(() => {
+    return props.guesses.length >= 6 && !props.guesses[props.guesses.length - 1]?.isCorrect;
+});
+
 const hardMode = computed(() => {
     if (props.guesses.length > 0) {
         return props.guesses[props.guesses.length - 1].hardMode;
@@ -130,7 +134,7 @@ const shareText = computed(() => {
         hashtag = "#Wordle";
     }
 
-    const guessCount = `${props.guesses.length}/6`;
+    const guessCount = busted.value ? "X/6" : `${props.guesses.length}/6`;
     const hard = hardMode.value ? "*" : "";
 
     let guessLines = [];
@@ -251,7 +255,12 @@ watch(() => props.guesses, (newGuesses) => {
                     <div class="final-grade__subtitle">
                         <div class="final-grade__subtitle">
                             <div class="final-grade__guesses">
-                                {{ guesses.length }} / 6 Guesses.
+                                <template v-if="busted">
+                                    X / 6 Guesses.
+                                </template>
+                                <template v-else>
+                                    {{ guesses.length }} / 6 Guesses.
+                                </template>
                             </div>
                             <div v-if="hardMode">
                                 Hard mode.
