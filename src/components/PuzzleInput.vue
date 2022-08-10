@@ -141,7 +141,6 @@ const shareText = computed(() => {
     return `${hashtag} ${guessCount}${hard} Grade: ${finalLetterGrade.value}
 
 ${guessLines.join("\n")}
-
 `
 });
 
