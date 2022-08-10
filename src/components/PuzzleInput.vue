@@ -141,6 +141,7 @@ const shareText = computed(() => {
     return `${hashtag} ${guessCount}${hard} Grade: ${finalLetterGrade.value}
 
 ${guessLines.join("\n")}
+
 `
 });
 
@@ -165,7 +166,7 @@ async function share() {
     if (navigator.share != undefined && navigator.canShare && navigator.canShare(data)) {
         await navigator.share(data);
     } else if (navigator.clipboard && navigator.clipboard.writeText != undefined) {
-        await navigator.clipboard.writeText(data.text + "\n" + data.url);
+        await navigator.clipboard.writeText(data.text + data.url);
         showCopiedTooltip.value = true;
         setTimeout(() => { showCopiedTooltip.value = false; }, 2000);
     }
