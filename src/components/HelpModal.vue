@@ -8,7 +8,7 @@ defineEmits(['close']);
 <template>
     <Modal :visible="visible" @close="$emit('close')" title="Help / About">
         <template #body>
-            <h3>Gradle</h3>
+            <h3 class="mt-0">Gradle</h3>
 
             <p>
                 Gradle will grade your Wordle game and give you a final grade based on how well you played.
@@ -50,7 +50,9 @@ defineEmits(['close']);
                 by 3Blue1Brown.
             </p>
 
-            <p class="pt-3 bt-1 text-small text-muted">
+        </template>
+        <template #footer>
+            <p class="text-small text-muted">
                 Wordle is © 2022 The New York Times Company.
             </p>
             <p class="text-small text-muted">

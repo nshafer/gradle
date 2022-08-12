@@ -53,7 +53,7 @@ const wordsNotShown = computed(() => {
         padding: .5em .5em;
         margin: .25em;
         /* min-width: 4em; */
-        text-align: center
+        text-align: center;
     }
 
     .word:last-child {

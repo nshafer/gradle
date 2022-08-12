@@ -64,6 +64,10 @@ watch(() => props.visible, (newValue) => {
     /* border-bottom: 1px solid var(--gray-4); */
 }
 
+.date {
+    padding-right: 2em;
+}
+
 .word {
     background: var(--color-absent);
     color: var(--input-text-color);

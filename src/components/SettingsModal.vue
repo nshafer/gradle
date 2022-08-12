@@ -4,6 +4,8 @@ import { computed } from 'vue';
 import Modal from './Modal.vue';
 import { settings } from '../settings';
 
+import GitHub from "./icons/GitHub.vue";
+
 defineProps(['visible']);
 defineEmits(['close']);
 
@@ -29,11 +31,11 @@ const version = computed(() => {
                     <div class="setting__control">
                         <label class="toggle">
                             <input type="checkbox" v-model="settings.darkMode">
-                            <div class="slider"/>
+                            <div class="slider" />
                         </label>
                     </div>
                 </div>
-                
+
                 <div class="setting">
                     <div class="setting__label">
                         <div class="setting__title">
@@ -47,11 +49,11 @@ const version = computed(() => {
                     <div class="setting__control">
                         <label class="toggle">
                             <input type="checkbox" v-model="settings.colorBlind">
-                            <div class="slider"/>
+                            <div class="slider" />
                         </label>
                     </div>
                 </div>
-                
+
                 <div class="setting">
                     <div class="setting__label">
                         <div class="setting__title">
@@ -70,7 +72,10 @@ const version = computed(() => {
         <template #footer>
             <div class="footer">
                 <small>© 2022 gradle.app</small>
-                <small>{{ version }}</small>
+                <small class="ml-a">{{ version }}</small>
+                <a class="button icon lg ml-2" href="https://github.com/nshafer/gradle" target="__blank">
+                    <GitHub />
+                </a>
             </div>
         </template>
     </Modal>
@@ -90,6 +95,17 @@ const version = computed(() => {
     align-items: center;
     padding: 1em 0;
     border-bottom: 1px solid var(--gray-4);
+}
+
+.setting:first-child {
+}
+
+.setting:last-child {
+    border-bottom: none;
+}
+
+.setting__label {
+    margin-right: 2em;
 }
 
 .setting__title {
@@ -155,5 +171,7 @@ const version = computed(() => {
 .footer {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
+
 </style>

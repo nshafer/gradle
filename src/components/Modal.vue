@@ -13,30 +13,32 @@ defineEmits<{
 </script>
 
 <template>
-    <transition name="modal-fade">
-        <div v-show="visible" class="container" @click.self="$emit('close')">
-            <div class="modal">
-                <header class="header">
-                    {{ title }}
-                    <button class="button icon lg" @click="$emit('close')">
-                        <IconXMark />
-                    </button>
-                </header>
+    <Teleport to="body">
+        <transition name="modal-fade">
+            <div v-show="visible" class="container" @click.self="$emit('close')">
+                <div class="modal">
+                    <header class="header">
+                        {{ title }}
+                        <button class="button icon lg" @click="$emit('close')">
+                            <IconXMark />
+                        </button>
+                    </header>
 
-                <section class="body">
-                    <slot name="body"></slot>
-                </section>
+                    <section class="body">
+                        <slot name="body"></slot>
+                    </section>
 
-                <footer class="footer">
-                    <div class="footer-content">
-                        <slot name="footer">
-                        </slot>
-                    </div>
-                    <button class="footer-close button" @click="$emit('close')">Close</button>
-                </footer>
+                    <footer v-if="$slots.footer" class="footer">
+                        <div class="footer-content">
+                            <slot name="footer">
+                            </slot>
+                        </div>
+                        <!-- <button class="footer-close button" @click="$emit('close')">Close</button> -->
+                    </footer>
+                </div>
             </div>
-        </div>
-    </transition>
+        </transition>
+    </Teleport>
 </template>
 
 <style scoped>
@@ -46,7 +48,7 @@ defineEmits<{
     right: 0;
     bottom: 0;
     left: 0;
-    /* padding: 2em; */
+    padding: 1em;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
@@ -66,10 +68,10 @@ defineEmits<{
     background: var(--gray-5);
     display: flex;
     flex-direction: column;
-    width: 90%;
+    /* width: 90%; */
     max-width: 50em;
-    min-height: 65%;
-    max-height: 90%;
+    /* min-height: 65%; */
+    max-height: 100%;
 }
 
 .header, .footer {
@@ -100,7 +102,7 @@ defineEmits<{
 
 .body {
     position: relative;
-    padding: .5em 1em;
+    padding: 1em;
     flex: 1;
     overflow-y: auto;
 }
