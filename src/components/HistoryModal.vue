@@ -70,7 +70,7 @@ watch(() => props.visible, (newValue) => {
 
 .word {
     background: var(--color-absent);
-    color: var(--input-text-color);
+    color: var(--tile-text-color);
     text-transform: uppercase;
     padding: .5em 1em;
     min-width: 6em;
