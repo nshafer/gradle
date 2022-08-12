@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { ref, watch, computed, onUpdated, nextTick } from 'vue';
 import { Guess } from '@/guess';
+import { dateIndex, letterGrade, letterGradeSimple } from '@/game';
+import { encodeShareCode } from '@/encoding';
 
 import GuessInput from './GuessInput.vue';
 import GuessDisplay from './GuessDisplay.vue';
 import AnswerPicker from './AnswerPicker.vue';
 import ToolTip from './ToolTip.vue';
+import ShareModal from './ShareModal.vue';
 
 import IconTrash from './icons/IconTrash.vue';
 import IconTrashCanUndo from './icons/IconTrashCanUndo.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
 import IconCaretRight from "./icons/IconCaretRight.vue";
 import IconCircleInfo from "./icons/IconCircleInfo.vue";
-import { dateIndex, letterGrade, letterGradeSimple } from '@/game';
-import { encodeShareCode } from '@/encoding';
+import IconShare from "./icons/IconShare.vue";
 
 const props = defineProps<{
     guesses: Guess[]
@@ -131,30 +133,7 @@ const finalLetterGradeSimple = computed(() => {
 // Share functionality
 //
 
-const showCopiedTooltip = ref(false);
-
-const shareText = computed(() => {
-    let hashtag: string;
-    if (puzzleDate.value != null) {
-        hashtag = "#Wordle" + dateIndex(puzzleDate.value!);
-    } else {
-        hashtag = "#Wordle";
-    }
-
-    const guessCount = busted.value ? "X/6" : `${props.guesses.length}/6`;
-    const hard = hardMode.value ? "*" : "";
-
-    let guessLines = [];
-    for (let guess of props.guesses) {
-        guessLines.push(`${guess.unicodeHints}  ${guess.letterGrade}`)
-    }
-
-    return `${hashtag} ${guessCount}${hard} Grade: ${finalLetterGrade.value}
-
-${guessLines.join("\n")}
-
-`
-});
+const showShareModal = ref(false);
 
 const shareURL = computed(() => {
     const url = new URL(window.location.href);
@@ -166,22 +145,6 @@ const shareURL = computed(() => {
     }
     return url.toString();
 })
-
-async function share() {
-    const data = {
-        text: shareText.value,
-        url: shareURL.value,
-    }
-    console.log("share", data);
-
-    if (navigator.share != undefined && navigator.canShare && navigator.canShare(data)) {
-        await navigator.share(data);
-    } else if (navigator.clipboard && navigator.clipboard.writeText != undefined) {
-        await navigator.clipboard.writeText(data.text + data.url);
-        showCopiedTooltip.value = true;
-        setTimeout(() => { showCopiedTooltip.value = false; }, 2000);
-    }
-}
 
 watch(() => props.guesses, (newGuesses) => {
     history.replaceState(null, "", shareURL.value);
@@ -281,14 +244,10 @@ watch(() => props.guesses, (newGuesses) => {
                     </div>
                 </div>
 
-                <ToolTip :show="showCopiedTooltip">
-                    <button class="share-button button primary" @click="share">
-                        Share
-                    </button>
-                    <template #content>
-                        Copied results to clipboard
-                    </template>
-                </ToolTip>
+                <button class="share-button button primary with-icon-left" @click="showShareModal = true">
+                    <IconShare />
+                    Share
+                </button>
             </div>
 
             <div class="grade grade-color" :class="[finalLetterGradeSimple]">
@@ -300,17 +259,11 @@ watch(() => props.guesses, (newGuesses) => {
         <div v-else class="guess-input">
             <GuessInput :wordIndex="guesses.length" @inputDone="inputDone" @goBack="removeLastGuess" />
         </div>
-    </template>
 
-    <!--
-    <p>Puzzle Date: {{ puzzleDate }}</p>
-    <p>Puzzle Answer: {{ puzzleAnswer }}</p>
-    <ul>
-        <li v-for="guess in guesses" :key="guess.index">
-            {{ guess.word }}
-        </li>
-    </ul>
-    -->
+        <ShareModal v-if="completed" :visible="showShareModal" @close="showShareModal = false" :guesses="guesses"
+            :completed="completed" :busted="busted" :hardMode="hardMode" :finalLetterGrade="finalLetterGrade"
+            :puzzleDate="puzzleDate" :puzzleAnswer="puzzleAnswer" :shareURL="shareURL" />
+    </template>
 </template>
 
 <style scoped>
@@ -435,7 +388,6 @@ watch(() => props.guesses, (newGuesses) => {
 
     .share-button {
         margin-left: auto;
-        background-color: var(--button-green);
     }
 
     @media screen and (min-width: 35em) {

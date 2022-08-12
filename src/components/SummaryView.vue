@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { Guess } from "@/guess";
-import IconAngleLeft from "./icons/IconAngleLeft.vue";
+
 import GuessDisplay from "./GuessDisplay.vue";
+import ToolTip from "./ToolTip.vue";
+import WordListModal from "./WordListModal.vue";
+
+import IconAngleLeft from "./icons/IconAngleLeft.vue";
 import IconCaretRight from "./icons/IconCaretRight.vue";
 import IconCircleInfo from "./icons/IconCircleInfo.vue";
-import ToolTip from "./ToolTip.vue";
 import IconFilterList from "./icons/IconFilterList.vue";
-import WordListModal from "./WordListModal.vue";
 
 defineProps<{
     guess: Guess | undefined,
@@ -430,6 +432,10 @@ const showWordListModal = ref(false);
         background: var(--detail-value-bg);
         color: var(--detail-value-fg);
         width: calc(80%/3);
+    }
+
+    .button.return {
+        padding-left: 1.5rem;
     }
 
     /* Small screens only */

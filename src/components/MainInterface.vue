@@ -251,7 +251,6 @@ function guessClicked(guess?: Guess) {
     /* Small screens only */
     @media screen and (max-width: 69.9375em) {
         .main-interface {
-            position: relative;
             width: 100%;
             user-select: none;
         }

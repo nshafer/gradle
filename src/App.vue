@@ -127,12 +127,12 @@ function closeModal(name: string) {
     .button {
         background: var(--button-background);
         color: var(--button-text);
-        padding: .6em 1em;
+        padding: .65em 1em .55em;
         border: none;
         font-size: 1em;
         line-height: 1;
         cursor: pointer;
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: bold;
     }
 
@@ -151,14 +151,18 @@ function closeModal(name: string) {
         width: 100%;
     }
 
+    .button.primary {
+        background-color: var(--color-correct);
+    }
+
     .button.with-icon-left {
         position: relative;
-        padding-left: 2em;
+        padding-left: 2.25em;
     }
 
     .button.with-icon-right {
         position: relative;
-        padding-right: 2em;
+        padding-right: 2.25em;
     }
 
     .button svg {
@@ -170,7 +174,7 @@ function closeModal(name: string) {
         position: absolute;
         top: 50%;
         left: .5em;
-        height: 1.5em;
+        height: 1.25em;
         transform: translateY(-50%);
     }
 
@@ -251,6 +255,53 @@ function closeModal(name: string) {
         text-transform: none;
         color: var(--input-placeholder-color);
         font-weight: normal;
+    }
+
+    .multi-switch {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .multi-switch label {
+        background-color: var(--gray-5);
+        color: var(--gray-1);
+        font-size: 1rem;
+        line-height: 1;
+        text-align: center;
+        padding: .5rem 1rem;
+        border: 1px solid var(--gray-4);
+    }
+
+    .multi-switch label~label {
+        border-left-color: transparent;
+    }
+
+    .multi-switch input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        left: -9999px;
+        top: -9999px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+
+    .multi-switch label:hover {
+        cursor: pointer;
+    }
+
+    .multi-switch input:focus+label {
+        border: 1px solid var(--white);
+    }
+
+    .multi-switch input:checked+label {
+        background-color: var(--button-background);
+        color: var(--button-text);
     }
 
     @keyframes Shake {
@@ -448,6 +499,10 @@ function closeModal(name: string) {
         margin-top: auto !important;
     }
 
+    .mt-0 {
+        margin-top: 0 !important;
+    }
+    
     .mt-1 {
         margin-top: .25em !important;
     }
@@ -468,6 +523,10 @@ function closeModal(name: string) {
         margin-top: 2em !important;
     }
 
+    .mb-a {
+        margin-bottom: auto !important;
+    }
+    
     .mb-0 {
         margin-bottom: 0 !important;
     }
@@ -492,13 +551,37 @@ function closeModal(name: string) {
         margin-bottom: 2em !important;
     }
 
+    .ml-a {
+        margin-left: auto !important;
+    }
+
+    .ml-2 {
+        margin-left: .5em !important;
+    }
+
+    .mr-a {
+        margin-right: auto !important;
+    }
+
     .px-3 {
         padding-left: 1em !important;
         padding-right: 1em !important;
     }
 
+    .pt-0 {
+        padding-top: 0 !important;
+    }
+
     .pt-3 {
         padding-top: 1em !important;
+    }
+
+    .pb-0 {
+        padding-bottom: 0 !important;
+    }
+
+    .pb-3 {
+        padding-bottom: 1em !important;
     }
 
     .bt-1 {
