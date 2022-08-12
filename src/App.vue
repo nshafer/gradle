@@ -133,7 +133,6 @@ function closeModal(name: string) {
         line-height: 1;
         cursor: pointer;
         font-size: 1rem;
-        font-weight: bold;
     }
 
     .buttons {
