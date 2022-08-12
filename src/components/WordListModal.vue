@@ -48,7 +48,7 @@ const wordsNotShown = computed(() => {
 
     .word {
         background: var(--color-absent);
-        color: var(--input-text-color);
+        color: var(--tile-text-color);
         text-transform: uppercase;
         padding: .5em .5em;
         margin: .25em;
