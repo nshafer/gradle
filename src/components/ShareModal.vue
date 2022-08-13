@@ -54,7 +54,7 @@ const shareText = computed(() => {
                 guessLine = `${guess.unicodeHints} >!${guess.word.toUpperCase()}!< ${guess.letterGrade}  `
                 break;
             case "discord":
-                guessLine = `${guess.unicodeHints} ||${guess.word.toUpperCase() }|| ${guess.letterGrade}`
+                guessLine = `${guess.unicodeHints} ||\`${guess.word.toUpperCase() }\`|| ${guess.letterGrade}`
                 break;
             case "table":
                 guessLine = `|>!${guess.word.toUpperCase()}!<|${guess.unicodeHints}|${guess.letterGrade}|`
