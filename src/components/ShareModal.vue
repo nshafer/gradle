@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import type { Guess } from '@/guess';
 import { dateIndex, letterGrade, letterGradeSimple } from '@/game';
 import { encodeShareCode } from '@/encoding';
+import { settings } from '@/settings';
 
 import Modal from './Modal.vue';
 import ToolTip from './ToolTip.vue';
@@ -45,19 +46,21 @@ const shareText = computed(() => {
     }
 
     for (let guess of props.guesses) {
+        const unicodeHints = settings.darkMode ? guess.unicodeHintsDark : guess.unicodeHints;
+
         let guessLine;
         switch (textType.value) {
             case "plain":
-                guessLine = `${guess.unicodeHints} ${guess.letterGrade}`
+                guessLine = `${unicodeHints} ${guess.letterGrade}`
                 break;
             case "reddit":
-                guessLine = `${guess.unicodeHints} >!${guess.word.toUpperCase()}!< ${guess.letterGrade}  `
+                guessLine = `${unicodeHints} >!${guess.word.toUpperCase()}!< ${guess.letterGrade}  `
                 break;
             case "discord":
-                guessLine = `${guess.unicodeHints} ||\`${guess.word.toUpperCase() }\`|| ${guess.letterGrade}`
+                guessLine = `${unicodeHints} ||\`${guess.word.toUpperCase() }\`|| ${guess.letterGrade}`
                 break;
             case "table":
-                guessLine = `|>!${guess.word.toUpperCase()}!<|${guess.unicodeHints}|${guess.letterGrade}|`
+                guessLine = `|>!${guess.word.toUpperCase()}!<|${unicodeHints}|${guess.letterGrade}|`
                 break;
             default:
                 break;

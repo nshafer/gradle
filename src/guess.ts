@@ -250,6 +250,10 @@ export class Guess extends Calculable {
     get unicodeHints(): string {
         return this.letters.map((letter) => letter.unicodeHint).join("");
     }
+    
+    get unicodeHintsDark(): string {
+        return this.letters.map((letter) => letter.unicodeHintDark).join("");
+    }
 }
 
 export class Letter extends Calculable {
@@ -328,6 +332,19 @@ export class Letter extends Calculable {
     }
 
     get unicodeHint(): string {
+        switch (this.hint) {
+            case Hint.Correct:
+                return "🟩";
+            case Hint.Present:
+                return "🟨";
+            case Hint.Absent:
+                return "⬜";
+            default:
+                return "⬜";
+        }
+    }
+
+    get unicodeHintDark(): string {
         switch (this.hint) {
             case Hint.Correct:
                 return "🟩";

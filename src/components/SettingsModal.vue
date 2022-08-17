@@ -97,9 +97,6 @@ const version = computed(() => {
     border-bottom: 1px solid var(--gray-4);
 }
 
-.setting:first-child {
-}
-
 .setting:last-child {
     border-bottom: none;
 }

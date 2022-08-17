@@ -1,4 +1,4 @@
-# Miscellaneous
+# Todo
 - [ ] Create cron to check wordlists from NYT, alert if there is a change
 - [ ] Create bot?
 - [ ] Animations
@@ -6,8 +6,10 @@
 - [x] Optimize solver for null green, yellow, gray lists, perhaps avoid creating regex completely.
 - [ ] Maybe support other grading systems, e.g. Japan (S, A, B, C, F)
 - [x] Detect hard mode. Give bonus for hard mode?
-- [ ] Detect bust, show x/6
-- [ ] Support light/dark mode for share glyphs
+- [x] Detect bust, show x/6
+- [x] Support light/dark mode for share glyphs
+- [ ] Store results in localStorage, load on date select.
+- [ ] OCR image upload
 
 
 # Main interface
@@ -35,6 +37,11 @@
     - Toggle to show only possible answers
 
 # Original wordle share
+
+Correct: 🟩
+Present: 🟨
+Absent: ⬜
+Absent (dark): ⬛
 
 Wordle 361 5/6*
 
