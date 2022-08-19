@@ -19,7 +19,7 @@ watch(() => props.visible, (newValue) => {
 })
 
 // Control how many to show
-const numWords = ref(10);
+const numWords = ref(0);
 
 function showMore() {
     numWords.value += 10;
@@ -29,6 +29,8 @@ function showMore() {
 watch(() => props.visible, (newValue) => {
     if (newValue) {
         numWords.value = 10;
+    } else {
+        numWords.value = 0;
     }
 });
 
