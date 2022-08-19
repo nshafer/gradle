@@ -2,16 +2,13 @@
 import { ref, watch, computed, onUpdated, nextTick } from 'vue';
 import { Guess } from '@/guess';
 import { dateIndex, letterGrade, letterGradeSimple } from '@/game';
-import { encodeShareCode } from '@/encoding';
 
 import GuessInput from './GuessInput.vue';
 import GuessDisplay from './GuessDisplay.vue';
-import AnswerPicker from './AnswerPicker.vue';
 import ToolTip from './ToolTip.vue';
 import ShareModal from './ShareModal.vue';
 
 import IconTrash from './icons/IconTrash.vue';
-import IconTrashCanUndo from './icons/IconTrashCanUndo.vue';
 import IconAngleRight from './icons/IconAngleRight.vue';
 import IconCaretRight from "./icons/IconCaretRight.vue";
 import IconCircleInfo from "./icons/IconCircleInfo.vue";
@@ -20,11 +17,11 @@ import IconShare from "./icons/IconShare.vue";
 const props = defineProps<{
     guesses: Guess[]
     selectedGuess?: Guess
-    answer?: string,
-    date?: Date,
+    puzzleAnswer: string,
+    puzzleDate?: Date,
+    shareCode: string,
+    shareURL: string,
 }>();
-
-console.log("PuzzleInput guesses", props.guesses);
 
 const emit = defineEmits<{
     (e: 'appendGuess', guess: Guess): void
@@ -32,13 +29,12 @@ const emit = defineEmits<{
     (e: 'guessClicked', guess: Guess): void
 }>();
 
-const puzzleAnswer = ref(props.answer || "");
-const puzzleDate = ref(props.date);
+const showShareModal = ref(false);
 
 function appendGuess(word: string) {
     const guessIndex = props.guesses.length;
     const previous = guessIndex > 0 ? props.guesses[guessIndex - 1] : undefined;
-    const guess = new Guess(word, guessIndex, puzzleAnswer.value, previous);
+    const guess = new Guess(word, guessIndex, props.puzzleAnswer, previous);
     emit("appendGuess", guess);
 }
 
@@ -54,18 +50,6 @@ function removeLastGuess() {
     emit('removeGuess', props.guesses.length - 1);
 }
 
-function resetGuesses() {
-    if (props.guesses.length > 0) {
-        emit('removeGuess', 0);
-    }
-}
-
-// Remove all guesses if the answer changes
-watch(puzzleAnswer, (newAnswer, oldAnswer) => {
-    if (newAnswer !== oldAnswer) {
-        emit('removeGuess', 0);
-    }
-});
 
 function guessClicked(guess: Guess) {
     // console.log("PuzzleInput.guessClicked", guess)
@@ -77,11 +61,11 @@ function guessClicked(guess: Guess) {
 //
 
 const completed = computed(() => {
-    return props.guesses.length >= 6 || props.guesses[props.guesses.length - 1]?.isCorrect;
+    return props.guesses.length >= 6 || props.guesses.length > 0 && props.guesses[props.guesses.length - 1].isCorrect;
 });
 
 const busted = computed(() => {
-    return props.guesses.length >= 6 && !props.guesses[props.guesses.length - 1]?.isCorrect;
+    return props.guesses.length >= 6 && !props.guesses[props.guesses.length - 1].isCorrect;
 });
 
 const hardMode = computed(() => {
@@ -129,157 +113,114 @@ const finalLetterGradeSimple = computed(() => {
     return letterGradeSimple(finalGrade.value);
 });
 
-//
-// Share functionality
-//
-
-const showShareModal = ref(false);
-
-const shareURL = computed(() => {
-    const url = new URL(window.location.href);
-    if (completed.value) {
-        const words = props.guesses.map(value => value.word);
-        url.hash = encodeShareCode(words, puzzleDate.value, puzzleAnswer.value);
-    } else {
-        url.hash = "";
-    }
-    return url.toString();
-})
-
-watch(() => props.guesses, (newGuesses) => {
-    history.replaceState(null, "", shareURL.value);
-});
-
 </script>
 
 <template>
-    <div class="tools">
-        <AnswerPicker v-model:date="puzzleDate" v-model:answer="puzzleAnswer" />
-        <button class="button icon px-3" @click.stop="resetGuesses" title="Reset">
-            <IconTrashCanUndo />
-        </button>
+    <div v-for="guess in guesses" :key="guess.id" class="guess"
+        :class="{ selected: guess == selectedGuess, 'is-correct': guess.isCorrect }, [guess.letterGradeSimple]"
+        @click="guessClicked(guess)" @keyup.ctrl.delete="removeLastGuess">
+        <div class="title">
+            <div class="title-heading">
+                <GuessDisplay :guess="guess" />
+            </div>
+
+            <button class="button icon" @click.stop="removeGuess(guess)" title="Remove this guess">
+                <IconTrash />
+            </button>
+        </div>
+        <div class="subtitle">
+            <div class="summary">
+                <div v-if="guess.isCorrect" class="remaining">
+                    <b>Solved in {{ guesses.length }} guesses.</b>
+                </div>
+                <div v-else class="remaining">
+                    <b>Words:</b>
+                    {{ guess.previousWordsRemaining.length }}
+                    <div class="icon-inline">
+                        <IconCaretRight />
+                    </div>
+                    {{ guess.wordsRemaining.length }}
+                </div>
+            </div>
+
+            <div class="bits">
+                {{ guess.bits.toFixed(1) }} / {{ guess.uncertainty.toFixed(1) }}
+                <span class="bits-label">bits</span>
+            </div>
+
+            <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
+                <IconAngleRight />
+            </button>
+        </div>
+        <div class="grade grade-color" :class="[guess.letterGradeSimple]">
+            <div class="letter">{{ guess.letterGrade }}</div>
+            <div class="label">{{ (guess.grade*100).toFixed(0) }}%</div>
+        </div>
     </div>
 
-    <template v-if="puzzleAnswer">
-        <div v-for="guess in guesses" :key="guess.id" class="guess"
-            :class="{ selected: guess == selectedGuess, 'is-correct': guess.isCorrect }, [guess.letterGradeSimple]"
-            @click="guessClicked(guess)" @keyup.ctrl.delete="removeLastGuess">
-            <div class="title">
-                <div class="title-heading">
-                    <GuessDisplay :guess="guess" />
+    <div v-if="completed" class="final-grade">
+        <div class="final-grade__main">
+            <div class="final-grade__body">
+                <div class="final-grade__title">
+                    <div class="final-grade__heading">
+                        Final Grade
+                    </div>
+                    <ToolTip>
+                        <button class="button icon">
+                            <IconCircleInfo />
+                        </button>
+                        <template #content>
+                            A final grade is calculated by averaging the grade of each guess;
+                            extra unused guesses are worth 100% each.
+
+                            <p>
+                                <small>g<sub>f</sub></small> =
+                                avg(<template v-for="(grade, i) in allGrades">{{ grade.toFixed(2) }}<template
+                                        v-if="i < allGrades.length-1">, </template></template>)
+                            </p>
+                        </template>
+                    </ToolTip>
                 </div>
 
-                <button class="button icon" @click.stop="removeGuess(guess)" title="Remove this guess">
-                    <IconTrash />
-                </button>
-            </div>
-            <div class="subtitle">
-                <div class="summary">
-                    <div v-if="guess.isCorrect" class="remaining">
-                        <b>Solved in {{ guesses.length }} guesses.</b>
-                    </div>
-                    <div v-else class="remaining">
-                        <b>Words:</b>
-                        {{ guess.previousWordsRemaining.length }}
-                        <div class="icon-inline">
-                            <IconCaretRight />
-                        </div>
-                        {{ guess.wordsRemaining.length }}
-                    </div>
-                </div>
-
-                <div class="bits">
-                    {{ guess.bits.toFixed(1) }} / {{ guess.uncertainty.toFixed(1) }}
-                    <span class="bits-label">bits</span>
-                </div>
-
-                <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
-                    <IconAngleRight />
-                </button>
-            </div>
-            <div class="grade grade-color" :class="[guess.letterGradeSimple]">
-                <div class="letter">{{ guess.letterGrade }}</div>
-                <div class="label">{{ (guess.grade*100).toFixed(0) }}%</div>
-            </div>
-        </div>
-
-        <div v-if="completed" class="final-grade">
-            <div class="final-grade__main">
-                <div class="final-grade__body">
-                    <div class="final-grade__title">
-                        <div class="final-grade__heading">
-                            Final Grade
-                        </div>
-                        <ToolTip>
-                            <button class="button icon">
-                                <IconCircleInfo />
-                            </button>
-                            <template #content>
-                                A final grade is calculated by averaging the grade of each guess;
-                                extra unused guesses are worth 100% each.
-
-                                <p>
-                                    <small>g<sub>f</sub></small> =
-                                    avg(<template v-for="(grade, i) in allGrades">{{ grade.toFixed(2) }}<template
-                                            v-if="i < allGrades.length-1">, </template></template>)
-                                </p>
-                            </template>
-                        </ToolTip>
-                    </div>
-
+                <div class="final-grade__subtitle">
                     <div class="final-grade__subtitle">
-                        <div class="final-grade__subtitle">
-                            <div class="final-grade__guesses">
-                                <template v-if="busted">
-                                    X / 6 Guesses.
-                                </template>
-                                <template v-else>
-                                    {{ guesses.length }} / 6 Guesses.
-                                </template>
-                            </div>
-                            <div v-if="hardMode">
-                                Hard mode.
-                            </div>
+                        <div class="final-grade__guesses">
+                            <template v-if="busted">
+                                X / 6 Guesses.
+                            </template>
+                            <template v-else>
+                                {{ guesses.length }} / 6 Guesses.
+                            </template>
+                        </div>
+                        <div v-if="hardMode">
+                            Hard mode.
                         </div>
                     </div>
                 </div>
-
-                <button class="share-button button primary with-icon-left" @click="showShareModal = true">
-                    <IconShare />
-                    Share
-                </button>
             </div>
 
-            <div class="grade grade-color" :class="[finalLetterGradeSimple]">
-                <div class="letter">{{ finalLetterGrade }}</div>
-                <div class="label">{{ (finalGrade*100).toFixed(0) }}%</div>
-            </div>
+            <button class="share-button button primary with-icon-left" @click="showShareModal = true">
+                <IconShare />
+                Share
+            </button>
         </div>
 
-        <div v-else class="guess-input">
-            <GuessInput :wordIndex="guesses.length" @inputDone="inputDone" @goBack="removeLastGuess" />
+        <div class="grade grade-color" :class="[finalLetterGradeSimple]">
+            <div class="letter">{{ finalLetterGrade }}</div>
+            <div class="label">{{ (finalGrade*100).toFixed(0) }}%</div>
         </div>
+    </div>
 
-        <ShareModal v-if="completed" :visible="showShareModal" @close="showShareModal = false" :guesses="guesses"
-            :completed="completed" :busted="busted" :hardMode="hardMode" :finalLetterGrade="finalLetterGrade"
-            :puzzleDate="puzzleDate" :puzzleAnswer="puzzleAnswer" :shareURL="shareURL" />
-    </template>
+    <div v-else class="guess-input">
+        <GuessInput :wordIndex="guesses.length" @inputDone="inputDone" @goBack="removeLastGuess" />
+    </div>
+
+    <ShareModal v-if="completed" :visible="showShareModal" @close="showShareModal = false" :guesses="guesses"
+        :completed="completed" :busted="busted" :hardMode="hardMode" :finalLetterGrade="finalLetterGrade"
+        :puzzleDate="puzzleDate" :puzzleAnswer="puzzleAnswer" :shareURL="shareURL" />
 </template>
 
 <style scoped>
-    .tools {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1em;
-    }
-
-    .answer-picker {
-        /* margin-bottom: 1em; */
-        flex: 1;
-    }
-
     .guess-input {
         padding: 0 1em;
     }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { getDateByDayOffset, getWordByDayOffset } from '../game';
+import { computed, ref, watch } from 'vue';
+import { getDateByDayOffset, getWordByDayOffset } from '@/game';
+import { loadByPuzzleDate } from '@/settings';
 
 import Modal from './Modal.vue';
 
@@ -24,10 +25,36 @@ function showMore() {
     numWords.value += 10;
 }
 
+// Reset to 10 whenever this becomes visible again
 watch(() => props.visible, (newValue) => {
     if (newValue) {
         numWords.value = 10;
     }
+});
+
+// Gather together the data for each day
+const days = computed(() => {
+    const words = [];
+    for (let i = 0; i < numWords.value; i++) {
+        const offset = i * -1;
+        const date = getDateByDayOffset(offset, today);
+        const shareCode = loadByPuzzleDate(date);
+
+        let shareURL: URL | undefined;
+        if (shareCode) {
+            shareURL = new URL(window.location.href);
+            shareURL.hash = shareCode;
+        }
+
+        words.push({
+            offset: offset,
+            dateStr: date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' }),
+            word: getWordByDayOffset(offset, today),
+            shareCode: shareCode,
+            shareURL: shareURL,
+        });
+    }
+    return words;
 });
 
 </script>
@@ -36,19 +63,24 @@ watch(() => props.visible, (newValue) => {
     <Modal :visible="visible" @close="$emit('close')" title="Answer History">
         <template #body>
             <div class="mb-3">
-                <div v-for="offset in numWords" :key="offset" class="entry">
+                <div v-for="day in days" :key="day.offset" class="entry">
                     <div class="date">
-                        {{ getDateByDayOffset(-offset, today).toLocaleDateString('en-US', {weekday: 'long', year: 'numeric', month: 'short', day: 'numeric'}) }}
+                        <a v-if="day.shareURL" :href="day.shareURL.toString()" @click="$emit('close')">
+                            {{ day.dateStr }}
+                        </a>
+                        <template v-else>
+                            {{ day.dateStr }}
+                        </template>
                     </div>
                     <div class="word">
-                        {{ getWordByDayOffset(-offset, today) }}
+                        {{ day.word }}
                     </div>
                 </div>
             </div>
             <!-- <div class="buttons full"> -->
-                <button class="button full" @click="showMore">
-                    Show More
-                </button>
+            <button class="button full" @click="showMore">
+                Show More
+            </button>
             <!-- </div> -->
         </template>
     </Modal>

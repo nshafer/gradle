@@ -68,7 +68,7 @@ const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 const encodingAlphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 (window as any).alpha = encodingAlphabet;
 
-interface ShareData {
+export interface ShareData {
     guesses: string[],
     answer: string,
     date?: Date,

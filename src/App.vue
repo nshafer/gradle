@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, onMounted, watch } from 'vue';
+import { reactive, onBeforeMount, watch } from 'vue';
 
 import ReloadPrompt from './components/ReloadPrompt.vue';
 import MainInterface from './components/MainInterface.vue';
@@ -11,11 +11,11 @@ import IconCircleQuestion from './components/icons/IconCircleQuestion.vue';
 import IconClockRotateLeft from './components/icons/IconClockRotateLeft.vue';
 import IconGear from './components/icons/IconGear.vue';
 
-import { settings, loadSettings } from './settings';
+import { settings, initSettings } from './settings';
 
-// Load settings once when the main app is mounted
-onMounted(() => {
-    loadSettings();
+// Initialize settings once when the main app is mounted
+onBeforeMount(() => {
+    initSettings();
 });
 
 // Update the class on <body> whenever the darkMode setting changes

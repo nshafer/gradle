@@ -35,7 +35,7 @@ onBeforeMount(() => {
     } else if (props.answer) {
         inputType.value = "manual";
     }
-})
+});
 
 // Date picker
 const maxDate = ref(new Date());
@@ -88,8 +88,15 @@ onMounted(() => {
     scheduleMaxDateUpdate();
 });
 
+watch(() => props.date, (newDate, oldDate) => {
+    if (inputType.value == "date" && newDate) {
+        dateInput.value = isoDateString(newDate);
+    }
+});
+
+
 // Manual answer input
-const manualInput = ref(props.answer || "");
+const manualInput = ref("");
 const manualInputEl = ref<HTMLInputElement | null>(null);
 
 const cleanedAnswer = computed(() => {
@@ -132,11 +139,19 @@ const inputError = computed(() => {
 
 watch(pickedAnswer, (answer) => {
     emit("update:answer", answer);
-})
+});
 
 watch(pickedDate, (date) => {
     emit("update:date", date);
-})
+});
+
+watch(() => props.answer, (newAnswer, oldAnswer) => {
+    if (inputType.value == "manual" && newAnswer) {
+        manualInput.value = newAnswer;
+    }
+});
+
+
 
 </script>
 
@@ -161,6 +176,8 @@ watch(pickedDate, (date) => {
         <div v-if="inputError" class="error">
             {{ inputError }}
         </div>
+        <div class="puzzle-answer">{{ answer }}</div>
+        <div class="puzzle-date">{{ date }}</div>
         <div class="picked-answer">{{ pickedAnswer }}</div>
         <div class="picked-date">{{ pickedDate }}</div>
     </div>
@@ -246,7 +263,7 @@ watch(pickedDate, (date) => {
         margin-top: 1em;
     }
 
-    .picked-answer, .picked-date {
+    .puzzle-answer, .puzzle-date, .picked-answer, .picked-date {
         display: none;
     }
 </style>

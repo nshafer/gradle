@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { ref, reactive, onBeforeMount, onMounted, onUnmounted, computed, watch } from 'vue';
+import { Guess } from '@/guess';
+import { encodeShareCode, decodeShareCode } from '@/encoding';
+import type { ShareData } from '@/encoding';
+import { saveByPuzzleDate, loadByPuzzleDate, saveByPuzzleAnswer, loadByPuzzleAnswer } from '@/settings';
+import { dateIndex } from '@/game';
 
 import PuzzleInput from './PuzzleInput.vue';
 import SummaryView from './SummaryView.vue';
-import { Guess } from '@/guess';
-import { decodeShareCode } from '@/encoding';
+import AnswerPicker from './AnswerPicker.vue';
+
+import IconTrashCanUndo from './icons/IconTrashCanUndo.vue';
 
 // Page/dragging support
 function getScreenWidth(): number {
@@ -153,18 +159,59 @@ function endDrag(event: PointerEvent) {
     }
 }
 
+//
 // Handle inputs and show summary
+//
+
 const guesses = ref<Guess[]>([]);
 const puzzleAnswer = ref<string | undefined>();
 const puzzleDate = ref<Date | undefined>();
 const selectedGuess = ref<Guess | undefined>();
+let loading = true;
+
+const completed = computed(() => {
+    return guesses.value.length >= 6 || guesses.value.length > 0 && guesses.value[guesses.value.length - 1].isCorrect;
+});
+
+const shareCode = computed(() => {
+    if (completed.value) {
+        const words = guesses.value.map(value => value.word);
+        return encodeShareCode(words, puzzleDate.value, puzzleAnswer.value)
+    } else {
+        return "";
+    }
+});
+
+const shareURL = computed(() => {
+    const url = new URL(window.location.href);
+    url.hash = shareCode.value;
+    return url.toString();
+});
 
 function appendGuess(guess: Guess) {
-    // console.log("appendGuess", guess.word, guess);
     guesses.value = [...guesses.value, guess];
-    // guesses.value.push(guess);
-    // console.log("Added guess", guess.word, guess);
-    // console.log("guesses", guesses.value.map(guess => guess.word), guesses.value);
+
+    // Save the share code in localStorage whenever the puzzle is completed
+    if (!loading && shareCode.value) {
+        if (puzzleDate.value) {
+            saveByPuzzleDate(puzzleDate.value, shareCode.value);
+            console.log("Saved share code", shareCode.value, "for date", puzzleDate.value);
+        } else if (puzzleAnswer.value) {
+            saveByPuzzleAnswer(puzzleAnswer.value, shareCode.value);
+            console.log("Saved share code", shareCode.value, "for answer", puzzleAnswer.value);
+        }
+    }
+}
+
+function appendWord(word: string) {
+    if (puzzleAnswer.value) {
+        const guessIndex = guesses.value.length;
+        const previous = guessIndex > 0 ? guesses.value[guessIndex - 1] : undefined;
+        const guess = new Guess(word, guessIndex, puzzleAnswer.value, previous);
+        appendGuess(guess);
+    } else {
+        throw "Cannot add Guesses if no puzzle answer is set";
+    }
 }
 
 function removeGuess(index: number) {
@@ -172,66 +219,158 @@ function removeGuess(index: number) {
     guesses.value = guesses.value.slice(0, index);
 }
 
-// Load guesses in share-code
-onBeforeMount(() => {
+function resetGuesses() {
+    removeGuess(0);
+}
+
+// Select the last guess whenever the list changes, such as a new one is added
+watch(guesses, (newGuesses, oldGuesses) => {
+    selectedGuess.value = newGuesses[newGuesses.length-1];
+});
+
+function guessClicked(guess?: Guess) {
+    selectedGuess.value = guess;
+    showSummaryPage();
+}
+
+// Load answer, date, guesses in share-code
+function loadFromShareCode(shareCode: string) {
+    console.log("Decoding shareCode", shareCode);
+    let shareData: ShareData | undefined;
+    try {
+        shareData = decodeShareCode(shareCode);
+    } catch(e) {
+        console.error("Invalid shareCode", shareCode, e);
+        return;
+    }
+
+    // Remove existing guesses
+    resetGuesses();
+
+    // ShareData should always contain an answer
+    if (shareData.answer) {
+        puzzleAnswer.value = shareData.answer
+    } else {
+        throw new Error("Cannot decode answer from share code");
+    }
+
+    // The ShareData may contain a date
+    if (shareData.date) {
+        puzzleDate.value = shareData.date;
+    }
+
+    // Add all of the words as guesses
+    for (let word of shareData.guesses) {
+        appendWord(word);
+    }
+}
+
+function loadFromWindowLocation() {
     if (window.location.hash != "") {
         let shareCode = window.location.hash;
         if (shareCode.at(0) == "#") {
             shareCode = shareCode.slice(1);
         }
 
-        console.log("Decoding shareCode", shareCode);
-        const shareData = decodeShareCode(shareCode);
-
-        if (shareData.answer) {
-            puzzleAnswer.value = shareData.answer
-        } else {
-            throw new Error("Cannot decode answer from share code");
-        }
-
-        if (shareData.date) {
-            puzzleDate.value = shareData.date;
-        }
-
-        for (let word of shareData.guesses) {
-            const guessIndex = guesses.value.length;
-            const previous = guessIndex > 0 ? guesses.value[guessIndex - 1] : undefined;
-            const guess = new Guess(word, guessIndex, puzzleAnswer.value, previous);
-            appendGuess(guess);
-        }
+        loadFromShareCode(shareCode);
     }
-})
+}
 
-// Select the last guess whenever the list changes, such as a new one is added
-watch(guesses, (newGuesses, oldGuesses) => {
-    // console.log("guesses updated", oldGuesses, newGuesses);
-    selectedGuess.value = newGuesses[newGuesses.length-1];
-    // console.log("selectedGuess now", selectedGuess.value);
+// If there is a hash in the URL, try to load it as a share code
+onBeforeMount(() => {
+    loadFromWindowLocation();
+    loading = false;
 });
 
-function guessClicked(guess?: Guess) {
-    // console.log("MainInterface.guessClicked", guess)
-    selectedGuess.value = guess;
-    showSummaryPage();
-}
+// Update the URL bar when the shareURL changes
+watch(shareURL, (newShareURL, oldShareURL) => {
+    if (loading) return;
+    // console.log(`replaceState ${oldShareURL} -> ${newShareURL}`);
+    history.replaceState(null, "", newShareURL);
+})
+
+// Detect if the URL hash changes and attempt to load it as a share code
+window.addEventListener("popstate", (e) => {
+    loading = true;
+    loadFromWindowLocation();
+    loading = false;
+});
+
+// If the answer changes attempt to load the list of guesses from local storage, or else just reset the list
+watch(puzzleAnswer, () => {
+    if (!loading) {
+        loading = true;
+        if (puzzleDate.value) {
+            const savedShareCode = loadByPuzzleDate(puzzleDate.value);
+            if (savedShareCode) {
+                loadFromShareCode(savedShareCode);
+                console.log("Loaded share code", savedShareCode, "for date", puzzleDate.value);
+            } else {
+                resetGuesses();
+                console.log("No share code found for date", puzzleDate.value);
+            }
+        } else if (puzzleAnswer.value) {
+            const savedShareCode = loadByPuzzleAnswer(puzzleAnswer.value);
+            if (savedShareCode) {
+                loadFromShareCode(savedShareCode);
+                console.log("Loaded share code", savedShareCode, "for answer", puzzleAnswer.value);
+            } else {
+                resetGuesses();
+                console.log("No share code found for answer", puzzleAnswer.value);
+            }
+        } else {
+            console.log("No puzzle answer or date set, resetting guesses");
+            resetGuesses();
+        }
+        loading = false;
+    }
+});
+
+// Change title when the puzzleDate or puzzleAnswer change
+const title = computed(() => {
+    if (puzzleDate.value != null) {
+        return `${puzzleDate.value.toLocaleDateString()} - ${dateIndex(puzzleDate.value!)} - Gradle`;
+    } else if (puzzleAnswer.value) {
+        return `${puzzleAnswer.value.toUpperCase()} - Gradle`;
+    } else {
+        return "Gradle";
+    }
+});
+
+watch(title, (newTitle) => {
+    document.title = newTitle;
+});
+
 </script>
 
 <template>
     <div v-if="page.dragDebug && dragEnabled" class="drag-debug">
         {{ page.screenWidth }} {{ page.current }} {{ page.dragging }}
-        {{ page.dragStart.toFixed(2) }} {{ page.dragCurrent.toFixed(2) }} {{ dragOffset.toFixed(2) }} {{ dragOffsetPercent.toFixed(2) }}
+        {{ page.dragStart.toFixed(2) }} {{ page.dragCurrent.toFixed(2) }} {{ dragOffset.toFixed(2) }} {{
+        dragOffsetPercent.toFixed(2) }}
         {{ page.dragVelocity.toFixed(2) }}
     </div>
 
-    <main class="main-interface" @keyup.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag" @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
-        <div class="page input-page" :class="{ show: isInputPage }" :style="{ transform: inputPageTransform, transition: dragTransition }">
-            <PuzzleInput :guesses="guesses" :selectedGuess="selectedGuess" :answer="puzzleAnswer" :date="puzzleDate" @appendGuess="appendGuess" @removeGuess="removeGuess" @guessClicked="guessClicked"/>
+    <main class="main-interface" @keyup.esc="showInputPage" @pointerdown="startDrag" @pointermove="updateDrag"
+        @pointerup="endDrag" @pointercancel="endDrag" @pointerleave="endDrag">
+        <div class="page input-page" :class="{ show: isInputPage }"
+            :style="{ transform: inputPageTransform, transition: dragTransition }">
+            <div class="tools">
+                <AnswerPicker v-model:date="puzzleDate" v-model:answer="puzzleAnswer" />
+                <button class="button icon px-3" @click.stop="resetGuesses" title="Reset">
+                    <IconTrashCanUndo />
+                </button>
+            </div>
+
+            <PuzzleInput v-if="puzzleAnswer" :guesses="guesses" :selectedGuess="selectedGuess" :puzzleAnswer="puzzleAnswer || ''"
+                :puzzleDate="puzzleDate" @appendGuess="appendGuess" @removeGuess="removeGuess"
+                @guessClicked="guessClicked" :shareCode="shareCode" :shareURL="shareURL" />
         </div>
 
-        <div class="page summary-page" :class="{ show: isSummaryPage }" :style="{ transform: summaryPageTransform, transition: dragTransition }">
-            <SummaryView :guess="selectedGuess" @backClicked="showInputPage"/>
+        <div class="page summary-page" :class="{ show: isSummaryPage }"
+            :style="{ transform: summaryPageTransform, transition: dragTransition }">
+            <SummaryView :guess="selectedGuess" @backClicked="showInputPage" />
         </div>
-
     </main>
 </template>
 
@@ -248,6 +387,19 @@ function guessClicked(guess?: Guess) {
         background: var(--color-background);
     }
 
+    .tools {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1em;
+    }
+    
+    .answer-picker {
+        /* margin-bottom: 1em; */
+        flex: 1;
+    }
+    
     /* Small screens only */
     @media screen and (max-width: 69.9375em) {
         .main-interface {
