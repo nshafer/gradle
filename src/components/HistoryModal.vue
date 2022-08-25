@@ -18,6 +18,15 @@ watch(() => props.visible, (newValue) => {
     }
 })
 
+// Determine if we should show today or not
+let showToday = ref(false);
+watch(() => props.visible, (newValue) => {
+    if (newValue) {
+        const shareCode = loadByPuzzleDate(today);
+        showToday.value = shareCode != null;
+    }
+});
+
 // Control how many to show
 const numWords = ref(0);
 
@@ -38,6 +47,10 @@ watch(() => props.visible, (newValue) => {
 const days = computed(() => {
     const words = [];
     for (let i = 0; i < numWords.value; i++) {
+        if (i == 0 && !showToday.value) {
+            continue;
+        }
+
         const offset = i * -1;
         const date = getDateByDayOffset(offset, today);
         const shareCode = loadByPuzzleDate(date);
