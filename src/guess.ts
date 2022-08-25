@@ -117,20 +117,28 @@ export class Guess extends Calculable {
         this.solve();
     }
 
-    get guessNumber(): number {
+    get number(): number {
+        return this.index + 1;
+    }
+
+    get allPrevious(): Guess[] {
         if (this.previous) {
-            return this.previous.guessNumber + 1;
+            return [...this.previous.allPrevious, this.previous];
         } else {
-            return 1;
+            return [];
         }
     }
 
+    get allGuesses(): Guess[] {
+        return [...this.allPrevious, this];
+    }
+
     get isComplete(): boolean {
-        return this.guessNumber >= 6 || this.isCorrect;
+        return this.index >= 5 || this.isCorrect;
     }
 
     get isBusted(): boolean {
-        return this.guessNumber >= 6 && !this.isCorrect;
+        return this.index >= 5 && !this.isCorrect;
     }
     
     get isCorrect(): boolean {
@@ -261,6 +269,28 @@ export class Guess extends Calculable {
         } else {
             return super.grade;
         }
+    }
+
+    get finalGrade(): number {
+        // Average of all guess grades
+        let sum = 0;
+
+        for (let guess of this.allGuesses) {
+            sum += guess.grade;
+        }
+
+        // Add 100 per unused guess
+        sum += (6 - this.number) * 1;
+
+        return sum / 6;
+    }
+
+    get finalLetterGrade(): string {
+        return letterGrade(this.finalGrade);
+    }
+
+    get finalLetterGradeSimple(): string {
+        return letterGradeSimple(this.finalGrade);
     }
 
     get unicodeHints(): string {

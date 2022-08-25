@@ -96,25 +96,15 @@ const allGrades = computed(() => {
 });
 
 const finalGrade = computed(() => {
-    // Average of all guess grades
-    let sum = 0;
-    
-    for (let guess of props.guesses) {
-        sum += guess.grade;
-    }
-
-    // Add 100 per unused guess
-    sum += (6 - props.guesses.length) * 1;
-    
-    return sum/6;
+    return lastGuess.value != undefined ? lastGuess.value.finalGrade : 0;
 });
 
 const finalLetterGrade = computed(() => {
-    return letterGrade(finalGrade.value);
+    return lastGuess.value != undefined ? lastGuess.value.finalLetterGrade : "";
 });
 
 const finalLetterGradeSimple = computed(() => {
-    return letterGradeSimple(finalGrade.value);
+    return lastGuess.value != undefined ? lastGuess.value.finalLetterGradeSimple : "";
 });
 
 </script>
