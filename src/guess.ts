@@ -117,11 +117,27 @@ export class Guess extends Calculable {
         this.solve();
     }
 
-    get isCorrect() {
+    get guessNumber(): number {
+        if (this.previous) {
+            return this.previous.guessNumber + 1;
+        } else {
+            return 1;
+        }
+    }
+
+    get isComplete(): boolean {
+        return this.guessNumber >= 6 || this.isCorrect;
+    }
+
+    get isBusted(): boolean {
+        return this.guessNumber >= 6 && !this.isCorrect;
+    }
+    
+    get isCorrect(): boolean {
         return this.word == this.answer;
     }
     
-    get isFirst() {
+    get isFirst(): boolean {
         return this.previous == null;
     }
 

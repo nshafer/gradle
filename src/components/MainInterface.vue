@@ -169,8 +169,17 @@ const puzzleDate = ref<Date | undefined>();
 const selectedGuess = ref<Guess | undefined>();
 let loading = true;
 
+const lastGuess = computed(() => {
+    if (guesses.value.length > 0) {
+        return guesses.value[guesses.value.length - 1];
+    } else {
+        return undefined;
+    }
+});
+
+
 const completed = computed(() => {
-    return guesses.value.length >= 6 || guesses.value.length > 0 && guesses.value[guesses.value.length - 1].isCorrect;
+    return lastGuess.value != undefined && lastGuess.value.isComplete;
 });
 
 const shareCode = computed(() => {

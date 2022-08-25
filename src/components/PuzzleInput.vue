@@ -60,20 +60,24 @@ function guessClicked(guess: Guess) {
 // Some helpful computed values
 //
 
+const lastGuess = computed(() => {
+    if (props.guesses.length > 0) {
+        return props.guesses[props.guesses.length - 1];
+    } else {
+        return undefined;
+    }
+});
+
 const completed = computed(() => {
-    return props.guesses.length >= 6 || props.guesses.length > 0 && props.guesses[props.guesses.length - 1].isCorrect;
+    return lastGuess.value != undefined && lastGuess.value.isComplete;
 });
 
 const busted = computed(() => {
-    return props.guesses.length >= 6 && !props.guesses[props.guesses.length - 1].isCorrect;
+    return lastGuess.value != undefined && lastGuess.value.isBusted;
 });
 
 const hardMode = computed(() => {
-    if (props.guesses.length > 0) {
-        return props.guesses[props.guesses.length - 1].hardMode;
-    } else {
-        return true;
-    }
+    return lastGuess.value != undefined && lastGuess.value.hardMode;
 });
 
 const allGrades = computed(() => {
