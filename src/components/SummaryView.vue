@@ -434,6 +434,11 @@ const showWordListModal = ref(false);
         width: calc(80%/3);
     }
 
+    .button.icon {
+        padding: .5em .4em;
+        min-width: 2em;
+    }
+    
     .button.return {
         padding-left: 1.5rem;
     }
