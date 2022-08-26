@@ -69,7 +69,7 @@ const encodingAlphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR
 (window as any).alpha = encodingAlphabet;
 
 export interface ShareData {
-    guesses: string[],
+    words: string[],
     answer: string,
     date?: Date,
 }
@@ -111,7 +111,7 @@ export function decodeShareCode(code: string): ShareData {
     } catch (error) {
         console.error(`Invalid share-code (${code})`, error);
         return {
-            guesses: [],
+            words: [],
             answer: "",
         };
     }
@@ -170,7 +170,7 @@ function binStringToShareData0(data: string): ShareData {
     }
 
     return {
-        guesses: guesses,
+        words: guesses,
         answer: guesses.length > 0 ? guesses[guesses.length-1] : "",
     }
 }
@@ -215,7 +215,7 @@ function binStringToShareData1(data: string): ShareData {
     }
 
     return {
-        guesses: guesses,
+        words: guesses,
         date: date,
         answer: guesses.length > 0 ? guesses[guesses.length - 1] : "",
     }

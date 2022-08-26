@@ -3,7 +3,7 @@ import { ref, reactive, onBeforeMount, onMounted, onUnmounted, computed, watch }
 import { Guess } from '@/guess';
 import { encodeShareCode, decodeShareCode } from '@/encoding';
 import type { ShareData } from '@/encoding';
-import { saveByPuzzleDate, loadByPuzzleDate, saveByPuzzleAnswer, loadByPuzzleAnswer } from '@/settings';
+import { savePuzzle, loadPuzzleByDate, loadPuzzleByAnswer } from '@/settings';
 import { dateIndex } from '@/game';
 
 import PuzzleInput from './PuzzleInput.vue';
@@ -202,12 +202,9 @@ function appendGuess(guess: Guess) {
 
     // Save the share code in localStorage whenever the puzzle is completed
     if (!loading && shareCode.value) {
-        if (puzzleDate.value) {
-            saveByPuzzleDate(puzzleDate.value, shareCode.value);
-            console.log("Saved share code", shareCode.value, "for date", puzzleDate.value);
-        } else if (puzzleAnswer.value) {
-            saveByPuzzleAnswer(puzzleAnswer.value, shareCode.value);
-            console.log("Saved share code", shareCode.value, "for answer", puzzleAnswer.value);
+        const key = savePuzzle(guesses.value, puzzleDate.value, puzzleAnswer.value);
+        if (key) {
+            console.log(`Saved puzzle to localStorage with key ${key}`);
         }
     }
 }
@@ -244,7 +241,6 @@ function guessClicked(guess?: Guess) {
 
 // Load answer, date, guesses in share-code
 function loadFromShareCode(shareCode: string) {
-    console.log("Decoding shareCode", shareCode);
     let shareData: ShareData | undefined;
     try {
         shareData = decodeShareCode(shareCode);
@@ -269,7 +265,7 @@ function loadFromShareCode(shareCode: string) {
     }
 
     // Add all of the words as guesses
-    for (let word of shareData.guesses) {
+    for (let word of shareData.words) {
         appendWord(word);
     }
 }
@@ -310,19 +306,19 @@ watch(puzzleAnswer, () => {
     if (!loading) {
         loading = true;
         if (puzzleDate.value) {
-            const savedShareCode = loadByPuzzleDate(puzzleDate.value);
-            if (savedShareCode) {
-                loadFromShareCode(savedShareCode);
-                console.log("Loaded share code", savedShareCode, "for date", puzzleDate.value);
+            const puzzleState = loadPuzzleByDate(puzzleDate.value);
+            if (puzzleState) {
+                loadFromShareCode(puzzleState.shareCode);
+                console.log("Loaded share code", puzzleState.shareCode, "for date", puzzleDate.value);
             } else {
                 resetGuesses();
                 console.log("No share code found for date", puzzleDate.value);
             }
         } else if (puzzleAnswer.value) {
-            const savedShareCode = loadByPuzzleAnswer(puzzleAnswer.value);
-            if (savedShareCode) {
-                loadFromShareCode(savedShareCode);
-                console.log("Loaded share code", savedShareCode, "for answer", puzzleAnswer.value);
+            const puzzleState = loadPuzzleByAnswer(puzzleAnswer.value);
+            if (puzzleState) {
+                loadFromShareCode(puzzleState.shareCode);
+                console.log("Loaded share code", puzzleState.shareCode, "for answer", puzzleAnswer.value);
             } else {
                 resetGuesses();
                 console.log("No share code found for answer", puzzleAnswer.value);

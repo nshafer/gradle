@@ -6,15 +6,15 @@ test("version 0", () => {
     expect(shareCode.length).toBeGreaterThan(0);
     
     let shareData = decodeShareCode(encodeShareCode([]));
-    expect(shareData.guesses).toEqual([]);
-    expect(shareData.answer).toBeUndefined();
+    expect(shareData.words).toEqual([]);
+    expect(shareData.answer).toEqual("");
     
     shareData = decodeShareCode(encodeShareCode(["apple"]));
-    expect(shareData.guesses).toEqual(["apple"]);
+    expect(shareData.words).toEqual(["apple"]);
     expect(shareData.answer).toEqual("apple");
     
     shareData = decodeShareCode(encodeShareCode(["apple", "crane", "adieu", "false", "truth", "plane"]));
-    expect(shareData.guesses).toEqual(["apple", "crane", "adieu", "false", "truth", "plane"]);
+    expect(shareData.words).toEqual(["apple", "crane", "adieu", "false", "truth", "plane"]);
     expect(shareData.answer).toEqual("plane");
 });
 
@@ -25,17 +25,17 @@ test("version 1", () => {
     expect(shareCode.length).toBeGreaterThan(0);
     
     let shareData = decodeShareCode(encodeShareCode([], d));
-    expect(shareData.guesses).toEqual([]);
+    expect(shareData.words).toEqual([]);
     expect(shareData.date).toEqual(d);
-    expect(shareData.answer).toBeUndefined();
+    expect(shareData.answer).toEqual("");
     
     shareData = decodeShareCode(encodeShareCode(["apple"], d));
-    expect(shareData.guesses).toEqual(["apple"]);
+    expect(shareData.words).toEqual(["apple"]);
     expect(shareData.date).toEqual(d);
     expect(shareData.answer).toEqual("apple");
 
     shareData = decodeShareCode(encodeShareCode(["apple", "crane", "adieu", "false", "truth", "plane"], d));
-    expect(shareData.guesses).toEqual(["apple", "crane", "adieu", "false", "truth", "plane"]);
+    expect(shareData.words).toEqual(["apple", "crane", "adieu", "false", "truth", "plane"]);
     expect(shareData.date).toEqual(d);
     expect(shareData.answer).toEqual("plane");
 });

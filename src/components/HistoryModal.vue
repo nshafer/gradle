@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { getDateByDayOffset, getWordByDayOffset } from '@/game';
-import { loadByPuzzleDate } from '@/settings';
+import { getDateByDayOffset, getWordByDayOffset, letterGrade, letterGradeSimple } from '@/game';
+import { loadPuzzleByDate } from '@/settings';
 
 import Modal from './Modal.vue';
 
@@ -22,8 +22,8 @@ watch(() => props.visible, (newValue) => {
 let showToday = ref(false);
 watch(() => props.visible, (newValue) => {
     if (newValue) {
-        const shareCode = loadByPuzzleDate(today);
-        showToday.value = shareCode != null;
+        const puzzleState = loadPuzzleByDate(today);
+        showToday.value = puzzleState != null;
     }
 });
 
@@ -43,33 +43,60 @@ watch(() => props.visible, (newValue) => {
     }
 });
 
+interface Day {
+    offset: number,
+    dateStr: string,
+    dateStrShort: string,
+    dateWeekDay: string,
+    word: string,
+    shareCode: string | undefined,
+    shareURL: string | undefined,
+    finalGrade: string | undefined,
+    finalLetterGrade: string | undefined,
+    finalLetterGradeSimple: string | undefined,
+}
+
 // Gather together the data for each day
 const days = computed(() => {
-    const words = [];
+    const days = [];
     for (let i = 0; i < numWords.value; i++) {
         if (i == 0 && !showToday.value) {
             continue;
         }
 
+        // Get the word for the day
         const offset = i * -1;
         const date = getDateByDayOffset(offset, today);
-        const shareCode = loadByPuzzleDate(date);
-
-        let shareURL: URL | undefined;
-        if (shareCode) {
-            shareURL = new URL(window.location.href);
-            shareURL.hash = shareCode;
+        const day: Day = {
+            offset: offset,
+            dateStr: date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            dateStrShort: date.toLocaleDateString("en-US"),
+            dateWeekDay: date.toLocaleDateString('en-US', { weekday: 'long' }),
+            word: getWordByDayOffset(offset, today),
+            shareCode: undefined,
+            shareURL: undefined,
+            finalGrade: undefined,
+            finalLetterGrade: undefined,
+            finalLetterGradeSimple: undefined,
+        }
+        
+        // Attempt to load saved puzzle state for that day
+        const puzzleState = loadPuzzleByDate(date);
+        if (puzzleState) {
+            const shareURL = new URL(window.location.href);
+            shareURL.hash = puzzleState.shareCode;
+            Object.assign(day, {
+                shareCode: puzzleState.shareCode,
+                shareURL: shareURL,
+                finalGrade: puzzleState.finalGrade,
+                finalLetterGrade: letterGrade(puzzleState?.finalGrade),
+                finalLetterGradeSimple: letterGradeSimple(puzzleState?.finalGrade),
+            });
         }
 
-        words.push({
-            offset: offset,
-            dateStr: date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' }),
-            word: getWordByDayOffset(offset, today),
-            shareCode: shareCode,
-            shareURL: shareURL,
-        });
+        days.push(day);
     }
-    return words;
+    return days;
 });
 
 </script>
@@ -78,19 +105,48 @@ const days = computed(() => {
     <Modal :visible="visible" @close="$emit('close')" title="Answer History">
         <template #body>
             <div class="mb-3">
-                <div v-for="day in days" :key="day.offset" class="entry">
-                    <div class="date">
-                        <a v-if="day.shareURL" :href="day.shareURL.toString()" @click="$emit('close')">
-                            {{ day.dateStr }}
-                        </a>
-                        <template v-else>
-                            {{ day.dateStr }}
-                        </template>
-                    </div>
-                    <div class="word">
-                        {{ day.word }}
-                    </div>
-                </div>
+                <table class="table">
+                    <tbody>
+                        <tr v-for="day in days" :key="day.offset">
+                            <td class="date-cell">
+                                <div class="date-short">
+                                    <a v-if="day.shareURL" :href="day.shareURL.toString()" @click="$emit('close')">
+                                        {{ day.dateStrShort }}
+                                    </a>
+                                    <template v-else>
+                                        {{ day.dateStrShort }}
+                                    </template>
+                                </div>
+                                <div class="date-long">
+                                    <a v-if="day.shareURL" :href="day.shareURL.toString()" @click="$emit('close')">
+                                        {{ day.dateStr }}
+                                    </a>
+                                    <template v-else>
+                                        {{ day.dateStr }}
+                                    </template>
+                                </div>
+                                <div class="date-weekday">
+                                    {{ day.dateWeekDay }}
+                                </div>
+                            </td>
+                            <td class="word-cell">
+                                <a v-if="day.shareURL" class="word" :href="day.shareURL.toString()" @click="$emit('close')">
+                                    {{ day.word }}
+                                </a>
+                                <div v-else class="word">
+                                    {{ day.word }}
+                                </div>
+                            </td>
+                            <td class="grade-cell">
+                                <a v-if="day.finalGrade && day.shareURL" class="grade grade-color"
+                                    :class="[day.finalLetterGradeSimple]" :href="day.shareURL.toString()"
+                                    @click="$emit('close')">
+                                    <div class="letter">{{ day.finalLetterGrade }}</div>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <!-- <div class="buttons full"> -->
             <button class="button full" @click="showMore">
@@ -102,26 +158,62 @@ const days = computed(() => {
 </template>
 
 <style scoped>
-.entry {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-    align-items: center;
-    padding: .25em 0;
-    /* border-bottom: 1px solid var(--gray-4); */
+.table {
+    border-collapse: collapse;
 }
 
-.date {
-    padding-right: 2em;
+.table td {
+    padding: 0.2em 1em;
+}
+
+.date-cell {
+    vertical-align: middle;
+}
+
+.date-long {
+    display: none;
+}
+
+.date-weekday {
+    font-size: 0.8em;
+    color: var(--gray-2);
 }
 
 .word {
     background: var(--color-absent);
     color: var(--tile-text-color);
     text-transform: uppercase;
-    padding: .5em 1em;
-    min-width: 6em;
-    text-align: center
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 5em;
+    height: 2.5em;
+    text-align: center;
+    text-decoration: none;
 }
 
+.grade {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3em;
+    height: 2.5em;
+    text-align: center;
+    font-size: 1em;
+    text-decoration: none;
+}
+
+.grade .letter {
+    font-size: 1.5em;
+}
+
+@media screen and (min-width: 30em) {
+    .date-short {
+        display: none;
+    }
+
+    .date-long {
+        display: block;
+    }
+}
 </style>

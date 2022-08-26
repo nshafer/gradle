@@ -1,7 +1,9 @@
 // App-wide settings
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 import { reactive, watch } from 'vue';
+import { encodeShareCode, decodeShareCode } from './encoding';
 import { dateIndex } from './game';
+import { Guess } from './guess';
 
 // Exported settings and default value
 export const settings: {[name: string]: any} = reactive({
@@ -54,28 +56,115 @@ function decode(val: string | null, def: any): any {
     }
 }
 
-export function saveByPuzzleDate(date: Date, shareCode: string) {
+export function savePuzzle(guesses: Guess[], date?: Date, answer?: string): string | null {
+    if (guesses.length <= 0) {
+        console.error("Cannot save empty puzzle");
+        return null;
+    }
+    
+    const lastGuess = guesses[guesses.length - 1];
+    if (!lastGuess.isComplete) {
+        console.error("Cannot save incomplete puzzle");
+        return null;
+    }
+    
+    const words = guesses.map(value => value.word);
+    const shareCode = encodeShareCode(words, date, answer);
+    const puzzleState = encodePuzzleState(shareCode, lastGuess.finalGrade);
+    
+    let key;
+    if (date) {
+        const day = dateIndex(date);
+        key = `day-${day}`;
+    } else if (answer) {
+        key =`answer-${answer}`;
+    } else {
+        console.error("Cannot save puzzle without a date or answer");
+        return null;
+    }
+
+    safeSetItem(key, puzzleState);
+    return key;
+
+}
+
+export function loadPuzzleByDate(date: Date): {shareCode: string, finalGrade: number} | null {
     const day = dateIndex(date);
     if (day < 0 || day > 65535) {
         throw new Error("date must be between 0 and 65535, inclusive");
     }
-    safeSetItem(`day-${day}`, shareCode);
-}
 
-export function loadByPuzzleDate(date: Date): string | null {
-    const day = dateIndex(date);
-    if (day < 0 || day > 65535) {
-        throw new Error("date must be between 0 and 65535, inclusive");
+    const savedValue = window.localStorage.getItem(`day-${day}`);
+    if (savedValue == null) {
+        return null;
+    } else {
+        const puzzleState = decodePuzzleState(savedValue);
+        if (!puzzleState.shareCode) {
+            return null;
+        }
+        // If the loaded puzzle state is just a shareCode, then that's the old format, calculate the final grade
+        // and save it back to local storage.
+        if (puzzleState.finalGrade == undefined || isNaN(puzzleState.finalGrade)) {
+            const finalGrade = getFinalGrade(puzzleState.shareCode);
+            if (finalGrade) {
+                puzzleState.finalGrade = finalGrade;
+                const newValue = encodePuzzleState(puzzleState.shareCode, puzzleState.finalGrade);
+                console.log(`Updating save state for day-${day} to ${newValue}`);
+                safeSetItem(`day-${day}`, newValue);
+            }
+        }
+        return puzzleState;
     }
-    return window.localStorage.getItem(`day-${day}`);
 }
 
-export function saveByPuzzleAnswer(answer: string, shareCode: string) {
-    safeSetItem(`answer-${answer}`, shareCode);
+export function loadPuzzleByAnswer(answer: string): {shareCode: string, finalGrade: number} | null {
+    const savedValue = window.localStorage.getItem(`answer-${answer}`);
+    if (savedValue == null) {
+        return null;
+    } else {
+        const puzzleState = decodePuzzleState(savedValue);
+        if (!puzzleState.shareCode) {
+            return null;
+        }
+        // If the loaded puzzle state is just a shareCode, then that's the old format, calculate the final grade
+        // and save it back to local storage.
+        if (puzzleState.finalGrade == undefined || isNaN(puzzleState.finalGrade)) {
+            const finalGrade = getFinalGrade(puzzleState.shareCode);
+            if (finalGrade) {
+                puzzleState.finalGrade = finalGrade;
+                const newValue = encodePuzzleState(puzzleState.shareCode, puzzleState.finalGrade);
+                console.log(`Updating save state for answer-${answer} to ${newValue}`);
+                safeSetItem(`answer-${answer}`, newValue);
+            }
+        }
+        return puzzleState;
+    }
 }
 
-export function loadByPuzzleAnswer(answer: string): string | null {
-    return window.localStorage.getItem(`answer-${answer}`);
+
+function getFinalGrade(shareCode: string) {
+    const shareData = decodeShareCode(shareCode);
+    const guesses = [];
+    for (let word of shareData.words) {
+        const guessIndex: number = guesses.length;
+        const previous: Guess | undefined = guessIndex > 0 ? guesses[guessIndex - 1] : undefined;
+        const guess: Guess = new Guess(word, guessIndex, shareData.answer, previous);
+        guesses.push(guess);
+    }
+    if (guesses.length > 0) {
+        return guesses[guesses.length - 1].finalGrade;
+    } else {
+        return null;
+    }
+}
+
+function encodePuzzleState(shareCode: string, finalGrade: number): string {
+    return `${shareCode};${finalGrade.toFixed(4)}`;
+}
+
+function decodePuzzleState(puzzleState: string): {shareCode: string, finalGrade: number} {
+    const [shareCode, finalGrade] = puzzleState.split(";", 2);
+    return {shareCode, finalGrade: Number(finalGrade)};
 }
 
 function safeSetItem(key: string, val: any) {
@@ -86,7 +175,7 @@ function safeSetItem(key: string, val: any) {
             window.localStorage.setItem(key, val);
             return;
         } catch (e) {
-            console.log("Could not set item in local storage", key, val, e);
+            console.warn("Could not set item in local storage", key, val, e);
             if (e instanceof DOMException && e.code === DOMException.QUOTA_EXCEEDED_ERR) {
                 clean(1);
             } else {
