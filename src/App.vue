@@ -192,9 +192,9 @@ function closeModal(name: string) {
         border: none;
         font-size: 1.1rem;
         height: 2.25em;
-        min-width: 2.25em;
+        min-width: 2em;
         margin: 0;
-        padding: .5em;
+        padding: .5em 0.25em;
         cursor: pointer;
     }
 

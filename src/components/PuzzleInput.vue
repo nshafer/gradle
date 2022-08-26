@@ -128,18 +128,20 @@ const finalLetterGradeSimple = computed(() => {
                     <b>Solved in {{ guesses.length }} guesses.</b>
                 </div>
                 <div v-else class="remaining">
-                    <b>Words:</b>
-                    {{ guess.previousWordsRemaining.length }}
-                    <div class="icon-inline">
-                        <IconCaretRight />
-                    </div>
-                    {{ guess.wordsRemaining.length }}
+                    <b class="remaining-label">Words:</b>
+                    <span class="remaining-count">
+                        {{ guess.previousWordsRemaining.length }}
+                        <div class="icon-inline">
+                            <IconCaretRight />
+                        </div>
+                        {{ guess.wordsRemaining.length }}
+                    </span>
                 </div>
-            </div>
 
-            <div class="bits">
-                {{ guess.bits.toFixed(1) }} / {{ guess.uncertainty.toFixed(1) }}
-                <span class="bits-label">bits</span>
+                <div class="bits">
+                    {{ guess.bits.toFixed(1) }} / {{ guess.uncertainty.toFixed(1) }}
+                    <span class="bits-label">bits</span>
+                </div>
             </div>
 
             <button class="button icon" @click.stop="guessClicked(guess)" title="View summary">
@@ -265,12 +267,35 @@ const finalLetterGradeSimple = computed(() => {
     }
 
     .summary {
+        flex: 1;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        align-items: center;
         padding: .25em .5em;
+    }
+
+    .remaining {
+        margin-right: 1em;
+    }
+
+    .remaining-label {
+        display: none;
+    }
+
+    @media screen and (min-width: 27em) {
+        .remaining-label {
+            display: inline;
+        }
+    }
+
+    .remaining-count {
+        white-space: nowrap;
     }
 
     .bits {
         font-weight: bold;
-    }
+        white-space: nowrap;    }
 
     .bits-label {
         font-size: .9em;
@@ -332,9 +357,6 @@ const finalLetterGradeSimple = computed(() => {
 
         .summary {
             flex: 1;
-            display: flex;
-            flex-flow: row wrap;
-            align-items: center;
         }
         
         .grade {
