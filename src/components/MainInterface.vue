@@ -273,7 +273,7 @@ function loadFromShareCode(shareCode: string) {
 function loadFromWindowLocation() {
     if (window.location.hash != "") {
         let shareCode = window.location.hash;
-        if (shareCode.at(0) == "#") {
+        if (shareCode.slice(0, 1) == "#") {
             shareCode = shareCode.slice(1);
         }
 
@@ -404,7 +404,7 @@ watch(title, (newTitle) => {
         /* margin-bottom: 1em; */
         flex: 1;
     }
-    
+
     /* Small screens only */
     @media screen and (max-width: 69.9375em) {
         .main-interface {
