@@ -49,17 +49,19 @@ const showWordListModal = ref(false);
                                         <IconCircleInfo />
                                     </button>
                                     <template #content>
-                                        This guess reduced the list of words from
+                                        This guess reduced the list of possible words (<small>w<sub>p</sub></small>)
+                                        from
                                         <b>{{ guess.previousWordsRemaining.length }}</b>
                                         to
                                         <b>{{ guess.wordsRemaining.length }}</b>
+                                        remaining words (<small>w<sub>r</sub></small>)
                                         which is a reduction of
                                         <b>{{ (guess.wordReductionPercent*100).toFixed(2) }}%</b>.
 
                                         <p>
                                             <small>w<sub>p</sub></small> = {{ guess.previousWordsRemaining.length }}
                                             <br />
-                                            <small>w<sub>n</sub></small> = {{ guess.wordsRemaining.length }}
+                                            <small>w<sub>r</sub></small> = {{ guess.wordsRemaining.length }}
                                         </p>
                                     </template>
                                 </ToolTip>
@@ -86,16 +88,20 @@ const showWordListModal = ref(false);
                                     <IconCircleInfo />
                                 </button>
                                 <template #content>
-                                    The <i>bits of entropy</i> is a measure of how many
-                                    times the list of possible words was cut in half,
-                                    over and over.
+                                    The <i>bits of information</i> (<small>b</small>) is a measure of how many
+                                    times the list of words was cut in half.
+                                    The more times it's cut in half, the better this guess was at finding the eventual
+                                    answer.
                                     This guess cut the list of words in half
-                                    {{ guess.bits.toFixed(2) }}
-                                    times, making it roughly 1/{{ guess.fractional.toFixed(0) }} in size.
+                                    <b>{{ guess.bits.toFixed(2) }}</b>
+                                    times, making it roughly <b>1/{{ guess.fractional.toFixed(0) }}</b> in size.
 
                                     <p>
                                         <small>b</small> = log<sub>2</sub>(1 / <small>p</small>)
-                                        = {{ guess.bits.toFixed(4) }}
+                                        <br />
+                                        <small>b</small> = log<sub>2</sub>(1 / {{ guess.probability.toFixed(8) }})
+                                        <br />
+                                        <small>b</small> = {{ guess.bits.toFixed(4) }}
                                     </p>
                                 </template>
                             </ToolTip>
@@ -112,15 +118,19 @@ const showWordListModal = ref(false);
                                     <IconCircleInfo />
                                 </button>
                                 <template #content>
-                                    Uncertainty is another way of saying how many <i>bits of entropy</i>
+                                    Uncertainty (<small>u</small>) is another way of saying how many
+                                    <i>bits of information</i> (<small>b</small>)
                                     exist in the number of words that were in the list before this guess.
                                     Or put another way, it would take
-                                    {{ guess.uncertainty.toFixed(2) }} <i>bits of entropy</i> to reduce the list
-                                    of words to 1 final possibility.
+                                    <b>{{ guess.uncertainty.toFixed(2) }}</b> <i>bits of information</i>
+                                    to reduce the list of words to 1 remaining word.
 
                                     <p>
                                         <small>u</small> = log<sub>2</sub>(<small>w<sub>p</sub></small>)
-                                        = {{ guess.uncertainty.toFixed(4) }}
+                                        <br />
+                                        <small>u</small> = log<sub>2</sub>({{ guess.previousWordsRemaining.length }})
+                                        <br />
+                                        <small>u</small> = {{ guess.uncertainty.toFixed(4) }}
                                     </p>
                                 </template>
                             </ToolTip>
@@ -141,14 +151,19 @@ const showWordListModal = ref(false);
                                 </button>
                                 <template #content>
                                     There was a
-                                    {{ (guess.probability*100).toFixed(2) }}%
+                                    <b>{{ (guess.probability*100).toFixed(2) }}%</b>
+                                    (<b>1 in {{ guess.fractional.toFixed(0) }}</b>)
                                     chance that this guess would reduce the list as much as it did.
-                                    The lower the probability, the more <i>bits of entropy</i> in this guess,
-                                    and the higher your final grade.
+                                    The lower the probability (<small>p</small>), the more <i>bits of information</i> in
+                                    this guess, and the higher your final grade.
 
                                     <p>
-                                        <small>p</small> = <small>W<sub>p</sub></small> / <small>W<sub>n</sub></small>
-                                        = {{ guess.probability.toFixed(8) }}
+                                        <small>p</small> = <small>W<sub>r</sub></small> / <small>W<sub>p</sub></small>
+                                        <br />
+                                        <small>p</small> = {{ guess.wordsRemaining.length }} /
+                                        {{ guess.previousWordsRemaining.length }}
+                                        <br />
+                                        <small>p</small> = {{ guess.probability.toFixed(8) }}
                                     </p>
                                 </template>
                             </ToolTip>
@@ -165,23 +180,26 @@ const showWordListModal = ref(false);
                                     <IconCircleInfo />
                                 </button>
                                 <template #content>
-                                    Each <i>bit of entropy</i> is exponentially more difficult to attain,
-                                    so the final grade for this guess is the percent of the
-                                    <b>Bits of entropy</b> out of the <b>Uncertainty</b> plotted on an
-                                    exponential curve.
+                                    Each <i>bit of information</i> (<small>b</small>) is exponentially more difficult to
+                                    attain, so the percentage grade (<small>g<sub>p</sub></small>) for this guess is the
+                                    percent of the
+                                    <b>Bits of information</b> (<small>b</small>) out of the
+                                    <b>Uncertainty</b> (<small>u</small>)
+                                    plotted on an exponential curve (<small>g<sub>c</sub></small>) to get a fair grade
+                                    for this guess.
                                     <p>
                                         <small>g<sub>p</sub></small> = <small>b</small> / <small>u</small>
-                                        =
-                                        {{ guess.percentage.toFixed(4) }}
+                                        <br />
+                                        <small>g<sub>p</sub></small> = {{ guess.bits.toFixed(4) }} / {{
+                                        guess.uncertainty.toFixed(4) }}
+                                        <br />
+                                        <small>g<sub>p</sub></small> = {{ guess.percentage.toFixed(4) }}
                                     </p>
                                     <p>
-                                        <small>g<sub>f</sub></small>
-                                        =
-                                        1 -
-                                        (1 - <small>g<sub>p</sub></small>)
+                                        <small>g<sub>c</sub></small> = 1 - (1 - <small>g<sub>p</sub></small>)
                                         <sup>2</sup>
-                                        =
-                                        {{ guess.grade.toFixed(4) }}
+                                        <br />
+                                        <small>g<sub>c</sub></small> = {{ guess.grade.toFixed(4) }}
                                     </p>
                                 </template>
                             </ToolTip>
@@ -192,7 +210,7 @@ const showWordListModal = ref(false);
                             </template>
                             <template v-else>
                                 {{ (guess.grade*100).toFixed(2) }}%
-                            </template> 
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -208,7 +226,7 @@ const showWordListModal = ref(false);
                                     </button>
                                     <template #content>
                                         For each letter, show how many possible words were reduced and the
-                                        <i>bits of entropy</i> that letter provides to the final answer.
+                                        <i>bits of information</i> that letter provides to the final answer.
                                         Letters are resolved in a specific order, Correct, Present then Absent.
                                     </template>
                                 </ToolTip>
@@ -257,28 +275,49 @@ const showWordListModal = ref(false);
         </div>
         <div v-else class="no-guesses">
             <h3>Quick Start</h3>
+
             <div class="instruction">
                 <div class="instruction-step">1</div>
                 <div class="instruction-text">
-                    Select which puzzle you want graded.
-                    <div class="text-muted">Either by date or by entering the answer.</div>
+                    Play wordle in the official Wordle app.
+                    <div class="text-muted">This tool is not meant for playing wordle.</div>
                 </div>
             </div>
+
             <div class="instruction">
                 <div class="instruction-step">2</div>
                 <div class="instruction-text">
-                    Enter each of your guesses.
-                    <div class="text-muted">
-                        Enter each word in the order you guessed.
-                    </div>
+                    Select which puzzle you want graded. Default is today.
+                    <div class="text-muted">Choose by date or by entering the answer.</div>
                 </div>
             </div>
+
             <div class="instruction">
                 <div class="instruction-step">3</div>
                 <div class="instruction-text">
-                    Get your grade!
+                    Enter each of your guesses in order.
                     <div class="text-muted">
-                        Share it with a unique link.
+                        Each guess will be graded. Click on it for more info.
+                    </div>
+                </div>
+            </div>
+
+            <div class="instruction">
+                <div class="instruction-step">4</div>
+                <div class="instruction-text">
+                    Get your final grade!
+                    <div class="text-muted">
+                        Share it with a unique link for discord, reddit, markdown, etc.
+                    </div>
+                </div>
+            </div>
+
+            <div class="instruction">
+                <div class="instruction-step">5</div>
+                <div class="instruction-text">
+                    Your wordle answers and grades are saved on this device.
+                    <div class="text-muted">
+                        See your puzzle history with the history button in the top right.
                     </div>
                 </div>
             </div>

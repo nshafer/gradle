@@ -15,7 +15,7 @@ const classes = computed(() => {
 </script>
 
 <template>
-    <Popper v-bind="$attrs" :arrow="true" :class="classes">
+    <Popper v-bind="$attrs" :arrow="true" class="tooltip" :class="classes">
         <slot />
         <template #content="props">
             <slot name="content" v-bind="props" />
@@ -24,6 +24,10 @@ const classes = computed(() => {
 </template>
 
 <style scoped>
+    .tooltip {
+        font-weight: normal;
+    }
+
   :deep(.popper) {
     background: var(--tooltip-bg);
     padding: 1rem;

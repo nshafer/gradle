@@ -8,7 +8,7 @@ defineEmits(['close']);
 <template>
     <Modal :visible="visible" @close="$emit('close')" title="Help / About">
         <template #body>
-            <h3 class="mt-0">Gradle</h3>
+            <h3 class="mt-0">Description</h3>
 
             <p>
                 Gradle will grade your Wordle game and give you a final grade based on how well you played.
@@ -26,11 +26,37 @@ defineEmits(['close']);
                 possible list of words very much.
             </p>
 
+            <h3 class="mt-0">Quickstart</h3>
+
+            <ol>
+                <li>
+                    Play wordle in the official Wordle app.<br />
+                    <span class="text-muted">This tool is not meant for playing wordle.</span>
+                </li>
+                <li>
+                    Select which puzzle you want graded. Default is today.<br />
+                    <span class="text-muted">Choose by date or by entering the answer.</span>
+                </li>
+                <li>
+                    Enter each of your guesses in order.<br />
+                    <span class="text-muted">Each guess will be graded. Click on it for more info.</span>
+                </li>
+                <li>
+                    Get your final grade!<br />
+                    <span class="text-muted">Share it with a unique link for discord, reddit, markdown, etc.</span>
+                </li>
+                <li>
+                    Your wordle answers and grades are saved on this device.<br />
+                    <span class="text-muted">See your puzzle history with the history button in the top right.</span>
+                </li>
+            </ol>
+
             <h3>Details</h3>
 
             <p>
                 Gradle determines a grade by using information theory to figure out how many times a given guess cut the
-                possible wordlist in half, also known as a <b>bit of information</b>.
+                possible wordlist in half, also known as a <b>bit of information</b>
+                (or sometimes <b>bits of entropy</b>).
                 It compares how many bits your guess is worth against the <b>uncertainty</b>, or how many bits would be
                 required to reduce the list to exactly 1 possibility, then plots that on an exponential curve to
                 determine your final grade for each guess.
