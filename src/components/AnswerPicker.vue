@@ -195,11 +195,11 @@ watch(() => props.answer, (newAnswer, oldAnswer) => {
         align-items: center;
         background: var(--gray-5);
         border-radius: 2em;
-
     }
 
     .selection {
         display: flex;
+        flex: 1;
         flex-flow: row nowrap;
         justify-content: center;
         align-items: center;
