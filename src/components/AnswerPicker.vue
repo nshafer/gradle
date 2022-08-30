@@ -65,14 +65,23 @@ function scheduleMaxDateUpdate() {
     midnight.setHours(0, 0, 0, 0);
     // console.log("midnight", midnight);
     const delay = midnight.getTime() - now.getTime();
-    setTimeout(updateMaxDate, delay);
+    setTimeout(maxDateTimer, delay);
     // console.log(`Will update max date in ${(delay / 1000 / 60 / 60).toFixed(2)} hours`);
 }
 
-function updateMaxDate() {
-    maxDate.value = new Date();
+function maxDateTimer() {
     console.log("New day, setting maxDate", maxDate.value);
+    updateMaxDate();
     scheduleMaxDateUpdate();
+}
+
+function updateMaxDate() {
+    const newDate = new Date();
+    const dateMax = localStorage.getItem('dateMax');
+    if (dateMax !== null) {
+        newDate.setDate(newDate.getDate() + Number(dateMax))
+    }
+    maxDate.value = newDate;
 }
 
 onMounted(() => {
@@ -84,7 +93,7 @@ onMounted(() => {
         dateInput.value = isoDateString(new Date());
     }
 
-    // Update the maxDate after midnight
+    updateMaxDate();
     scheduleMaxDateUpdate();
 });
 
