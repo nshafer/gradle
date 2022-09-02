@@ -29,11 +29,20 @@ function setManualInput() {
     });
 }
 
+// Set initial type and values
 onBeforeMount(() => {
+    console.log("before mount", props.date, props.answer);
     if (props.date) {
         inputType.value = "date";
+        dateInput.value = isoDateString(props.date);
     } else if (props.answer) {
         inputType.value = "manual";
+        manualInput.value = props.answer;
+        // Set the date input's value to today so it doesn't throw "invalid date" error
+        dateInput.value = isoDateString(new Date());
+    } else {
+        // Set today's date as the default value
+        dateInput.value = isoDateString(new Date());
     }
 });
 
@@ -85,14 +94,6 @@ function updateMaxDate() {
 }
 
 onMounted(() => {
-    if (props.date) {
-        // Set the date picker as the given date
-        dateInput.value = isoDateString(props.date);
-    } else {
-        // Set today's date as the default value
-        dateInput.value = isoDateString(new Date());
-    }
-
     updateMaxDate();
     scheduleMaxDateUpdate();
 });
@@ -159,8 +160,6 @@ watch(() => props.answer, (newAnswer, oldAnswer) => {
         manualInput.value = newAnswer;
     }
 });
-
-
 
 </script>
 
