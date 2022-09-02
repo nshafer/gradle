@@ -17,12 +17,11 @@ def parse_array(script, words):
     words_re = r"[^\[\]]*".join(words)
     array_match = re.search(r'\[([^\[\]]*' + words_re + r'[^\[\]]*)\]', script)
     if array_match:
-        # print("Found array: {}...".format(array_match.group(1)[:100])
         words = array_match.group(1).split(",")
         return list(map(lambda w: w.strip(' \n\t"'), words))
 
 
-def compare_arrays(type, a, b):
+def compare_arrays(name, a, b):
     a_set = set(a)
     b_set = set(b)
 
@@ -30,9 +29,9 @@ def compare_arrays(type, a, b):
     added_words = b_set.difference(a_set)
 
     if removed_words:
-        print("[{}] removed words: {}".format(type, removed_words))
+        print("[{}] removed words: {}".format(name, removed_words))
     if added_words:
-        print("[{}] added words: {}".format(type, added_words))
+        print("[{}] added words: {}".format(name, added_words))
 
 
 def main():
@@ -40,7 +39,6 @@ def main():
 
     script_match = re.search(r'src="([^"]*wordle\.?[^"]*\.js[^"]*)', page)
     if script_match:
-        # print("Found wordle script: {}".format(script_match.group(1))
         script = get(script_match.group(1))
         js_answers = parse_array(script, ["karma", "irony", "fever"])
         if not js_answers:
