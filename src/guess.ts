@@ -238,6 +238,8 @@ export class Guess extends Calculable {
         this.wordsRemaining = [...this.previousWordsRemaining];
         this.answersRemaining = [...this.previousAnswersRemaining];
 
+        // Solve each letter in resolution order. The last letter's words/answers remaining will
+        // be this whole guess's words/answers remaining.
         for (let letter of this.resolvedLetters) {
             this.wordsRemaining = letter.wordsRemaining = letter.solve(this.wordsRemaining);
             this.answersRemaining = letter.answersRemaining = letter.solve(this.answersRemaining);

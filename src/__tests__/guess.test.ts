@@ -106,7 +106,7 @@ describe('Guess', () => {
         const guess = new Guess("worry", 0, "renew");
         expect(guess.isCorrect).toBe(false);
         expect(guess.letters.map(l => l.hint)).toEqual([Hint.Present, Hint.Absent, Hint.Present, Hint.Absent, Hint.Absent]);
-        expect(guess.bits).greaterThanOrEqual(7).lessThanOrEqual(8);
+        expect(guess.bits).greaterThanOrEqual(8).lessThanOrEqual(9);
         expect(guess.letters.map(l => l.bits).reduce((acc, n) => acc + n)).toBeCloseTo(guess.bits);
     });
 

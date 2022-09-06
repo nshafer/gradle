@@ -49,57 +49,72 @@ describe('Solve.solve', () => {
         expect(words.filter(w => w.includes('h')).length).toBe(0);
     })
 
-    test("robot", () => {
+    test("troop -> motor -> robot", () => {
         let words;
 
-        // troop motor
+        // troop
         words = new Solver("___o_", "tro__", "____p").filter(allWords);
-        expect(words.length).toBe(6);
-        // expect(words).toEqual(["robot"])
+        expect(words).not.toContain("troop");
+        expect(words).toContain("robot");
 
         // motor
         words = new Solver("_o_o_", "__t_r", "m____").filter(words);
         expect(words.length).toBe(1);
+        expect(words).not.toContain("motor");
+        expect(words).toEqual(["robot"])
+
+        // robot
+        words = new Solver("robot", "_____", "_____").filter(words);
+        expect(words.length).toBe(1);
         expect(words).toEqual(["robot"]);
-    })
+    });
 
-    // test("robot 3", () => {
-    //     const words = new Solver("_____", "b,,t,,", "acdefghijklmnpqsuvwxyz").filter(answers);
-    //     expect(words.length).toBe(1);
-    //     expect(words).toEqual(["robot"])
-    // })
+    test("outer -> enter -> inter", () => {
+        let words;
 
-    // test("wince 1", () => {
-    //     let words;
-    //     // candy
-    //     words = new Solver("__n__", "c,,,,", "ady").filter(answers);
-    //     expect(words.length).toBe(20);
-    //     // pinch
-    //     words = new Solver("_inc_", "c,,,,", "adyph").filter(answers);
-    //     expect(words.length).toBe(3);
-    //     // since
-    //     words = new Solver("_ince", "c,,,,", "adyphs").filter(answers);
-    //     expect(words.length).toBe(2);
-    //     // mince
-    //     words = new Solver("_ince", "c,,,,", "adyphsm").filter(answers);
-    //     expect(words.length).toBe(1);
-    //     expect(words).toEqual(["wince"])
-    //     words = new Solver("wince", "c,,,,", "adyphsm").filter(answers);
-    //     expect(words.length).toBe(1);
-    //     expect(words).toEqual(["wince"])
-    // })
+        // outer
+        words = new Solver("__ter", "_____", "ou___").filter(allWords);
+        expect(words).not.toContain("outer");
+        expect(words).toContain("enter");
+        expect(words).toContain("inter");
+        
+        // enter
+        words = new Solver("_nter", "_____", "e____").filter(words);
+        expect(words.length).toBe(1);
+        expect(words).not.toContain("enter");
+        expect(words).toEqual(["inter"]);
+    });
 
-    // test("knoll 1", () => {
-    //     let words;
-    //     // rents
-    //     words = new Solver("_____", ",,n,,", "rets").filter(answers);
-    //     expect(words.length).toBe(79);
-    //     // blind
-    //     words = new Solver("_____", ",l,n,n,", "retsbid").filter(answers);
-    //     expect(words.length).toBe(4);
-    //     // naval
-    //     words = new Solver("____l", "n,l,n,n,", "retsbidav").filter(answers);
-    //     expect(words.length).toBe(1);
-    //     expect(words).toEqual(["knoll"])
-    // })
+    test("inter -> scowl -> woody -> whoop", () => {
+        let words;
+
+        // inter
+        words = new Solver("_____", "_____", "inter").filter(allWords);
+        expect(words).not.toContain("inter");
+        expect(words).toContain("whoop");
+
+        // scowl
+        words = new Solver("__o__", "___w_", "sc__l").filter(words);
+        expect(words).not.toContain("scowl");
+        expect(words).toContain("whoop");
+
+        // woody
+        words = new Solver("w_o__", "_o___", "___dy").filter(words);
+        expect(words).not.toContain("woody");
+        expect(words).toContain("whoop");
+        expect(words).toContain("whoof");
+
+        // whoop
+        words = new Solver("whoop", "_____", "_____").filter(words);
+        expect(words).toEqual(["whoop"]);
+    });
+
+    test("boots -> about", () => {
+        let words;
+
+        // boots
+        words = new Solver("__o__", "b__t_", "_o__s").filter(allWords);
+        expect(words).not.toContain("boots");
+        expect(words).toEqual(["about", "abort"]);
+    });
 })

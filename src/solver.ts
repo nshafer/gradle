@@ -112,7 +112,7 @@ export default class Solver {
         return RegExp(pattern, 'i');
     }
     
-    // Builds a regex that exludes all absent letters and exludes present in the position they are in
+    // Builds a regex that exludes all absent letters and excludes present in the position they are in
     buildExcludeRegex() {
         // Build an array for each character position of characters to not include
         const excludes: string[][] = [ [], [], [], [], [] ];
@@ -126,9 +126,14 @@ export default class Solver {
             // Exclude all grays
             excludes[i] = excludes[i].concat(allAbsent);
             
+            // Exclude all yellows in this position since they are supposed to be in another position
             if (this.present[i] != null) {
-                // Exclude all yellows in this position since they are supposed to be in another position
                 excludes[i].push(this.present[i]!);
+            }
+
+            // Exclude a specific gray in this position
+            if (this.absent[i] != null) {
+                excludes[i].push(this.absent[i]!);
             }
         }
 
