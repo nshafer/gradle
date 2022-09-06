@@ -30,8 +30,7 @@ function setManualInput() {
 }
 
 // Set initial type and values
-onBeforeMount(() => {
-    console.log("before mount", props.date, props.answer);
+onMounted(() => {
     if (props.date) {
         inputType.value = "date";
         dateInput.value = isoDateString(props.date);
