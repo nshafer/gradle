@@ -19,7 +19,7 @@ describe('Guess', () => {
         expect(guess.uncertainty).greaterThan(13).lessThan(14);
         
         // This guess is very good, which means it's very improbable
-        expect(guess.probability).greaterThan(0.0003).lessThan(0.001);
+        expect(guess.probability).greaterThan(0.0001).lessThan(0.001);
         
         // This should halve the list at least 11 times.
         expect(guess.bits).greaterThan(11).lessThan(12);
