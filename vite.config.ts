@@ -12,7 +12,7 @@ export default defineConfig({
         GitRevision({}),
         VitePWA({
             includeAssets: [
-                'favicon.ico', 'favicon.svg', 'robots.txt', 'apple-touch-icon.png'],
+                'favicon.ico', 'favicon.svg', 'favicon-32x32.png', 'favicon-16x16.png', 'apple-touch-icon.png', 'safari-pinned-tab.svg'],
             manifest: {
                 "id": "/",
                 "name": "Gradle",
@@ -29,6 +29,12 @@ export default defineConfig({
                         "src": "/android-chrome-512x512.png",
                         "sizes": "512x512",
                         "type": "image/png"
+                    },
+                    {
+                        "src": "/android-chrome-512x512.png",
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "any maskable"
                     }
                 ],
             },
