@@ -117,4 +117,17 @@ describe('Solve.solve', () => {
         expect(words).not.toContain("boots");
         expect(words).toEqual(["about", "abort"]);
     });
+
+    test("second gray letter eliminates double letter answers", () => {
+        let words;
+
+        // vapid
+        words = new Solver("_____", "_____", "vapid").filter(allWords);
+        expect(words).toContain("enemy")
+        expect(words).toContain("enjoy")
+
+        // ended
+        words = new Solver("en___", "_____", "__ded").filter(words);
+        expect(words).not.toContain("enemy");
+    });
 })

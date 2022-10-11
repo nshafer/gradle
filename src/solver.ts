@@ -23,6 +23,7 @@ export default class Solver {
         this.correct = this.parseInput(correct);
         this.present = this.parseInput(present);
         this.absent = this.parseInput(absent);
+        // console.log("Solver correct", this.correct, "present", this.present, "absent", this.absent);
     }
 
     parseInput(input: LetterArray | string): LetterArray {
@@ -53,10 +54,7 @@ export default class Solver {
     
     // All grays given, minus any also given as green or yellow
     allAbsent() {
-        const allCorrect = this.uniques(this.allCorrect());
-        const allPresent = this.uniques(this.allPresent());
-        const absent = this.absent.filter(c => c != null && !allPresent.includes(c) && !allCorrect.includes(c)) as string[];
-        return this.uniques(absent);
+        return this.notNull(this.absent);
     }
 
     filter(wordlist: string[]) : string[] {
@@ -102,9 +100,8 @@ export default class Solver {
 
         const patterns = [];
         for (const [c, n] of counts) {
-            // Build a positive lookahead for each character to check if it exists anywhere in the string
-            const lPattern = `.*${c}`;
-            patterns.push("(?=" + `.*${c}`.repeat(n) + ")")
+            // Build a positive lookahead for each character to check if it exists exactly n times anywhere
+            patterns.push(`(?=(?:.*${c}){${n}})`)
         }
 
         // Build the final pattern
@@ -112,19 +109,19 @@ export default class Solver {
         return RegExp(pattern, 'i');
     }
     
-    // Builds a regex that exludes all absent letters and excludes present in the position they are in
+    // Builds a regex that excludes all absent letters and excludes present in the position they are in
     buildExcludeRegex() {
         // Build an array for each character position of characters to not include
         const excludes: string[][] = [ [], [], [], [], [] ];
 
-        // If a character appears once as a green or yellow character, then it could appear again as gray,
-        // so we can't exclude them outright
+        // cache local copy of all* arrays
         const allAbsent = this.allAbsent();
+        const allPresent = this.allPresent();
 
         // For each character position figure out what characters shouldn't be there.
         for (let i = 0; i < 5; i++) {
-            // Exclude all grays
-            excludes[i] = excludes[i].concat(allAbsent);
+            // Exclude all grays from this position unless it's a green or yellow elsewhere
+            excludes[i] = allAbsent.filter(c => c !== this.correct[i] && !allPresent.includes(c));
             
             // Exclude all yellows in this position since they are supposed to be in another position
             if (this.present[i] != null) {
@@ -135,13 +132,21 @@ export default class Solver {
             if (this.absent[i] != null) {
                 excludes[i].push(this.absent[i]!);
             }
+
+            // remove duplicate excludes in this position
+            excludes[i] = this.uniques(excludes[i]);
         }
 
         // Build the regex pattern for each position
         const patterns = [];
         for (let i = 0; i < 5; i++) {
-            // Exclude all determined characters in this position
-            patterns[i] = "[^" + excludes[i].join("") + "]";
+            if (excludes[i].length > 0) {
+                // Exclude all determined characters in this position
+                patterns[i] = "[^" + excludes[i].join("") + "]";
+            } else {
+                // Don't exclude anything in this position
+                patterns[i] = ".";
+            }
         }
 
         // Build the final pattern
