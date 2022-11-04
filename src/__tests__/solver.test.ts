@@ -1,5 +1,5 @@
 import { test, describe, expect } from 'vitest';
-import { words, answers, allWords } from '@/words';
+import { answers, allWords } from '@/words';
 import Solver from '@/solver';
 
 describe('Solver instantiation', () => {

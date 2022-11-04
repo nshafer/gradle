@@ -3,7 +3,7 @@
 import re
 import requests
 
-from words import answers, valid
+from words import valid
 
 
 def get(url):
@@ -40,16 +40,11 @@ def main():
     script_match = re.search(r'src="([^"]*wordle\.?[^"]*\.js[^"]*)', page)
     if script_match:
         script = get(script_match.group(1))
-        js_answers = parse_array(script, ["karma", "irony", "fever"])
-        if not js_answers:
-            print("Could not find answers in script")
-            return
         js_valid = parse_array(script, ["arval", "kaugh", "tolar"])
         if not js_valid:
             print("Could not find valid words in script")
             return
 
-        compare_arrays("answers", answers, js_answers)
         compare_arrays("valid", valid, js_valid)
     else:
         print("ERROR: could not find JS script")

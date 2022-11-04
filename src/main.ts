@@ -14,8 +14,7 @@ registerSW({
     }
 });
 
-import { words, answers, allWords } from './words';
-// (window as any).words = words;
+import { answers, allWords } from './words';
 // (window as any).answers = answers;
 // (window as any).allWords = allWords;
 
