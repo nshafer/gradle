@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import type { Guess } from '@/guess';
-import { dateIndex, letterGrade, letterGradeSimple } from '@/game';
-import { encodeShareCode } from '@/encoding';
+import { dateIndex } from '@/game';
 import { settings } from '@/settings';
 
 import Modal from './Modal.vue';

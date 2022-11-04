@@ -64,9 +64,9 @@ import bigInt from "big-integer";
 import { dateIndex, getDateByDateIndex } from "./game";
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
-(window as any).letters = alphabet;
+// (window as any).letters = alphabet;
 const encodingAlphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-(window as any).alpha = encodingAlphabet;
+// (window as any).alpha = encodingAlphabet;
 
 export interface ShareData {
     words: string[],

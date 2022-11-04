@@ -157,14 +157,14 @@ export class Guess extends Calculable {
 
         // If the previous guess wasn't hard mode, then we don't even need to calulate this guess.
         if (this.previous.hardMode == false) {
-            console.debug(`calculateHardMode: prevous guess is not hardmode, returning false`);
+            // console.debug(`calculateHardMode: prevous guess is not hardmode, returning false`);
             return false;
         }
 
         // Check if any greens were not reused in the same position.
         for (let i = 0; i < this.previous.letters.length; i++) {
             if (this.previous.letters[i].hint == Hint.Correct && this.letters[i].hint != Hint.Correct) {
-                console.debug(`calculateHardMode: Correct hint at ${i} not preserved`);
+                // console.debug(`calculateHardMode: Correct hint at ${i} not preserved`);
                 return false;
             }
         }
@@ -177,7 +177,7 @@ export class Guess extends Calculable {
         for (let letter of previousLetters) {
             const idx = presentLetters.indexOf(letter);
             if (idx == -1) {
-                console.debug(`calculateHardMode: Present hint ${letter} not found in ${presentLetters}`);
+                // console.debug(`calculateHardMode: Present hint ${letter} not found in ${presentLetters}`);
                 return false;
             } else {
                 presentLetters.splice(idx, 1);
