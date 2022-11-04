@@ -111,7 +111,7 @@ const finalLetterGradeSimple = computed(() => {
 
 <template>
     <div v-for="guess in guesses" :key="guess.id" class="guess"
-        :class="{ selected: guess == selectedGuess, 'is-correct': guess.isCorrect }, [guess.letterGradeSimple]"
+        :class="[{'selected': guess == selectedGuess, 'is-correct': guess.isCorrect}, guess.letterGradeSimple]"
         @click="guessClicked(guess)" @keyup.ctrl.delete="removeLastGuess">
         <div class="title">
             <div class="title-heading">
