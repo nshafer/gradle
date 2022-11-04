@@ -1,8 +1,3 @@
-import { wordIndex } from './game';
-import { answers, words, allWords } from './words';
-
-const letters = "abcdefghijklmnopqrstuvwxyz".split("");
-
 export type LetterArray = Array<string | null>;
 
 export default class Solver {
