@@ -1,8 +1,8 @@
 /*
 
 Encode and decode share-codes using custom format. In short, the format is a version and required data needed to
-encode the puzzle. A list of guesses is given, and optionally a puzzle date and/or puzzle answer. This is encoded into
-the share code, so when decoded it will return the list of guesses, puzzle date and/or answer.
+encode the puzzle. A list of guesses is given, and optionally a puzzle date or puzzle answer. This is encoded into
+the share code, so when decoded it will return the list of guesses, answer and (optionally) date.
 
 Encoding:
   where:
@@ -11,15 +11,15 @@ Encoding:
 
 Version 0:
   - assumes the puzzle is complete
-  - the last guess is the answer
-  - each guess is 5 characters
-  - there are between 1 and 6 guesses, inclusive
+  - the last word is the answer
+  - each word is 5 characters
+  - there are between 1 and 7 words
+  - if there are 7 words, then the puzzle was not solved correctly, and the 7th word is the answer
   - data:
-    - version: 4 bits; 0-15; 16 possible versions of share-codes
-    - puzzle: up to 6 guesses; 25 - 150bits
-    - guess: 5 letters; 25 bits
+    - puzzle: up to 7 words; 25 - 175bits
+    - word: 5 letters; 25 bits
     - letter: 5 bits; 0-31; a=0, b=1, y=24, z=25
-    - total: 4+(25*n) bits; n = number of guesss
+    - total: 4+(25*n) bits; n = number of words
 
 Share code for version 0
 
@@ -30,17 +30,17 @@ Share code for version 0
                   01111            p; 5 bits  | 25 bits
                        01011       l; 5 bits  |
                             00100  e; 5 bits /
+                                   repeats 25 bits for each word
 
 Version 1:
   - assumes the puzzle is complete
-  - the last guess is the answer
-  - each guess is 5 characters
-  - there are between 1 and 6 guesses, inclusive
+  - the answer is retrieved from that day's puzzle
+  - each word is 5 characters
+  - there are between 1 and 6 words
   - includes the puzzle date as a 16 bit count of days since 2021-06-19
   - data:
-    - version: 4 bits; 0-15; 16 possible versions of share-codes
     - date: 16 bits; 0-65535; n days since wordle epoch, allows 179.5 years
-    - puzzle: up to 6 guesses; 25 - 150bits
+    - puzzle: up to 6 words; 25 - 150bits
     - guess: 5 letters; 25 bits
     - letter: 5 bits; 0-31; a=0, b=1, y=24, z=25
     - total: 4+16+(25*n) bits; n = number of guesss
@@ -55,13 +55,14 @@ Share code for version 1
                                   01111            p; 5 bits  | 25 bits
                                        01011       l; 5 bits  |
                                             00100  e; 5 bits /
+                                                   repeats 25 bits for each word
 
 This bit packed data is then base62 encoded using characters 0-9, a-z, A-Z
 
 */
 
 import bigInt from "big-integer";
-import { dateIndex, getDateByDateIndex } from "./game";
+import { dateIndex, getDateByDateIndex, getWord } from "./game";
 
 const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 // (window as any).letters = alphabet;
@@ -74,17 +75,19 @@ export interface ShareData {
     date?: Date,
 }
 
-export function encodeShareCode(guesses: string[], date?: Date, answer?: string): string {
+export function encodeShareCode(guesses: string[], date_or_answer: Date | string): string {
     let binString: string;
     let ver = 0;
 
-    if (date !== undefined) {
+    if (typeof date_or_answer === "string") {
+        // Convert the guesses to a binstring using version 0 algorithm
+        binString = guessesToBinStringVersion0(guesses, date_or_answer);
+    } else if (date_or_answer instanceof Date) {
         // Convert the guesss to a binstring using version 1 algorithm
-        binString = guessesToBinStringVersion1(guesses, date);
+        binString = guessesToBinStringVersion1(guesses, date_or_answer);
         ver = 1;
     } else {
-        // Convert the guesses to a binstring using version 0 algorithm
-        binString = guessesToBinStringVersion0(guesses);
+        throw new Error("invalid date_or_answer");
     }
 
     // Prepend the version
@@ -152,13 +155,28 @@ function binStringToShareData(ver: number, data: string): ShareData {
 
 // Version 0 algorithm specifics
 
-function guessesToBinStringVersion0(guesses: string[]): string {
+function guessesToBinStringVersion0(guesses: string[], answer: string): string {
+    const words: string[] = [];
+
+    // We can't handle an empty list of guesses with this encoding version
+    if (guesses.length == 0) {
+        throw new Error("Cannot encode empty list of guesses with version 0 encoding");
+    }
+
+    if (guesses[guesses.length - 1] !== answer) {
+        // If the last guess is not the answer, then the puzzle was not solved correctly, and we tack on the answer to
+        // the end of the guesses
+        words.push(...guesses, answer);
+    } else {
+        // Otherwise, we just use the guesses
+        words.push(...guesses);
+    }
     // Encode each guess into its binary representation and join them all together with no spaces
-    return guesses.map(guessToBinString).join("");
+    return words.map(guessToBinString).join("");
 }
 
 function binStringToShareData0(data: string): ShareData {
-    const guesses: string[] = [];
+    const words: string[] = [];
 
     while (data.length >= 25) {
         // Get the next 5 digits of the binstring
@@ -166,12 +184,23 @@ function binStringToShareData0(data: string): ShareData {
         data = data.slice(25);
 
         // convert the binstring to the guess
-        guesses.push(binStringToGuess(binString));
+        words.push(binStringToGuess(binString));
     }
 
+    // If we weren't given any words, then it's an invalid share-code
+    if (words.length == 0) {
+        return {
+            words: [],
+            answer: "",
+        }
+    }
+
+    // The last word is the answer
+    const answer = words[words.length - 1];
+
     return {
-        words: guesses,
-        answer: guesses.length > 0 ? guesses[guesses.length-1] : "",
+        words: words.slice(0, 6),
+        answer: answer,
     }
 }
 
@@ -196,6 +225,7 @@ function binStringToShareData1(data: string): ShareData {
     let date: Date;
     const guesses: string[] = [];
     
+    // Get the date from the first 16 digits
     if (data.length >= 16) {
         const dateBin = data.slice(0, 16);
         data = data.slice(16);
@@ -204,6 +234,9 @@ function binStringToShareData1(data: string): ShareData {
     } else {
         throw new Error("invalid share-code");
     }
+
+    // Get the answer for this date
+    const answer = getWord(date);
 
     while (data.length >= 25) {
         // Get the next 5 digits of the binstring
@@ -217,7 +250,7 @@ function binStringToShareData1(data: string): ShareData {
     return {
         words: guesses,
         date: date,
-        answer: guesses.length > 0 ? guesses[guesses.length - 1] : "",
+        answer: answer,
     }
 }
 

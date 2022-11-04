@@ -67,9 +67,19 @@ export function savePuzzle(guesses: Guess[], date?: Date, answer?: string): stri
         console.error("Cannot save incomplete puzzle");
         return null;
     }
-    
+
     const words = guesses.map(value => value.word);
-    const shareCode = encodeShareCode(words, date, answer);
+
+    let shareCode;
+    if (date != undefined) {
+        shareCode = encodeShareCode(words, date);
+    } else if (answer != undefined) {
+        shareCode = encodeShareCode(words, answer);
+    } else {
+        console.error("Cannot save without a date or answer");
+        return null;
+    }
+    
     const puzzleState = encodePuzzleState(shareCode, lastGuess.finalGrade);
     
     let key;

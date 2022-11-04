@@ -185,7 +185,13 @@ const completed = computed(() => {
 const shareCode = computed(() => {
     if (completed.value) {
         const words = guesses.value.map(value => value.word);
-        return encodeShareCode(words, puzzleDate.value, puzzleAnswer.value)
+        if (puzzleDate.value) {
+            return encodeShareCode(words, puzzleDate.value);
+        } else if (puzzleAnswer.value) {
+            return encodeShareCode(words, puzzleAnswer.value);
+        } else {
+            return "";
+        }
     } else {
         return "";
     }
@@ -204,7 +210,7 @@ function appendGuess(guess: Guess) {
     if (!loading && shareCode.value) {
         const key = savePuzzle(guesses.value, puzzleDate.value, puzzleAnswer.value);
         if (key) {
-            console.log(`Saved puzzle to localStorage with key ${key}`);
+            console.debug(`Saved puzzle to localStorage with key ${key}`);
         }
     }
 }
