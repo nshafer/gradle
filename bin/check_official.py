@@ -2,8 +2,18 @@
 
 import re
 import sys
+from urllib.parse import urljoin
 
 import requests
+
+
+def fetch_script(url, name):
+    page = get(url)
+    script_match = re.search(r'src="([^"]*' + name + '\.?[^"]*\.js[^"]*)', page)
+    if not script_match:
+        die("ERROR: could not find JS script")
+    script_url = urljoin(url, script_match.group(1))
+    return get(script_url)
 
 
 def get(url):
@@ -17,7 +27,7 @@ def parse_array(script, words):
     not_brackets = r'[^\[\]]*'  # Match anything that isn't an open '[' or close ']' bracket
 
     # Match everything in between square brackets that includes the words given (in order). Works across lines.
-    array_match = re.search(r'\[(' + not_brackets + not_brackets.join(words) + not_brackets + r')\]', script)
+    array_match = re.search(r'\[(' + not_brackets + not_brackets.join(words) + not_brackets + r')]', script)
     if array_match:
         # Split the raw string of words separated by commas into an array and strip all whitespace and quotes
         words = array_match.group(1).split(",")
@@ -37,39 +47,20 @@ def compare_arrays(name, a, b):
         print("[{}] added words: {}".format(name, added_words))
 
 
-def main():
-    if len(sys.argv) != 2:
-        usage()
-        sys.exit(1)
-
-    # Parse the words from the deployed words.ts file
-    reference = sys.argv[1]
-    with open(reference) as f:
-        valid = parse_array(f.read(), ["arval", "kaugh", "tolar"])
-    if not valid:
-        print("Failed to parse words from reference file")
-        sys.exit(1)
-
-    # Parse the words from the live wordle source
-    page = get("https://www.nytimes.com/games/wordle/index.html")
-    script_match = re.search(r'src="([^"]*wordle\.?[^"]*\.js[^"]*)', page)
-    if script_match:
-        script = get(script_match.group(1))
-        js_valid = parse_array(script, ["arval", "kaugh", "tolar"])
-        if not js_valid:
-            print("Could not find valid words in script")
-            sys.exit(1)
-
-        compare_arrays("valid", valid, js_valid)
-    else:
-        print("ERROR: could not find JS script")
-        sys.exit(1)
-
-def usage():
-    print("Usage: {} <path/to/words.ts>".format(sys.argv[0]))
+def die(msg):
+    print(msg)
+    sys.exit(1)
 
 
 if __name__ == "__main__":
-    main()
+    # Parse the words from the deployed site
+    gradle_script = fetch_script("https://gradle.app/", "index")
+    gradle_valid = parse_array(gradle_script, ["arval", "kaugh", "tolar"]) or die("ERROR: could not parse gradle words")
+
+    # Parse the words from the live wordle source
+    wordle_script = fetch_script("https://www.nytimes.com/games/wordle/index.html", "wordle")
+    wordle_valid = parse_array(wordle_script, ["arval", "kaugh", "tolar"]) or die("ERROR: could not parse wordle words")
+
+    compare_arrays("valid", gradle_valid, wordle_valid)
 
 
