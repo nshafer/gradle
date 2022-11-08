@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import re
-import requests
+import sys
 
-from words import valid
+import requests
 
 
 def get(url):
@@ -14,11 +14,14 @@ def get(url):
 
 # Parses a given JS script to find an array with the given words in it
 def parse_array(script, words):
-    words_re = r"[^\[\]]*".join(words)
-    array_match = re.search(r'\[([^\[\]]*' + words_re + r'[^\[\]]*)\]', script)
+    not_brackets = r'[^\[\]]*'  # Match anything that isn't an open '[' or close ']' bracket
+
+    # Match everything in between square brackets that includes the words given (in order). Works across lines.
+    array_match = re.search(r'\[(' + not_brackets + not_brackets.join(words) + not_brackets + r')\]', script)
     if array_match:
+        # Split the raw string of words separated by commas into an array and strip all whitespace and quotes
         words = array_match.group(1).split(",")
-        return list(map(lambda w: w.strip(' \n\t"'), words))
+        return list(map(lambda w: w.strip(' \n\t"\''), words))
 
 
 def compare_arrays(name, a, b):
@@ -35,19 +38,35 @@ def compare_arrays(name, a, b):
 
 
 def main():
-    page = get("https://www.nytimes.com/games/wordle/index.html")
+    if len(sys.argv) != 2:
+        usage()
+        sys.exit(1)
 
+    # Parse the words from the deployed words.ts file
+    reference = sys.argv[1]
+    with open(reference) as f:
+        valid = parse_array(f.read(), ["arval", "kaugh", "tolar"])
+    if not valid:
+        print("Failed to parse words from reference file")
+        sys.exit(1)
+
+    # Parse the words from the live wordle source
+    page = get("https://www.nytimes.com/games/wordle/index.html")
     script_match = re.search(r'src="([^"]*wordle\.?[^"]*\.js[^"]*)', page)
     if script_match:
         script = get(script_match.group(1))
         js_valid = parse_array(script, ["arval", "kaugh", "tolar"])
         if not js_valid:
             print("Could not find valid words in script")
-            return
+            sys.exit(1)
 
         compare_arrays("valid", valid, js_valid)
     else:
         print("ERROR: could not find JS script")
+        sys.exit(1)
+
+def usage():
+    print("Usage: {} <path/to/words.ts>".format(sys.argv[0]))
 
 
 if __name__ == "__main__":
