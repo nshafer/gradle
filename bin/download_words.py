@@ -7,8 +7,8 @@ from pathlib import Path
 
 from util import die, download_file
 
-# wordle_epoch = datetime(2021, 6, 19)
-wordle_epoch = datetime(2022, 11, 1)
+wordle_epoch = datetime(2021, 6, 19)
+# wordle_epoch = datetime(2022, 11, 1)
 date_format = "%Y-%m-%d"
 
 
@@ -33,10 +33,10 @@ if __name__ == "__main__":
 
     files_downloaded = 0
     for day in all_days:
-        day_filename = f"{day.strftime(date_format)}.json"
+        day_filename = "{}.json".format(day.strftime(date_format))
         day_filepath = output_dir / day_filename
         day_fileexists = day_filepath.is_file()
-        print(f"Checking {day.strftime(date_format)}: {day_filepath} ({day_fileexists})")
+        print("Checking {}: {} ({})".format(day.strftime(date_format), day_filepath, day_fileexists))
 
         # Only download the file if it's for today or later, or doesn't exist
         if day.date() >= now.date() or not day_fileexists:
@@ -44,7 +44,8 @@ if __name__ == "__main__":
                 # Sleep for a random time between 0 and 3 seconds so NYT doesn't block us
                 time.sleep(random.uniform(0, 3))
 
-            print(f"Downloading {day.strftime(date_format)}")
-            download_file(f"https://www.nytimes.com/svc/wordle/v2/{day.strftime(date_format)}.json", day_filepath)
+            print("Downloading {}".format(day.strftime(date_format)))
+            source_file = "https://www.nytimes.com/svc/wordle/v2/{}.json".format(day.strftime(date_format))
+            download_file(source_file, day_filepath)
             files_downloaded += 1
 
