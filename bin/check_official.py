@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
 import re
-import sys
 from urllib.parse import urljoin
 
-import requests
+from util import die, get
 
 
 def fetch_script(url, name):
@@ -14,12 +13,6 @@ def fetch_script(url, name):
         die("ERROR: could not find JS script")
     script_url = urljoin(url, script_match.group(1))
     return get(script_url)
-
-
-def get(url):
-    r = requests.get(url)
-    r.raise_for_status()
-    return r.text
 
 
 # Parses a given JS script to find an array with the given words in it
@@ -45,11 +38,6 @@ def compare_arrays(name, a, b):
         print("[{}] removed words: {}".format(name, removed_words))
     if added_words:
         print("[{}] added words: {}".format(name, added_words))
-
-
-def die(msg):
-    print(msg)
-    sys.exit(1)
 
 
 if __name__ == "__main__":
