@@ -17,6 +17,6 @@ def get(url):
 def download_file(url, output_path):
     r = requests.get(url, stream=True)
     r.raise_for_status()
-    with open(output_path, 'wb') as f:
+    with output_path.open(mode='wb') as f:
         for chunk in r.iter_content(chunk_size=8192):
             f.write(chunk)
