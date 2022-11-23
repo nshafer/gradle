@@ -17,7 +17,7 @@ export default defineConfig({
                 "id": "/",
                 "name": "Gradle",
                 "short_name": "Gradle",
-                "description": "Help you solve Wordle",
+                "description": "Grade your Wordle",
                 "theme_color": "#ffffff",
                 "icons": [
                     {
