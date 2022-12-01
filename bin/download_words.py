@@ -8,6 +8,8 @@ from pathlib import Path
 from util import die, download_file
 
 wordle_epoch = datetime(2021, 6, 19)
+# future_days = 2  # +2 to include tomorrow and the day after
+future_days = 30
 # wordle_epoch = datetime(2022, 11, 1)
 date_format = "%Y-%m-%d"
 
@@ -28,7 +30,7 @@ if __name__ == "__main__":
     print("Downloading words to {}".format(output_dir))
 
     now = datetime.now()
-    iter_days = (now - wordle_epoch).days + 2  # +2 to include tomorrow and the day after
+    iter_days = (now - wordle_epoch).days + future_days
     all_days = [wordle_epoch + timedelta(days=n) for n in range(iter_days+1)]
 
     files_downloaded = 0
