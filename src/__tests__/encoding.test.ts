@@ -1,5 +1,11 @@
-import { test, describe, expect } from 'vitest';
+import { test, describe, expect, beforeAll } from 'vitest';
 import { encodeShareCode, decodeShareCode } from '@/encoding';
+import { answers } from '@/answers';
+import { mockAnswers } from './mock_answers';
+
+beforeAll(async () => {
+    answers.list = mockAnswers;
+});
 
 test("version 0", () => {
     let shareCode = encodeShareCode(["apple"], "apple");

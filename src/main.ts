@@ -14,9 +14,11 @@ registerSW({
     }
 });
 
-import { answers, allWords } from './words';
+// import { answers } from './answers';
 // (window as any).answers = answers;
-// (window as any).allWords = allWords;
 
-import Solver from './solver';
+// import { allowedWords } from './words';
+// (window as any).allowedWords = allowedWords;
+
+// import Solver from './solver';
 // (window as any).Solver = Solver;

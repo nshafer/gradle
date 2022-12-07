@@ -1,6 +1,6 @@
 import Solver from "./solver";
 import type { LetterArray } from './solver';
-import { allWords, answers } from "./words";
+import { allowedWords } from "./words";
 import { letterGrade, letterGradeSimple } from "./game";
 
 export enum Hint {
@@ -19,13 +19,8 @@ class Calculable {
     // Base word lists all calculations are based on
     
     wordsRemaining: string[] = [];
-    answersRemaining: string[] = [];
 
     get previousWordsRemaining(): string[] {
-        throw new Error("Not Implemented");
-    }
-
-    get previousAnswersRemaining(): string[] {
         throw new Error("Not Implemented");
     }
 
@@ -236,13 +231,11 @@ export class Guess extends Calculable {
 
         // Start with a copy of the previous Guess's remaining words
         this.wordsRemaining = [...this.previousWordsRemaining];
-        this.answersRemaining = [...this.previousAnswersRemaining];
 
         // Solve each letter in resolution order. The last letter's words/answers remaining will
         // be this whole guess's words/answers remaining.
         for (let letter of this.resolvedLetters) {
             this.wordsRemaining = letter.wordsRemaining = letter.solve(this.wordsRemaining);
-            this.answersRemaining = letter.answersRemaining = letter.solve(this.answersRemaining);
         }
         
         console.timeEnd("solve");
@@ -252,15 +245,7 @@ export class Guess extends Calculable {
         if (this.previous) {
             return this.previous.wordsRemaining;
         } else {
-            return allWords;
-        }
-    }
-
-    get previousAnswersRemaining() {
-        if (this.previous) {
-            return this.previous.answersRemaining;
-        } else {
-            return answers;
+            return allowedWords;
         }
     }
 
@@ -346,14 +331,6 @@ export class Letter extends Calculable {
         }
     }
 
-    get previousAnswersRemaining() {
-        if (this.previousLetter) {
-            return this.previousLetter.answersRemaining;
-        } else {
-            return this.guess.previousAnswersRemaining;
-        }
-    }
-    
     gatherLetters(hint: Hint): LetterArray {
         let letters: LetterArray;
         if (this.previousLetter) {

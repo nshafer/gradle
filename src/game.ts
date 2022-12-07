@@ -1,4 +1,4 @@
-import { answers } from './words';
+import { answers } from './answers';
 
 export const startDate = new Date(2021, 5, 19, 0, 0, 0, 0);
 
@@ -8,12 +8,22 @@ export function dateIndex(d: Date = new Date()): number {
 // (window as any).dateIndex = dateIndex;
 
 export function wordIndex(d: Date = new Date()): number {
-    return dateIndex(d) % answers.length;
+    const di = dateIndex(d);
+    if (di > answers.list.length) {
+        return -1;
+    } else {
+        return di % answers.list.length;  // modulo is useless here, but JUST in case...
+    }
 }
 // (window as any).wordIndex = wordIndex;
 
 export function getWord(d: Date = new Date()): string {
-    return answers[wordIndex(d)];
+    const wi = wordIndex(d);
+    if (wi < 0) {
+        return "";
+    } else {
+        return answers.list[wi];
+    }
 }
 // (window as any).getWord = getWord;
 

@@ -172,6 +172,7 @@ const days = computed(() => {
 
 .date-long {
     display: none;
+    white-space: nowrap;
 }
 
 .date-weekday {

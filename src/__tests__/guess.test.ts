@@ -1,8 +1,14 @@
-import { test, describe, expect } from 'vitest';
+import { test, describe, expect, beforeAll } from 'vitest';
 import { Guess, Letter, Hint } from '@/guess';
+import { answers } from '@/answers';
+import { mockAnswers } from './mock_answers';
 
 // Note: We're avoiding testing the solver directly
 // Also, will only check general values (bits, reduction, etc) in case word list changes more.
+
+beforeAll(async () => {
+    answers.list = mockAnswers;
+});
 
 describe('Guess', () => {
     test("single Guess", () => {

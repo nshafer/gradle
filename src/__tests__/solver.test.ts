@@ -1,6 +1,12 @@
-import { test, describe, expect } from 'vitest';
-import { answers, allWords } from '@/words';
+import { test, describe, expect, beforeAll } from 'vitest';
+import { allowedWords } from '@/words';
+import { answers } from '@/answers';
+import { mockAnswers } from './mock_answers';
 import Solver from '@/solver';
+
+beforeAll(async () => {
+    answers.list = mockAnswers;
+});
 
 describe('Solver instantiation', () => {
     test("expected input", () => {
@@ -25,7 +31,7 @@ describe('Solve.solve', () => {
         let words;
 
         // trees
-        words = new Solver("_r___", "__ees", "t____").filter(allWords);
+        words = new Solver("_r___", "__ees", "t____").filter(allowedWords);
         expect(words.length).toBe(2);
         expect(words.includes("trees")).toBe(false);
         expect(words.includes("great")).toBe(false);
@@ -33,13 +39,13 @@ describe('Solve.solve', () => {
         expect(words.includes("sneer")).toBe(false);
         
         // cease
-        words = new Solver("__ase", "_e___", "c____").filter(allWords);
+        words = new Solver("__ase", "_e___", "c____").filter(allowedWords);
         expect(words.length).toBe(1);
         expect(words.includes("crease")).toBe(false);
         expect(words).toEqual(["erase"]);
 
         // touch
-        words = new Solver("_____", "_____", "touch").filter(allWords);
+        words = new Solver("_____", "_____", "touch").filter(allowedWords);
         expect(words.length).greaterThan(4000);
         expect(words.includes("touch")).toBe(false);
         expect(words.filter(w => w.includes('t')).length).toBe(0);
@@ -53,7 +59,7 @@ describe('Solve.solve', () => {
         let words;
 
         // troop
-        words = new Solver("___o_", "tro__", "____p").filter(allWords);
+        words = new Solver("___o_", "tro__", "____p").filter(allowedWords);
         expect(words).not.toContain("troop");
         expect(words).toContain("robot");
 
@@ -73,7 +79,7 @@ describe('Solve.solve', () => {
         let words;
 
         // outer
-        words = new Solver("__ter", "_____", "ou___").filter(allWords);
+        words = new Solver("__ter", "_____", "ou___").filter(allowedWords);
         expect(words).not.toContain("outer");
         expect(words).toContain("enter");
         expect(words).toContain("inter");
@@ -89,7 +95,7 @@ describe('Solve.solve', () => {
         let words;
 
         // inter
-        words = new Solver("_____", "_____", "inter").filter(allWords);
+        words = new Solver("_____", "_____", "inter").filter(allowedWords);
         expect(words).not.toContain("inter");
         expect(words).toContain("whoop");
 
@@ -113,7 +119,7 @@ describe('Solve.solve', () => {
         let words;
 
         // boots
-        words = new Solver("__o__", "b__t_", "_o__s").filter(allWords);
+        words = new Solver("__o__", "b__t_", "_o__s").filter(allowedWords);
         expect(words).not.toContain("boots");
         expect(words).toEqual(["about", "abort"]);
     });
@@ -122,7 +128,7 @@ describe('Solve.solve', () => {
         let words;
 
         // vapid
-        words = new Solver("_____", "_____", "vapid").filter(allWords);
+        words = new Solver("_____", "_____", "vapid").filter(allowedWords);
         expect(words).toContain("enemy")
         expect(words).toContain("enjoy")
 

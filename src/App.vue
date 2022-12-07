@@ -10,12 +10,15 @@ import SettingsModal from './components/SettingsModal.vue';
 import IconCircleQuestion from './components/icons/IconCircleQuestion.vue';
 import IconClockRotateLeft from './components/icons/IconClockRotateLeft.vue';
 import IconGear from './components/icons/IconGear.vue';
+import IconFan from './components/icons/IconFan.vue';
 
 import { settings, initSettings } from './settings';
+import { answers, loadAnswers } from './answers';
 
 // Initialize settings once when the main app is mounted
 onBeforeMount(() => {
     initSettings();
+    loadAnswers();
 });
 
 // Update the class on <body> whenever the darkMode setting changes
@@ -60,38 +63,56 @@ function closeModal(name: string) {
 </script>
 
 <template>
-    <div class="app-header">
-        <div class="app-header__buttons">
-            <button class="app-header__button" @click="openModal('help')">
-                <IconCircleQuestion />
-            </button>
+    <template v-if="answers.loaded">
+        <div class="app-header">
+            <div class="app-header__buttons">
+                <button class="app-header__button" @click="openModal('help')">
+                    <IconCircleQuestion />
+                </button>
+            </div>
+
+            <div class="app-header__title">Gradle</div>
+
+            <div class="app-header__buttons right">
+                <button class="app-header__button" @click="openModal('history')">
+                    <IconClockRotateLeft />
+                </button>
+                <button class="app-header__button" @click="openModal('settings')">
+                    <IconGear />
+                </button>
+            </div>
         </div>
 
-        <div class="app-header__title">Gradle</div>
+        <MainInterface />
 
-        <div class="app-header__buttons right">
-            <button class="app-header__button" @click="openModal('history')">
-                <IconClockRotateLeft />
-            </button>
-            <button class="app-header__button" @click="openModal('settings')">
-                <IconGear />
-            </button>
+        <HelpModal :visible="modals.help" @close="closeModal('help')" />
+
+        <HistoryModal :visible="modals.history" @close="closeModal('history')" />
+
+        <SettingsModal :visible="modals.settings" @close="closeModal('settings')" />
+
+        <ReloadPrompt />
+    </template>
+
+    <template v-else-if="answers.errored">
+        <div class="full-center">
+            <div class="error-text">
+                {{ answers.error }}
+            </div>
         </div>
-    </div>
+    </template>
 
-    <MainInterface />
-
-    <HelpModal :visible="modals.help" @close="closeModal('help')" />
-
-    <HistoryModal :visible="modals.history" @close="closeModal('history')" />
-
-    <SettingsModal :visible="modals.settings" @close="closeModal('settings')" />
-
-    <ReloadPrompt />
+    <template v-else>
+        <div class="full-center">
+            <div class="app-busy">
+                <IconFan />
+            </div>
+        </div>
+    </template>
 </template>
 
 <style>
-    #app {
+#app {
         max-width: 80rem;
         margin-left: auto;
         margin-right: auto;
@@ -103,6 +124,32 @@ function closeModal(name: string) {
 
     main {
         flex: 1;
+    }
+
+    .full-center {
+        height: 100%;
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .error-text {
+        font-size: 1.5rem;
+        text-align: center;
+        padding: 1em;
+        background: var(--error)
+    }
+
+    .app-busy {
+        height: 3em;
+        animation: rotate-ccw 2s infinite linear;
+    }
+
+    @keyframes rotate-ccw {
+        100% {
+            transform: rotate(-360deg);
+        }
     }
 
     svg {

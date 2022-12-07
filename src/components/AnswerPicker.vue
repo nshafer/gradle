@@ -2,7 +2,7 @@
 import { ref, nextTick, onBeforeMount, onMounted, watch } from 'vue';
 import { getWord, startDate } from '../game';
 import { computed } from '@vue/reactivity';
-import { allWords } from '@/words';
+import { allowedWords } from '@/words';
 import { addDays, isoDateString, parseDateString } from '@/util';
 
 const props = defineProps<{
@@ -110,7 +110,7 @@ const manualInputEl = ref<HTMLInputElement | null>(null);
 
 const cleanedAnswer = computed(() => {
     const answer = manualInput.value.toLowerCase().trim();
-    if (answer.length == 5 && allWords.includes(answer)) {
+    if (answer.length == 5 && allowedWords.includes(answer)) {
         return answer;
     } else {
         return "";

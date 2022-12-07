@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted, computed } from 'vue';
 import { cleanLetters } from '@/util';
-import { allWords } from '@/words';
+import { allowedWords } from '@/words';
 
 const props = defineProps<{
     wordIndex: number
@@ -58,7 +58,7 @@ function updateWord(event: Event) {
 }
 
 function checkWord() {
-    if (word.value.length == 5 && allWords.includes(word.value)) {
+    if (word.value.length == 5 && allowedWords.includes(word.value)) {
         finishInput();
     } else {
         inputError.value = true;
