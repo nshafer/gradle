@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, nextTick, onBeforeMount, onMounted, watch } from 'vue';
-import { getWord, startDate } from '../game';
+import { getWord, startDate, maxDateWithAnswer } from '../game';
 import { computed } from '@vue/reactivity';
 import { allowedWords } from '@/words';
 import { addDays, isoDateString, parseDateString } from '@/util';
+import { loadAnswers } from '@/answers';
 
 const props = defineProps<{
     date?: Date
@@ -77,14 +78,15 @@ function scheduleMaxDateUpdate() {
     // console.log(`Will update max date in ${(delay / 1000 / 60 / 60).toFixed(2)} hours`);
 }
 
-function maxDateTimer() {
+async function maxDateTimer() {
     console.log("New day, setting maxDate", maxDate.value);
+    await loadAnswers();
     updateMaxDate();
     scheduleMaxDateUpdate();
 }
 
 function updateMaxDate() {
-    const newDate = new Date();
+    const newDate = maxDateWithAnswer();
     const dateMax = localStorage.getItem('dateMax');
     if (dateMax !== null) {
         newDate.setDate(newDate.getDate() + Number(dateMax))
@@ -92,7 +94,7 @@ function updateMaxDate() {
     maxDate.value = newDate;
 }
 
-onMounted(() => {
+onMounted(async () => {
     updateMaxDate();
     scheduleMaxDateUpdate();
 });

@@ -7,12 +7,17 @@ export function dateIndex(d: Date = new Date()): number {
 }
 // (window as any).dateIndex = dateIndex;
 
+export function maxDateWithAnswer(): Date {
+    return new Date(startDate.valueOf() + ((answers.list.length - 1) * 24 * 60 * 60 * 1000));
+}
+// (window as any).maxDate = maxDate;
+
 export function wordIndex(d: Date = new Date()): number {
     const di = dateIndex(d);
-    if (di > answers.list.length) {
+    if (di > answers.list.length - 1) {
         return -1;
     } else {
-        return di % answers.list.length;  // modulo is useless here, but JUST in case...
+        return di;
     }
 }
 // (window as any).wordIndex = wordIndex;
