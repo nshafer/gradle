@@ -10,7 +10,7 @@ export function dateIndex(d: Date = new Date()): number {
 export function maxDateWithAnswer(): Date {
     return new Date(startDate.valueOf() + ((answers.list.length - 1) * 24 * 60 * 60 * 1000));
 }
-// (window as any).maxDate = maxDate;
+// (window as any).maxDateWithAnswer = maxDateWithAnswer;
 
 export function wordIndex(d: Date = new Date()): number {
     const di = dateIndex(d);
@@ -48,6 +48,7 @@ export function getWordByDayOffset(offset: number, today: Date = new Date()): st
     const d = getDateByDayOffset(offset, today);
     return getWord(d);
 }
+// (window as any).getWordByDayOffset = getWordByDayOffset
 
 export function letterGrade(grade: number): string {
     if (grade >= 0.97) {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onBeforeMount, onMounted, onUnmounted, computed, watch } from 'vue';
+import { ref, reactive, onBeforeMount, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
 import { Guess } from '@/guess';
 import { encodeShareCode, decodeShareCode } from '@/encoding';
 import type { ShareData } from '@/encoding';
@@ -246,14 +246,19 @@ function guessClicked(guess?: Guess) {
 }
 
 // Load answer, date, guesses in share-code
-function loadFromShareCode(shareCode: string) {
+function loadFromShareCode(shareCode: string): boolean {
+    loading = true;
+    nextTick(() => { loading = false; });
+
     let shareData: ShareData | undefined;
     try {
         shareData = decodeShareCode(shareCode);
     } catch(e) {
         console.error("Invalid shareCode", shareCode, e);
-        return;
+        return false;
     }
+
+    console.log("Decoded share code", shareCode, shareData);
 
     // Remove existing guesses
     resetGuesses();
@@ -274,68 +279,108 @@ function loadFromShareCode(shareCode: string) {
     for (let word of shareData.words) {
         appendWord(word);
     }
+
+    return true;
 }
 
-function loadFromWindowLocation() {
+function loadFromWindowLocation(): boolean {
     if (window.location.hash != "") {
         let shareCode = window.location.hash;
         if (shareCode.slice(0, 1) == "#") {
             shareCode = shareCode.slice(1);
         }
+        console.log("Found share code in hash", shareCode);
 
-        loadFromShareCode(shareCode);
+        return loadFromShareCode(shareCode);
+    }
+    
+    return false;
+}
+
+function loadPuzzleFromStorage(): boolean {
+    loading = true;
+    nextTick(() => { loading = false; });
+    
+    if (puzzleDate.value) {
+        const puzzleState = loadPuzzleByDate(puzzleDate.value);
+        if (puzzleState) {
+            console.log("Loading share code", puzzleState.shareCode, "for date", puzzleDate.value);
+            return loadFromShareCode(puzzleState.shareCode);
+        } else {
+            resetGuesses();
+            console.log("No share code found for date", puzzleDate.value, dateIndex(puzzleDate.value));
+            return false;
+        }
+    } else if (puzzleAnswer.value) {
+        const puzzleState = loadPuzzleByAnswer(puzzleAnswer.value);
+        if (puzzleState) {
+            console.log("Loading share code", puzzleState.shareCode, "for answer", puzzleAnswer.value);
+            return loadFromShareCode(puzzleState.shareCode);
+        } else {
+            resetGuesses();
+            console.log("No share code found for answer", puzzleAnswer.value);
+            return false;
+        }
+    } else {
+        console.log("No puzzle answer or date set, resetting guesses");
+        resetGuesses();
+        return false;
     }
 }
 
-// If there is a hash in the URL, try to load it as a share code
+// If there is a hash in the URL, try to load it as a share code, otherwise try to load from localStorage
 onBeforeMount(() => {
-    loadFromWindowLocation();
-    loading = false;
+    let loaded = false;
+
+    // Try loading from a hash in the URL
+    loaded = loadFromWindowLocation();
+
+    // If that didn't work, set the puzzleDate to today and try loading from localStorage
+    // NOTE: We don't set the puzzleAnswer, as that will be done by AnswerPicker
+    if (!loaded) {
+        puzzleDate.value = new Date();
+        loaded = loadPuzzleFromStorage();
+    }
+
+    // If that didn't work, reset the guesses
+    if (!loaded) {
+        resetGuesses();
+    }
 });
 
 // Update the URL bar when the shareURL changes
 watch(shareURL, (newShareURL, oldShareURL) => {
-    if (loading) return;
-    // console.log(`replaceState ${oldShareURL} -> ${newShareURL}`);
-    history.replaceState(null, "", newShareURL);
+    // if (loading) return;
+    if (newShareURL !== window.location.toString()) {
+        console.log(`replaceState ${window.location} -> ${newShareURL}`);
+        history.replaceState(null, "", newShareURL);
+    }
 })
 
 // Detect if the URL hash changes and attempt to load it as a share code
 window.addEventListener("popstate", (e) => {
-    loading = true;
+    console.log("popstate", window.location);
     loadFromWindowLocation();
-    loading = false;
 });
 
-// If the answer changes attempt to load the list of guesses from local storage, or else just reset the list
-watch(puzzleAnswer, () => {
+// When the user interacts with the AnswerPicker, attempt to load the list of guesses from local storage,
+// or else just reset the list
+function answerPickerUpdated(answer: string, date?: Date) {
+    console.log("AnswerPicker updated", answer, date)
+    puzzleAnswer.value = answer;
+    puzzleDate.value = date;
     if (!loading) {
-        loading = true;
-        if (puzzleDate.value) {
-            const puzzleState = loadPuzzleByDate(puzzleDate.value);
-            if (puzzleState) {
-                loadFromShareCode(puzzleState.shareCode);
-                console.log("Loaded share code", puzzleState.shareCode, "for date", puzzleDate.value);
-            } else {
-                resetGuesses();
-                console.log("No share code found for date", puzzleDate.value);
-            }
-        } else if (puzzleAnswer.value) {
-            const puzzleState = loadPuzzleByAnswer(puzzleAnswer.value);
-            if (puzzleState) {
-                loadFromShareCode(puzzleState.shareCode);
-                console.log("Loaded share code", puzzleState.shareCode, "for answer", puzzleAnswer.value);
-            } else {
-                resetGuesses();
-                console.log("No share code found for answer", puzzleAnswer.value);
-            }
-        } else {
-            console.log("No puzzle answer or date set, resetting guesses");
-            resetGuesses();
-        }
-        loading = false;
+        loadPuzzleFromStorage();
     }
-});
+}
+
+// watch(puzzleDate, (newPuzzleDate, oldPuzzleDate) => {
+//     console.log(`puzzleDate changed ${oldPuzzleDate} -> ${newPuzzleDate} puzzleAnswer: ${puzzleAnswer.value}`);
+// });
+
+// watch(puzzleAnswer, (newPuzzleAnswer, oldPuzzleAnswer) => {
+//     console.log(`puzzleAnswer changed ${oldPuzzleAnswer} -> ${newPuzzleAnswer} puzzleDate: ${puzzleDate.value}`);
+// });
 
 // Change title when the puzzleDate or puzzleAnswer change
 const title = computed(() => {
@@ -350,6 +395,17 @@ const title = computed(() => {
 
 watch(title, (newTitle) => {
     document.title = newTitle;
+});
+
+// Debug stuff
+const puzzleDebug = ref(false);
+
+onMounted(() => {
+    window.addEventListener('keyup', (e) => {
+        if (e.key == "?") {
+            puzzleDebug.value = !puzzleDebug.value;
+        }
+    })
 });
 
 </script>
@@ -367,10 +423,15 @@ watch(title, (newTitle) => {
         <div class="page input-page" :class="{ show: isInputPage }"
             :style="{ transform: inputPageTransform, transition: dragTransition }">
             <div class="tools">
-                <AnswerPicker v-model:date="puzzleDate" v-model:answer="puzzleAnswer" />
+                <AnswerPicker :date="puzzleDate" :answer="puzzleAnswer" @updated="answerPickerUpdated" />
                 <button class="button icon px-3" @click.stop="resetGuesses" title="Reset">
                     <IconTrashCanUndo />
                 </button>
+            </div>
+
+            <div v-if="puzzleDebug" class="puzzle-debug">
+                puzzleAnswer: {{ puzzleAnswer }}<br />
+                puzzleDate: {{ puzzleDate }}<br />
             </div>
 
             <PuzzleInput v-if="puzzleAnswer" :guesses="guesses" :selectedGuess="selectedGuess" :puzzleAnswer="puzzleAnswer || ''"
@@ -396,6 +457,12 @@ watch(title, (newTitle) => {
         left: 3em;
         padding: .25em;
         background: var(--color-background);
+    }
+
+    .puzzle-debug {
+        background: var(--gray-5);
+        padding: .5em;
+        margin-bottom: 1em;
     }
 
     .tools {

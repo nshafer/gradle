@@ -12,8 +12,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e: 'update:date', value: Date | undefined): void,
-    (e: 'update:answer', value: string): void,
+    (e: 'updated', answer: string, date: Date | undefined): void,
 }>();
 
 // Toggle between setting answer by date or manually inputting
@@ -32,6 +31,7 @@ function setManualInput() {
 
 // Set initial type and values
 onMounted(() => {
+    // console.log("AnswerPicker onMounted", props.date, props.answer);
     if (props.date) {
         inputType.value = "date";
         dateInput.value = isoDateString(props.date);
@@ -39,9 +39,6 @@ onMounted(() => {
         inputType.value = "manual";
         manualInput.value = props.answer;
         // Set the date input's value to today so it doesn't throw "invalid date" error
-        dateInput.value = isoDateString(new Date());
-    } else {
-        // Set today's date as the default value
         dateInput.value = isoDateString(new Date());
     }
 });
@@ -86,12 +83,26 @@ async function maxDateTimer() {
 }
 
 function updateMaxDate() {
-    const newDate = maxDateWithAnswer();
+    let max;
+
+    // Set the maxDate to today unless our answer list hasn't been updated
+    const today = new Date();
+    const maxAnswerDate = maxDateWithAnswer();
+
+    if (maxAnswerDate >= today) {
+        max = today;
+    } else {
+        max = maxAnswerDate;
+    }
+
+    // If there is a dateMax in localStorage, which is the number of days to offset the maxDate, then adjust
     const dateMax = localStorage.getItem('dateMax');
     if (dateMax !== null) {
-        newDate.setDate(newDate.getDate() + Number(dateMax))
+        max.setDate(max.getDate() + Number(dateMax))
     }
-    maxDate.value = newDate;
+
+    // Update the maxDate
+    maxDate.value = max;
 }
 
 onMounted(async () => {
@@ -148,13 +159,11 @@ const inputError = computed(() => {
     }
 });
 
-watch(pickedAnswer, (answer) => {
-    emit("update:answer", answer);
+watch([pickedAnswer, pickedDate], ([newPickedAnswer, newPickedDate]) => {
+    // console.log("AnswerPicker emit updated", newPickedAnswer, newPickedDate)
+    emit("updated", newPickedAnswer, newPickedDate);
 });
 
-watch(pickedDate, (date) => {
-    emit("update:date", date);
-});
 
 watch(() => props.answer, (newAnswer, oldAnswer) => {
     if (inputType.value == "manual" && newAnswer) {

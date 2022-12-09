@@ -1,0 +1,59 @@
+http://localhost:3000
+
+
+12/7
+#Wordle536 3/6* Grade: B
+⬛⬛⬛⬛⬛ AMBER F
+🟨🟨⬛⬛⬛ STING D
+🟩🟩🟩🟩🟩 JOUST A+
+http://localhost:3000/#SLv0YX9thxeBvJKz
+
+
+12/6
+#Wordle535 6/6* Grade: F
+
+⬛⬛⬛🟩⬛ WOKEN F
+⬛⬛🟨🟩⬛ STREP F
+⬛🟨⬛🟩⬛ CRUEL F
+⬛⬛⬛🟩🟩 HIDER F
+⬛🟨🟨🟩🟩 GAMER A
+🟩🟩🟩🟩🟩 AMBER A+
+http://localhost:3000/#aliBRW82gb5wbiv4fRX95pqbGZx73
+
+
+CRANE (Fail)
+#Wordle X/6 Grade: F
+
+🟨🟨🟨⬛⬛ ||`RENTS`|| B-
+⬛🟩⬛⬛⬛ ||`PROUD`|| F
+🟨⬛⬛🟨⬛ ||`ADIEU`|| C
+⬛⬛⬛⬛⬛ ||`PLOTS`|| F
+⬛🟨⬛⬛⬛ ||`HELLO`|| F
+🟨⬛⬛⬛🟩 ||`APPLE`|| C
+
+http://localhost:3000/#1l2K15JcbqhQ1YPBC7Sh9YVx836rq2o
+
+
+JOUST
+#Wordle 5/6* Grade: C
+
+⬛⬛⬛⬛⬛ >!CRANE!< F  
+⬛🟩⬛⬛🟨 >!FOLDS!< C  
+🟨🟩⬛⬛⬛ >!SORRY!< F  
+🟩🟩⬛🟩🟩 >!JOIST!< A+  
+🟩🟩🟩🟩🟩 >!JOUST!< A+  
+
+http://localhost:3000/#fEUfOHgXn3lDGsviZjvXEv
+
+
+12/1 (Fail)
+#Wordle530 X/6 Grade: F
+
+⬛⬛⬛⬛⬛ >!FARMS!< F  
+🟨⬛⬛⬛🟨 >!CRANE!< C  
+⬛⬛⬛⬛🟩 >!PLANT!< C  
+⬛⬛⬛⬛🟩 >!BOOST!< F  
+⬛⬛⬛⬛⬛ >!MOLDY!< F  
+⬛⬛⬛⬛⬛ >!FAILS!< F  
+
+http://localhost:3000/#alipBEpkg48knhPGWs8KvzCs1aMee
