@@ -71,7 +71,9 @@ function closeModal(name: string) {
                 </button>
             </div>
 
-            <div class="app-header__title">Gradle</div>
+            <a href="/" class="app-header__title">
+                Gradle
+            </a>
 
             <div class="app-header__buttons right">
                 <button class="app-header__button" @click="openModal('history')">
@@ -403,6 +405,7 @@ function closeModal(name: string) {
         margin-left: auto;
         margin-right: auto;
         white-space: nowrap;
+        text-decoration: none;
     }
 
     .app-header__menu {
