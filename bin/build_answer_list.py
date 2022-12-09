@@ -34,13 +34,11 @@ if __name__ == "__main__":
 
     # Parse all the files in the source directory
     words = {}
-    files = os.listdir(source_dir)
-    for filename in files:
-        filepath = source_dir / filename
-        if not filepath.is_file():
+    for word_file in source_dir.iterdir():
+        if not word_file.is_file():
             continue
 
-        with filepath.open() as f:
+        with word_file.open('r') as f:
             data = json.load(f)
 
             words[data['print_date']] = data['solution']

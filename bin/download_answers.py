@@ -63,8 +63,8 @@ if __name__ == "__main__":
             # Compare the new and old files
             if dest_file != day_filepath:
                 if day_filepath.is_file():
-                    with open(day_filepath, "r") as old_file:
-                        with open(dest_file, "r") as new_file:
+                    with day_filepath.open('r') as old_file:
+                        with dest_file.open('r') as new_file:
                             old_json = json.load(old_file)
                             new_json = json.load(new_file)
                             if old_json.get('solution') != new_json.get('solution'):
