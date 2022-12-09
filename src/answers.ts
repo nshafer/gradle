@@ -24,7 +24,7 @@ export async function loadAnswers() {
         }
     } catch (error) {
         answers.errored = true;
-        answers.error = error;
+        answers.error = "Failed to load. Please refresh the page."
         console.error(error);
     }
 }

@@ -140,7 +140,8 @@ function closeModal(name: string) {
         font-size: 1.5rem;
         text-align: center;
         padding: 1em;
-        background: var(--error)
+        background: var(--error);
+        color: var(--white);
     }
 
     .app-busy {
