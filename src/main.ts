@@ -14,8 +14,8 @@ registerSW({
     }
 });
 
-// import { answers } from './answers';
-// (window as any).answers = answers;
+import { answers } from './answers';
+(window as any).answers = answers;
 
 // import { allowedWords } from './words';
 // (window as any).allowedWords = allowedWords;
