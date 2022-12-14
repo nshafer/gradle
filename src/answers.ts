@@ -16,7 +16,7 @@ export async function loadAnswers() {
     
     try {
         // await new Promise(r => setTimeout(r, 2000));
-        const response = await fetch('/answers.json');
+        const response = await fetch('/answers/v2/list.json');
         answers.list = await response.json();
         if (checkAnswerList()) {
             answers.loaded = true;
