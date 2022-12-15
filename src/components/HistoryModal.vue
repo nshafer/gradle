@@ -102,7 +102,7 @@ const days = computed(() => {
 </script>
 
 <template>
-    <Modal :visible="visible" @close="$emit('close')" title="Answer History" :fixed="false">
+    <Modal :visible="visible" @close="$emit('close')" title="Answer History">
         <template #content>
             <div class="mb-3">
                 <table class="table">

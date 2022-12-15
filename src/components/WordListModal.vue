@@ -9,18 +9,13 @@ const props = defineProps<{
     words: string[],
 }>();
 defineEmits(['close']);
-
-const words = computed(() => {
-    return shuffleArray(props.words);
-});
-
 </script>
 
 <template>
-    <Modal :visible="visible" @close="$emit('close')" :title="`${words.length} Possible Words`" :fixed="false">
+    <Modal :visible="visible" @close="$emit('close')" :title="`${words.length} Possible Words`" fixedWidth>
         <template #content>
-            <div class="words">
-                <div v-for="word in words" :key="word" class="word">
+            <div v-if="visible" class="words">
+                <div v-for="word in props.words" :key="word" class="word">
                     {{ word }}
                 </div>
             </div>
@@ -29,7 +24,7 @@ const words = computed(() => {
 </template>
 
 <style scoped>
-.words {
+    .words {
         display: grid;
         grid-template-columns: repeat(auto-fill, 5em);
         justify-content: space-between;
@@ -43,23 +38,5 @@ const words = computed(() => {
         padding: .5em 0;
         width: 5em;
         text-align: center;
-    }
-
-    @media screen and (min-width: 30em) {
-        .words {
-            min-width: 25em;
-        }
-    }
-
-    @media screen and (min-width: 40em) {
-        .words {
-            min-width: 35em;
-        }
-    }
-
-    @media screen and (min-width: 50em) {
-        .words {
-            min-width: 45em;
-        }
     }
 </style>

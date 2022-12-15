@@ -6,7 +6,7 @@ defineEmits(['close']);
 </script>
 
 <template>
-    <Modal :visible="visible" @close="$emit('close')" title="Help / About" :fixed="false">
+    <Modal :visible="visible" @close="$emit('close')" title="Help / About">
         <template #content>
             <h3 class="mt-0">Description</h3>
 

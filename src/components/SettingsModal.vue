@@ -15,7 +15,7 @@ const version = computed(() => {
 </script>
 
 <template>
-    <Modal :visible="visible" @close="$emit('close')" title="Settings" :fixed="false">
+    <Modal :visible="visible" @close="$emit('close')" title="Settings">
         <template #content>
             <div class="settings">
                 <div class="setting">

@@ -4,7 +4,8 @@ import IconXMark from './icons/IconXMark.vue';
 defineProps<{
     visible: boolean,
     title: string,
-    fixed: boolean,
+    fixedWidth?: boolean,
+    fixedHeight?: boolean,
 }>();
 
 defineEmits<{
@@ -18,7 +19,7 @@ defineEmits<{
         <transition name="modal-fade">
             <div v-show="visible" class="container" @click.self="$emit('close')">
                 <slot name="modal">
-                    <div class="modal" :class="{fixed: fixed}">
+                    <div class="modal" :class="{ 'fixed-width': fixedWidth, 'fixed-height': fixedHeight }">
                         <header class="header">
                             {{ title }}
                             <button class="button icon lg" @click="$emit('close')">
@@ -79,8 +80,11 @@ defineEmits<{
     max-height: 100%;
 }
 
-.modal.fixed {
+.modal.fixed-width {
     width: 100%;
+}
+
+.modal.fixed-height {
     height: 100%;
     max-height: 60em;
 }
