@@ -4,6 +4,7 @@ import { reactive, onBeforeMount, watch } from 'vue';
 import ReloadPrompt from './components/ReloadPrompt.vue';
 import MainInterface from './components/MainInterface.vue';
 import HelpModal from './components/HelpModal.vue';
+import FilterModal from './components/FilterModal.vue';
 import HistoryModal from './components/HistoryModal.vue';
 import SettingsModal from './components/SettingsModal.vue';
 
@@ -11,6 +12,7 @@ import IconCircleQuestion from './components/icons/IconCircleQuestion.vue';
 import IconClockRotateLeft from './components/icons/IconClockRotateLeft.vue';
 import IconGear from './components/icons/IconGear.vue';
 import IconFan from './components/icons/IconFan.vue';
+import IconThoughtBubble from './components/icons/IconThoughtBubble.vue';
 
 import { settings, initSettings } from './settings';
 import { answers, loadAnswers } from './answers';
@@ -42,6 +44,7 @@ watch(() => settings.colorBlind, (newValue) => {
 // Modals
 const modals: {[name: string]: boolean} = reactive({
     help: false,
+    filter: false,
     history: false,
     settings: false,
 })
@@ -69,6 +72,9 @@ function closeModal(name: string) {
                 <button class="app-header__button" @click="openModal('help')">
                     <IconCircleQuestion />
                 </button>
+                <button class="app-header__button" @click="openModal('filter')">
+                    <IconThoughtBubble />
+                </button>
             </div>
 
             <a href="/" class="app-header__title">
@@ -88,6 +94,8 @@ function closeModal(name: string) {
         <MainInterface />
 
         <HelpModal :visible="modals.help" @close="closeModal('help')" />
+
+        <FilterModal :visible="modals.filter" @close="closeModal('filter')" />
 
         <HistoryModal :visible="modals.history" @close="closeModal('history')" />
 

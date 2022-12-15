@@ -108,8 +108,8 @@ async function share() {
 </script>
 
 <template>
-    <Modal :visible="visible" @close="$emit('close')" title="Share">
-        <template #body>
+    <Modal :visible="visible" @close="$emit('close')" title="Share" :fixed="false">
+        <template #content>
             <div class="multi-switch">
                 <input id="text-type-plain" type="radio" v-model="textType" value="plain" />
                 <label for="text-type-plain">Plain</label>

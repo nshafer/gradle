@@ -23,8 +23,8 @@ const wordsNotShown = computed(() => {
 </script>
 
 <template>
-    <Modal :visible="visible" @close="$emit('close')" :title="`${words.length} Possible Words`">
-        <template #body>
+    <Modal :visible="visible" @close="$emit('close')" :title="`${words.length} Possible Words`" :fixed="false">
+        <template #content>
             <div class="words">
                 <div v-for="word in wordsShown" :key="word" class="word">
                     {{ word }}

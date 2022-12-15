@@ -4,6 +4,7 @@ import IconXMark from './icons/IconXMark.vue';
 defineProps<{
     visible: boolean,
     title: string,
+    fixed: boolean,
 }>();
 
 defineEmits<{
@@ -16,26 +17,30 @@ defineEmits<{
     <Teleport to="body">
         <transition name="modal-fade">
             <div v-show="visible" class="container" @click.self="$emit('close')">
-                <div class="modal">
-                    <header class="header">
-                        {{ title }}
-                        <button class="button icon lg" @click="$emit('close')">
-                            <IconXMark />
-                        </button>
-                    </header>
+                <slot name="modal">
+                    <div class="modal" :class="{fixed: fixed}">
+                        <header class="header">
+                            {{ title }}
+                            <button class="button icon lg" @click="$emit('close')">
+                                <IconXMark />
+                            </button>
+                        </header>
 
-                    <section class="body">
-                        <slot name="body"></slot>
-                    </section>
+                        <slot name="body">
+                            <section class="body">
+                                <slot name="content"></slot>
+                            </section>
+                        </slot>
 
-                    <footer v-if="$slots.footer" class="footer">
-                        <div class="footer-content">
-                            <slot name="footer">
-                            </slot>
-                        </div>
-                        <!-- <button class="footer-close button" @click="$emit('close')">Close</button> -->
-                    </footer>
-                </div>
+                        <footer v-if="$slots.footer" class="footer">
+                            <div class="footer-content">
+                                <slot name="footer">
+                                </slot>
+                            </div>
+                            <!-- <button class="footer-close button" @click="$emit('close')">Close</button> -->
+                        </footer>
+                    </div>
+                </slot>
             </div>
         </transition>
     </Teleport>
@@ -74,6 +79,12 @@ defineEmits<{
     max-height: 100%;
 }
 
+.modal.fixed {
+    width: 100%;
+    height: 100%;
+    max-height: 60em;
+}
+
 .header, .footer {
     padding: 1em;
     display: flex;
@@ -85,6 +96,7 @@ defineEmits<{
 .header {
     border-bottom: 1px solid var(--gray-4);
     color: var(--gray-1);
+    font-size: 1.4em;
 }
 
 .footer {
@@ -105,6 +117,7 @@ defineEmits<{
     padding: 1em;
     flex: 1;
     overflow-y: auto;
+    scrollbar-gutter: stable both-edges;
 }
 
 .modal-fade-enter-from, .modal-fade-leave-to {
