@@ -110,7 +110,7 @@ function reset() {
                 </div>
 
                 <div v-if="matches.length > 0" class="words-container">
-                    <div class="words">
+                    <div v-if="visible" class="words">
                         <div v-for="word in matches" :key="word" class="word">
                             {{ word }}
                         </div>
@@ -180,6 +180,7 @@ function reset() {
     .words {
         display: grid;
         grid-template-columns: repeat(auto-fill, 5em);
+        justify-content: space-between;
         gap: .25em;
     }
 
