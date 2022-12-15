@@ -10,14 +10,8 @@ const props = defineProps<{
 }>();
 defineEmits(['close']);
 
-const maxWords = 150;
-
-const wordsShown = computed(() => {
-    return shuffleArray(props.words).slice(0, maxWords);
-});
-
-const wordsNotShown = computed(() => {
-    return Math.max(0, props.words.length - maxWords);
+const words = computed(() => {
+    return shuffleArray(props.words);
 });
 
 </script>
@@ -26,43 +20,46 @@ const wordsNotShown = computed(() => {
     <Modal :visible="visible" @close="$emit('close')" :title="`${words.length} Possible Words`" :fixed="false">
         <template #content>
             <div class="words">
-                <div v-for="word in wordsShown" :key="word" class="word">
+                <div v-for="word in words" :key="word" class="word">
                     {{ word }}
                 </div>
-            </div>
-            <div v-if="wordsNotShown > 0" class="words-not-shown">
-                Plus {{ wordsNotShown }} more...
             </div>
         </template>
     </Modal>
 </template>
 
 <style scoped>
-    .words {
-        display: flex;
-        flex-flow: row wrap;
+.words {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 5em);
         justify-content: space-between;
-        align-items: center;
-        margin: -.25em;
+        gap: .25em;
     }
 
     .word {
         background: var(--color-absent);
         color: var(--tile-text-color);
         text-transform: uppercase;
-        padding: .5em .5em;
-        margin: .25em;
-        /* min-width: 4em; */
+        padding: .5em 0;
+        width: 5em;
         text-align: center;
     }
 
-    .word:last-child {
-        margin-right: auto;
+    @media screen and (min-width: 30em) {
+        .words {
+            min-width: 25em;
+        }
     }
 
-    .words-not-shown {
-        padding: 1em;
-        text-align: center;
+    @media screen and (min-width: 40em) {
+        .words {
+            min-width: 35em;
+        }
     }
 
+    @media screen and (min-width: 50em) {
+        .words {
+            min-width: 45em;
+        }
+    }
 </style>

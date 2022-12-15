@@ -123,7 +123,6 @@ function reset() {
                     </div>
                     
                     <div v-else class="no-input">
-                        <h2>Enter letters above to filter words by.</h2>
                         <p>
                             This is a simple tool you can use to see what words have a certain letter in a certain place.
                             For example, if you want to see all words that start with "A", you can enter "A" in the first box.
@@ -179,11 +178,9 @@ function reset() {
     }
     
     .words {
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between;
-        align-items: center;
-        margin: -.25em;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 5em);
+        gap: .25em;
     }
 
     .word {
@@ -191,7 +188,6 @@ function reset() {
         color: var(--tile-text-color);
         text-transform: uppercase;
         padding: .5em 0;
-        margin: .25em;
         width: 5em;
         text-align: center;
     }
