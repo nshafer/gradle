@@ -95,7 +95,7 @@ function reset() {
 </script>
 
 <template>
-    <Modal :visible="visible" @close="$emit('close')" title="Word Filter" :fixed="true" class="filter-modal">
+    <Modal :visible="visible" @close="$emit('close')" title="Word Filter" :fixed="true">
         <template #content>
             <div class="layout">
                 <div class="inputs">
