@@ -57,27 +57,30 @@ def download_answers(output_dir):
             else:
                 dest_file = day_filepath
 
-            download_file(source_file, dest_file)
-            files_downloaded += 1
+            try:
+                download_file(source_file, dest_file)
+                files_downloaded += 1
 
-            # Compare the new and old files
-            if dest_file != day_filepath:
-                if day_filepath.is_file():
-                    with day_filepath.open('r') as old_file:
-                        with dest_file.open('r') as new_file:
-                            old_json = json.load(old_file)
-                            new_json = json.load(new_file)
-                            if old_json.get('solution') != new_json.get('solution'):
-                                print("WARNING: solution changed for {} from '{}' to '{}'".format(
-                                    day.strftime(date_format), old_json.get('solution'), new_json.get('solution')))
-                                # Copy the new file over the old so we're updated
-                                dest_file.rename(day_filepath)
-                            else:
-                                # No changes, delete the new file
-                                dest_file.unlink()
-                else:
-                    # print("No old file, moving new file to {}".format(day_filepath))
-                    dest_file.rename(day_filepath)
+                # Compare the new and old files
+                if dest_file != day_filepath:
+                    if day_filepath.is_file():
+                        with day_filepath.open('r') as old_file:
+                            with dest_file.open('r') as new_file:
+                                old_json = json.load(old_file)
+                                new_json = json.load(new_file)
+                                if old_json.get('solution') != new_json.get('solution'):
+                                    print("WARNING: solution changed for {} from '{}' to '{}'".format(
+                                        day.strftime(date_format), old_json.get('solution'), new_json.get('solution')))
+                                    # Copy the new file over the old so we're updated
+                                    dest_file.rename(day_filepath)
+                                else:
+                                    # No changes, delete the new file
+                                    dest_file.unlink()
+                    else:
+                        # print("No old file, moving new file to {}".format(day_filepath))
+                        dest_file.rename(day_filepath)
+            except Exception as e:
+                print("ERROR: Could not download {} to {}: {}".format(source_file, dest_file, e))
 
     output("Downloaded", files_downloaded)
 
