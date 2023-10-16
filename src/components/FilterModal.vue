@@ -57,9 +57,43 @@ const letter5 = computed(() => {
 function updateLetter(letter: string, event: Event) {
     // We use this instead of v-model so we can fire on every input, which doesn't happen with
     // an IME that does composition, such as on mobile.
-    if (event.target && event.target instanceof HTMLInputElement) {
+    if (event instanceof InputEvent && event.target && event.target instanceof HTMLInputElement) {
+        // console.log("input", letter, event.target.value);
+        const value = event.target.value;
+
         /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
-        (letters as { [key: string]: any })[letter] = event.target.value;
+        (letters as { [key: string]: any })[letter] = value;
+
+        if (value) {
+            const letterNum = parseInt(letter[1]);
+            const nextLetter = `l${letterNum + 1}`;
+            focusLetterInput(nextLetter, true);
+        }
+    }
+}
+
+function onLetterKeyUp(letter: string, event: Event) {
+    // Go to previous input if backspace is pressed
+    if (event instanceof KeyboardEvent) {
+        // console.log("onLetterKeyUp", letter, event.key);
+        // Figure out the previous and next letter inputs
+        const letterNum = parseInt(letter[1]);
+        const prevLetter = `l${letterNum - 1}`;
+
+        // Go to previous letter input if it's a backspace
+        if (event.key === "Backspace") {
+            focusLetterInput(prevLetter, true);
+        }
+    }
+}
+
+function focusLetterInput(letter: string, select: boolean = false) {
+    const input = document.getElementById(`filter_${letter}`) as HTMLInputElement;
+    if (input) {
+        input.focus();
+        if (select) {
+            input.select();
+        }
     }
 }
 
@@ -98,11 +132,11 @@ function reset() {
     <Modal :visible="visible" @close="$emit('close')" title="Word Filter" fixedWidth fixedHeight>
         <template #subheader>
             <div class="inputs">
-                <input class="input" type="text" :value="letters.l1" @input="updateLetter('l1', $event)" maxlength="1" @click="selectAll"/>
-                <input class="input" type="text" :value="letters.l2" @input="updateLetter('l2', $event)" maxlength="1" @click="selectAll" />
-                <input class="input" type="text" :value="letters.l3" @input="updateLetter('l3', $event)" maxlength="1" @click="selectAll" />
-                <input class="input" type="text" :value="letters.l4" @input="updateLetter('l4', $event)" maxlength="1" @click="selectAll" />
-                <input class="input" type="text" :value="letters.l5" @input="updateLetter('l5', $event)" maxlength="1" @click="selectAll" />
+                <input id="filter_l1" class="input" type="text" :value="letters.l1" @input="updateLetter('l1', $event)" @keyup="onLetterKeyUp('l1', $event)" maxlength="1" @click="selectAll"/>
+                <input id="filter_l2" class="input" type="text" :value="letters.l2" @input="updateLetter('l2', $event)" @keyup="onLetterKeyUp('l2', $event)" maxlength="1" @click="selectAll" />
+                <input id="filter_l3" class="input" type="text" :value="letters.l3" @input="updateLetter('l3', $event)" @keyup="onLetterKeyUp('l3', $event)" maxlength="1" @click="selectAll" />
+                <input id="filter_l4" class="input" type="text" :value="letters.l4" @input="updateLetter('l4', $event)" @keyup="onLetterKeyUp('l4', $event)" maxlength="1" @click="selectAll" />
+                <input id="filter_l5" class="input" type="text" :value="letters.l5" @input="updateLetter('l5', $event)" @keyup="onLetterKeyUp('l5', $event)" maxlength="1" @click="selectAll" />
                 <button class="button icon" @click.stop="reset" title="Reset">
                     <IconTrashCanUndo />
                 </button>
