@@ -21,11 +21,17 @@ defineEmits<{
                 <slot name="modal">
                     <div class="modal" :class="{ 'fixed-width': fixedWidth, 'fixed-height': fixedHeight }">
                         <header class="header">
-                            {{ title }}
+                            <div class="title">
+                                {{ title }}
+                            </div>
                             <button class="button icon lg" @click="$emit('close')">
                                 <IconXMark />
                             </button>
                         </header>
+
+                        <div v-if="$slots.subheader" class="subheader">
+                            <slot name="subheader"></slot>
+                        </div>
 
                         <slot name="body">
                             <section class="body">
@@ -87,6 +93,7 @@ defineEmits<{
 .modal.fixed-height {
     height: 100%;
     max-height: 60em;
+    /* height: 100svh; */
 }
 
 .header, .footer {
@@ -100,7 +107,16 @@ defineEmits<{
 .header {
     border-bottom: 1px solid var(--gray-4);
     color: var(--gray-1);
+}
+
+.title {
     font-size: 1.4em;
+}
+
+.subheader {
+    border-bottom: 1px solid var(--gray-4);
+    color: var(--gray-1);
+    padding: 1em;
 }
 
 .footer {
