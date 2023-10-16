@@ -49,7 +49,7 @@ function updateWord(event: Event) {
     // We use this instead of v-model so we can fire on every input, which doesn't happen with
     // an IME that does composition, such as Chrome mobile.
     if (event.target && event.target instanceof HTMLInputElement) {
-        var cleaned = cleanLetters(event.target.value).slice(0, 5);
+        const cleaned = cleanLetters(event.target.value).slice(0, 5);
         word.value = event.target.value = cleaned;
     }
     // if (word.value.length >= 5) {

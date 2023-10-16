@@ -83,7 +83,7 @@ const hardMode = computed(() => {
 const allGrades = computed(() => {
     const grades: number[] = [];
 
-    for (let guess of props.guesses) {
+    for (const guess of props.guesses) {
         grades.push(guess.grade);
     }
 

@@ -121,7 +121,7 @@ describe('Solve.solve', () => {
         // boots
         words = new Solver("__o__", "b__t_", "_o__s").filter(allowedWords);
         expect(words).not.toContain("boots");
-        expect(words).toEqual(["about", "abort"]);
+        expect(words).toEqual(["abort", "about"]);
     });
 
     test("second gray letter eliminates double letter answers", () => {

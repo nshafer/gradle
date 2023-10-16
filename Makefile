@@ -1,6 +1,10 @@
 build:
 	npm run build
 
+pull_answers:
+	bin/pull_answers.sh
+	cp bin/answers/v2/list.json public/answers/v2/
+
 dev:
 	npm run dev
 
@@ -18,6 +22,6 @@ preview: build
 	npm run preview
 
 push: build
-	./push.sh
+	bin/push.sh
 
-.PHONY: build dev test preview push
+.PHONY: build download_answers dev devs check test preview push

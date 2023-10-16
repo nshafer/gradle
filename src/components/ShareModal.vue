@@ -37,14 +37,14 @@ const shareText = computed(() => {
     const guessCount = props.busted ? "X/6" : `${props.guesses.length}/6`;
     const hard = props.hardMode ? "*" : "";
 
-    let guessLines = [];
+    const guessLines = [];
 
     if (textType.value == "table") {
         guessLines.push(`|Guess|Result|Grade|`);
         guessLines.push(`|:--:|:--:|:--:|`);
     }
 
-    for (let guess of props.guesses) {
+    for (const guess of props.guesses) {
         const unicodeHints = settings.darkMode ? guess.unicodeHintsDark : guess.unicodeHints;
 
         let guessLine;

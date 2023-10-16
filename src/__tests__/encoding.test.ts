@@ -8,7 +8,7 @@ beforeAll(async () => {
 });
 
 test("version 0", () => {
-    let shareCode = encodeShareCode(["apple"], "apple");
+    const shareCode = encodeShareCode(["apple"], "apple");
     expect(shareCode.length).toBeGreaterThan(0);
     
     // One successful guess should result in a share code that can be decoded
@@ -38,7 +38,7 @@ test("version 1", () => {
     expect(shareData.answer).toEqual("rebus");
     
     // One successful guess should result in a share code that can be decoded
-    let shareCode = encodeShareCode(["rebus"], d);
+    const shareCode = encodeShareCode(["rebus"], d);
     expect(shareCode.length).toBeGreaterThan(0);
     shareData = decodeShareCode(shareCode);
     expect(shareData.words).toEqual(["rebus"]);
@@ -58,8 +58,8 @@ test("version 1", () => {
 });
 
 test("version 0 backwards-compatibility", () => {
-    let shareCode = "fEUh8YhcOU1d5zz3eNeuMI";
-    let shareData = decodeShareCode(shareCode);
+    const shareCode = "fEUh8YhcOU1d5zz3eNeuMI";
+    const shareData = decodeShareCode(shareCode);
     expect(shareData.words).toEqual(["crate", "adieu", "awoke", "ample", "apple"]);
     expect(shareData.answer).toEqual("apple");
 })

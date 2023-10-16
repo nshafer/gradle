@@ -136,7 +136,7 @@ function shareCodeToBinString(code: string): string {
     const num = bigInt(code, encodingAlphabet.length, encodingAlphabet, true);
 
     // Convert to binary string
-    let binString = num.toString(2);
+    const binString = num.toString(2);
 
     // Remove padding '1'
     return binString.substring(1);

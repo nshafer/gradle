@@ -29,7 +29,7 @@ const page = reactive({
 
 function updateWindowWidth() {
     page.screenWidth = getScreenWidth();
-};
+}
 
 onMounted(() => {
     window.addEventListener("resize", updateWindowWidth);
@@ -276,7 +276,7 @@ function loadFromShareCode(shareCode: string): boolean {
     }
 
     // Add all of the words as guesses
-    for (let word of shareData.words) {
+    for (const word of shareData.words) {
         appendWord(word);
     }
 

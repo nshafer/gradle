@@ -155,7 +155,7 @@ export function loadPuzzleByAnswer(answer: string): {shareCode: string, finalGra
 function getFinalGrade(shareCode: string) {
     const shareData = decodeShareCode(shareCode);
     const guesses = [];
-    for (let word of shareData.words) {
+    for (const word of shareData.words) {
         const guessIndex: number = guesses.length;
         const previous: Guess | undefined = guessIndex > 0 ? guesses[guessIndex - 1] : undefined;
         const guess: Guess = new Guess(word, guessIndex, shareData.answer, previous);

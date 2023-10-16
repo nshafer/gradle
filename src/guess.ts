@@ -9,7 +9,7 @@ export enum Hint {
     Absent = "absent",
 }
 
-var id = 0;
+let id = 0;
 
 function generateId(): number {
     return id++;
@@ -169,7 +169,7 @@ export class Guess extends Calculable {
         const presentLetters = this.letters.filter(l => l.hint == Hint.Correct || l.hint == Hint.Present).map(l => l.letter);
 
         // Now for each present letter in the previous guess, make sure it's in presentLetters, removing it as we go
-        for (let letter of previousLetters) {
+        for (const letter of previousLetters) {
             const idx = presentLetters.indexOf(letter);
             if (idx == -1) {
                 // console.debug(`calculateHardMode: Present hint ${letter} not found in ${presentLetters}`);
@@ -234,7 +234,7 @@ export class Guess extends Calculable {
 
         // Solve each letter in resolution order. The last letter's words/answers remaining will
         // be this whole guess's words/answers remaining.
-        for (let letter of this.resolvedLetters) {
+        for (const letter of this.resolvedLetters) {
             this.wordsRemaining = letter.wordsRemaining = letter.solve(this.wordsRemaining);
         }
         
@@ -262,7 +262,7 @@ export class Guess extends Calculable {
         // Average of all guess grades
         let sum = 0;
 
-        for (let guess of this.allGuesses) {
+        for (const guess of this.allGuesses) {
             sum += guess.grade;
         }
 

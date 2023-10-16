@@ -19,7 +19,7 @@ watch(() => props.visible, (newValue) => {
 })
 
 // Determine if we should show today or not
-let showToday = ref(false);
+const showToday = ref(false);
 watch(() => props.visible, (newValue) => {
     if (newValue) {
         const puzzleState = loadPuzzleByDate(today);

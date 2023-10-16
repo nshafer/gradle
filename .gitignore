@@ -22,6 +22,9 @@ dev-dist/
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 .idea
 *.suo
 *.ntvs*
@@ -37,4 +40,5 @@ __pycache__/
 bin/answers
 
 # production
-push.sh
+bin/push.sh
+bin/pull_answers.sh

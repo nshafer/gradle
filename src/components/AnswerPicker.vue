@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, nextTick, onBeforeMount, onMounted, watch } from 'vue';
 import { getWord, startDate, maxDateWithAnswer } from '../game';
-import { computed } from '@vue/reactivity';
+import { computed } from 'vue';
 import { allowedWords } from '@/words';
 import { addDays, isoDateString, parseDateString } from '@/util';
 import { loadAnswers } from '@/answers';

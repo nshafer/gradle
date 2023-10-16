@@ -3,6 +3,7 @@
   "exclude": [],
   "compilerOptions": {
     "composite": true,
+    "lib": [],
     "types": ["node", "jsdom", "vite-plugin-pwa/client"]
   }
 }
