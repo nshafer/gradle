@@ -79,7 +79,7 @@ defineEmits(['close']);
         </template>
         <template #footer>
             <p class="text-small text-muted">
-                Wordle is © 2022 The New York Times Company.
+                Wordle is © 2024 The New York Times Company.
             </p>
             <p class="text-small text-muted">
                 This App / Website is the product of gradle.app which has no

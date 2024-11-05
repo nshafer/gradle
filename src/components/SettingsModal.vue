@@ -71,7 +71,7 @@ const version = computed(() => {
 
         <template #footer>
             <div class="footer">
-                <small>© 2022 gradle.app</small>
+                <small>© 2024 gradle.app</small>
                 <small class="ml-a">{{ version }}</small>
                 <a class="button icon lg ml-2" href="https://github.com/nshafer/gradle" target="__blank">
                     <GitHub />

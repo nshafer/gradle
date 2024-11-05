@@ -7,6 +7,7 @@ import HelpModal from './components/HelpModal.vue';
 import FilterModal from './components/FilterModal.vue';
 import HistoryModal from './components/HistoryModal.vue';
 import SettingsModal from './components/SettingsModal.vue';
+import StrikeModal from './components/StrikeModal.vue';
 
 import IconCircleQuestion from './components/icons/IconCircleQuestion.vue';
 import IconClockRotateLeft from './components/icons/IconClockRotateLeft.vue';
@@ -47,6 +48,7 @@ const modals: {[name: string]: boolean} = reactive({
     filter: false,
     history: false,
     settings: false,
+    strike: true,
 })
 
 function closeAllModals() {
@@ -100,6 +102,8 @@ function closeModal(name: string) {
         <HistoryModal :visible="modals.history" @close="closeModal('history')" />
 
         <SettingsModal :visible="modals.settings" @close="closeModal('settings')" />
+
+        <StrikeModal :visible="modals.strike" @close="closeModal('strike')" />
 
         <ReloadPrompt />
     </template>
