@@ -21,13 +21,18 @@ defineEmits(['close']);
 
             <ul>
                 <li>
+                    <a href="https://newsguild.org/press-release-new-york-times-tech-guild-walks-off-the-job/" target="_blank">
+                        Press Release: New York Times Tech Guild Walks Off the Job - <small>newsguild.org</small>
+                    </a>
+                </li>
+                <li>
                     <a href="https://nytimesguild.org/tech-contract-campaign/" target="_blank">
-                        NY Times Tech Guild contract dispute - <small>nytimesguild.org</small>
+                        Site: NY Times Tech Guild contract campaign - <small>nytimesguild.org</small>
                     </a>
                 </li>
                 <li>
                     <a href="https://www.nytimes.com/2024/11/04/business/media/new-york-times-strike.html?unlocked_article_code=1.XU4.p7Mp.cHzY6O52elRP" target="_blank">
-                        New York Times Tech Workers Go on Strike - <small>nytimes.com</small>
+                        Article: New York Times Tech Workers Go on Strike - <small>nytimes.com</small>
                     </a>
                 </li>
             </ul>
